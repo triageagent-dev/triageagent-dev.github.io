@@ -1,6 +1,6 @@
-# Triage X-Ray
+# Triage Agent
 
-Landing page for **Triage X-Ray** — self-aware infrastructure.
+Landing page for **Triage Agent** — self-aware infrastructure.
 
 Predictive incident intelligence for the early detection and prevention of
 production outages, cost anomalies and security breaches. Built on an agentic
