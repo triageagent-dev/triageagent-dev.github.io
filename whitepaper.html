@@ -1,0 +1,1627 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNDAiIGhlaWdodD0iMjQwIiB2aWV3Qm94PSIwIDAgMjQwIDI0MCIgcm9sZT0iaW1nIiBhcmlhLWxhYmVsPSJKdWNjZSBsb2dvIj4KICA8ZGVmcz4KICAgIDxsaW5lYXJHcmFkaWVudCBpZD0iZzEiIHgxPSIwIiB5MT0iMCIgeDI9IjEiIHkyPSIxIj4KICAgICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2MwODRmYyIvPgogICAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM3YzNhZWQiLz4KICAgIDwvbGluZWFyR3JhZGllbnQ+CiAgICA8bGluZWFyR3JhZGllbnQgaWQ9ImcyIiB4MT0iMCIgeTE9IjAiIHgyPSIxIiB5Mj0iMSI+CiAgICAgIDxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNhODU1ZjciLz4KICAgICAgPHN0b3Agb2Zmc2V0PSIxMDAlIiBzdG9wLWNvbG9yPSIjNmQyOGQ5Ii8+CiAgICA8L2xpbmVhckdyYWRpZW50PgogIDwvZGVmcz4KCiAgPCEtLSBFZGdlcyAtLT4KICA8bGluZSB4MT0iMTIwIiB5MT0iMTIwIiB4Mj0iNjgiICB5Mj0iNzIiICBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjEyMCIgeTE9IjEyMCIgeDI9IjE3OCIgeTI9IjY4IiAgc3Ryb2tlPSJ1cmwoI2cxKSIgc3Ryb2tlLXdpZHRoPSI1IiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNyIvPgogIDxsaW5lIHgxPSIxMjAiIHkxPSIxMjAiIHgyPSI3MiIgIHkyPSIxNzgiIHN0cm9rZT0idXJsKCNnMSkiIHN0cm9rZS13aWR0aD0iNSIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjciLz4KICA8bGluZSB4MT0iMTIwIiB5MT0iMTIwIiB4Mj0iMTc2IiB5Mj0iMTc2IiBzdHJva2U9InVybCgjZzEpIiBzdHJva2Utd2lkdGg9IjUiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgb3BhY2l0eT0iMC43Ii8+CiAgPGxpbmUgeDE9IjY4IiAgeTE9IjcyIiAgeDI9IjE3OCIgeTI9IjY4IiAgc3Ryb2tlPSJ1cmwoI2cxKSIgc3Ryb2tlLXdpZHRoPSIzIiBzdHJva2UtbGluZWNhcD0icm91bmQiIG9wYWNpdHk9IjAuNCIvPgogIDxsaW5lIHgxPSIxNzYiIHkxPSIxNzYiIHgyPSI3MiIgIHkyPSIxNzgiIHN0cm9rZT0idXJsKCNnMSkiIHN0cm9rZS13aWR0aD0iMyIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBvcGFjaXR5PSIwLjQiLz4KCiAgPCEtLSBTYXRlbGxpdGUgbm9kZXMgLS0+CiAgPGNpcmNsZSBjeD0iNjgiICBjeT0iNzIiICByPSIxNiIgZmlsbD0idXJsKCNnMikiIG9wYWNpdHk9IjAuODUiLz4KICA8Y2lyY2xlIGN4PSIxNzgiIGN5PSI2OCIgIHI9IjIwIiBmaWxsPSJ1cmwoI2cyKSIgb3BhY2l0eT0iMC44NSIvPgogIDxjaXJjbGUgY3g9IjcyIiAgY3k9IjE3OCIgcj0iMTQiIGZpbGw9InVybCgjZzIpIiBvcGFjaXR5PSIwLjg1Ii8+CiAgPGNpcmNsZSBjeD0iMTc2IiBjeT0iMTc2IiByPSIxOCIgZmlsbD0idXJsKCNnMikiIG9wYWNpdHk9IjAuODUiLz4KCiAgPCEtLSBDZW50ZXIgbm9kZSAtLT4KICA8Y2lyY2xlIGN4PSIxMjAiIGN5PSIxMjAiIHI9IjI4IiBmaWxsPSJ1cmwoI2cxKSIvPgo8L3N2Zz4K">
+<title>Self-Aware Infrastructure</title>
+<style>
+  /* Single LIGHT palette, pinned rather than following the viewer's theme —
+     the same posture as docs/howto.html, whose tokens this block carries
+     verbatim, so the two published pages read as one product. See
+     howto.html's own comment for why the paper is bone (#f7f2e9) rather than
+     white, and why the greys run warm to match it.
+
+     The white paper's own token names (--bg, --muted, --line, --line-soft,
+     --accent) are aliased onto the runbook tokens in this same block so none
+     of the figure/table/signal CSS below has to change. --l1..--l4 and
+     --sig-red have no runbook equivalent and are re-tuned here for a warm
+     bone ground instead of the old cool light-blue one — each clears 4.5:1
+     against both --paper and --surface (checked with the WCAG contrast
+     formula: l1 5.80:1/6.16:1, l2 6.51:1/6.91:1, l3 5.70:1/6.05:1, l4
+     6.36:1/6.75:1, sig-red 5.78:1/6.14:1 — paper is the binding case, surface
+     is always easier since it's lighter). Hues are spread apart (green,
+     amber, teal, blue, red) and away from --mark's violet so the five never
+     get mistaken for one another in the signal-family figures.
+  */
+  :root {
+    color-scheme: light;
+    --paper:   #f7f2e9;
+    --surface: #fcf9f3;
+    --box:     #eee7da;
+    --ink:     #22201c;
+    --ink-2:   #57534a;
+    --ink-3:   #666153;
+    --rule:    #e3dcce;
+    --rule-2:  #d5ccba;
+    --mark:    #6d28d9;
+    --code-bg: #f2ece1;
+    --hover:   #eee7da;
+
+    /* aliases: the white paper's own CSS below reads these names */
+    --bg: var(--paper);
+    --muted: var(--ink-2);
+    --line: var(--rule);
+    --line-soft: var(--rule-2);
+    --accent: var(--mark);
+
+    --l1: #226b40; /* reflection — ground truth */
+    --l2: #8a4310; /* awareness — signals */
+    --l3: #0e6b63; /* cognition — memory */
+    --l4: #1f5a96; /* intelligence — reasoning */
+    --sig-red: #a63a28;
+  }
+
+  * { box-sizing: border-box; }
+  html { background: var(--bg); }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, .wordmark {
+    font-family: Georgia, "Source Serif 4", serif;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .display, h3 {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+  .mono, code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  code {
+    font-size: 0.85em;
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    overflow-wrap: anywhere;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 2px; }
+
+  /* ---------- top bar (ported from docs/howto.html) ---------- */
+  .topbar {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1.15rem 1.75rem;
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .mark { width: 1.6rem; height: 1.6rem; flex: none; }
+  .wordmark {
+    font-weight: 600;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- shell (ported from docs/howto.html) ---------- */
+  .shell {
+    display: grid;
+    grid-template-columns: 19rem minmax(0, 1fr);
+    align-items: start;
+    max-width: 82rem;
+    margin: 0 auto;
+  }
+
+  /* ---------- sidebar (ported from docs/howto.html) ---------- */
+  .sidebar {
+    position: sticky;
+    top: 4.2rem;
+    padding: 2.25rem 1.5rem 3rem 1.75rem;
+    border-right: 1px solid var(--rule);
+    max-height: calc(100vh - 4.2rem);
+    overflow-y: auto;
+  }
+  .sidebar h2 {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+    margin: 0 0 0.85rem 0.6rem;
+  }
+  .sidebar nav { display: flex; flex-direction: column; }
+  .sidebar h2.group { margin-top: 1.6rem; }
+  .sidebar a {
+    display: flex;
+    align-items: baseline;
+    gap: 0.7rem;
+    padding: 0.5rem 0.6rem;
+    border-radius: 6px;
+    color: var(--ink);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    line-height: 1.35;
+  }
+  .sidebar a:hover { background: var(--hover); }
+  .sidebar a.on { background: var(--hover); }
+  .sidebar a.on .n { color: var(--mark); }
+  .sidebar .n {
+    /* 1.15rem, not the runbook's 0.9rem: this page's numbering runs to two
+       digits (10-12), which the runbook's seven single-digit steps never did */
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.78rem;
+    color: var(--ink-3);
+    flex: none;
+    width: 1.15rem;
+  }
+  .sidebar .chev { margin-left: auto; color: var(--ink-3); flex: none; align-self: center; }
+
+  /* ---------- article shell (ported from docs/howto.html) ---------- */
+  .article { padding: 2.25rem 3rem 7rem; max-width: 54rem; }
+
+  /* ---------- crumbs + eyebrow ----------
+     .eyebrow is about.go's back-link injection point (and the page's own
+     pre-existing "White paper · …" line) — styled like .crumbs per the
+     shared design system, not the old uppercase mono treatment. */
+  .crumbs, .eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--ink-2);
+    margin: 0 0 1.6rem;
+  }
+  .crumbs .sep { color: var(--ink-3); }
+  .crumbs .here { color: var(--ink); }
+  .eyebrow a { color: var(--ink); text-decoration: none; }
+  .eyebrow a:hover { text-decoration: underline; }
+
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; }
+    .sidebar {
+      position: static;
+      max-height: none;
+      border-right: 0;
+      border-bottom: 1px solid var(--rule);
+      padding: 1.5rem 1.25rem;
+    }
+    .sidebar nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr)); }
+    .sidebar .chev { display: none; }
+    .article { padding: 1.75rem 1.25rem 5rem; }
+  }
+
+  /* One content column inside .article (see the shell/article rules above).
+     Prose, figures, tables and card grids all start at the same left edge;
+     only the prose line length is capped, so paragraphs stop short of the
+     column while wide artifacts use all of it. */
+  .measure, .wide { max-width: 100%; margin-left: 0; margin-right: 0; }
+  section > p, section > ul, section > ol,
+  section > .measure > p, section > .measure > ul, section > .measure > ol,
+  .timeline li > p, .sig-caption, .sig-legend, .strata-note { max-width: 100%; }
+  section > p.sig-sub { max-width: 100%; }
+
+  /* Justified prose. Hyphenation is what makes it work — without it a
+     justified measure this wide opens rivers of word space — so it is only
+     applied to the serif body text, never to mono, captions or headings, and
+     it reverts to ragged-right on narrow screens where the line is too short
+     to justify cleanly. */
+  section > p, section > ul, section > ol,
+  section > .measure > p, section > .measure > ul, section > .measure > ol,
+  .timeline li > p {
+    text-align: justify;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+  section > p.sec-eyebrow, section > p.sig-sub, section > p.sig-legend,
+  section > p.sig-caption { text-align: left; hyphens: manual; }
+  code { -webkit-hyphens: none; hyphens: none; }
+  @media (max-width: 640px) {
+    section > p, section > ul, section > ol,
+    section > .measure > p, section > .measure > ul, section > .measure > ol,
+    .timeline li > p { text-align: left; }
+  }
+  .strata-note { text-align: left; }
+  /* 5rem, not the old 24px: an anchor jump (e.g. the #onboarding deep link
+     from the landing page) now has to clear the sticky .topbar too. */
+  section[id], h3[id] { scroll-margin-top: 5rem; }
+
+  /* ---------- hero ---------- */
+  /* No top padding: header.hero is no longer the page's first element — it
+     sits inside .article (which already supplies its own top padding) after
+     .eyebrow's back-link line, so a top gap here would just be dead bone
+     between the two. Only the 20px bottom gap before the first section
+     remains. */
+  header.hero { padding: 0 0 20px; }
+  h1 {
+    font-size: clamp(34px, 6vw, 52px);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0 0 16px;
+  }
+  /* Styled like docs/howto.html's .updated: a plain (non-mono) muted date
+     line directly under h1, replacing the old pre-h1 .eyebrow date line so
+     the hero reads back-link → title → date → dek, one line each, instead of
+     three stacked grey lines ahead of the title. */
+  .updated {
+    font-size: 15px;
+    color: var(--muted);
+    margin: 0 0 12px;
+  }
+  .dek {
+    font-size: 21px;
+    line-height: 1.45;
+    color: var(--muted);
+    max-width: 100%;
+    margin: 0 0 8px;
+    text-align: justify;
+    -webkit-hyphens: auto;
+    hyphens: auto;
+  }
+  @media (max-width: 640px) { .dek { text-align: left; } }
+  .meta {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12.5px;
+    color: var(--muted);
+    margin: 20px 0 0;
+  }
+
+  /* ---------- layer strata (hero graphic) ---------- */
+  .strata { margin: 48px auto 8px; display: grid; gap: 10px; }
+  .stratum {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    gap: 16px;
+    align-items: baseline;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-left: 4px solid var(--lc);
+    border-radius: 6px;
+  }
+  .stratum .tag {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lc);
+    font-weight: 700;
+  }
+  .stratum .what { font-size: 15.5px; line-height: 1.5; }
+  .stratum .what strong { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 15px; }
+  .stratum .repo {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .strata-note {
+    font-size: 14px;
+    color: var(--muted);
+    margin: 14px 0 0;
+  }
+  @media (max-width: 640px) {
+    .stratum { grid-template-columns: 1fr; gap: 4px; }
+    .stratum .repo { white-space: normal; }
+  }
+
+  /* The in-body table of contents is gone — its 12 entries now live in
+     .sidebar (see the shell/sidebar rules above), grouped and with the
+     runbook's own nav treatment, so this block has no markup left to style. */
+
+  /* ---------- sections ---------- */
+  /* Padding-based rhythm (ported from docs/howto.html), replacing the old
+     section + section hairline rule — the sidebar already shows where one
+     section ends and the next begins, so a rule between them was redundant. */
+  section { padding-top: 2.75rem; }
+  section + section { margin-top: 1rem; }
+  /* Styled like .step-eyebrow from docs/howto.html: mono, uppercase, 0.12em
+     tracking. The per-layer .c1-.c4 color overrides are unchanged. */
+  .sec-eyebrow {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin: 0 0 8px;
+    color: var(--ink-3);
+  }
+  .sec-eyebrow.c1 { color: var(--l1); }
+  .sec-eyebrow.c2 { color: var(--l2); }
+  .sec-eyebrow.c3 { color: var(--l3); }
+  .sec-eyebrow.c4 { color: var(--l4); }
+  h2 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin: 0 0 20px;
+  }
+  h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 36px 0 12px;
+  }
+  p { margin: 0 0 18px; }
+  ul, ol { margin: 0 0 18px; padding-left: 1.4em; }
+  li { margin-bottom: 8px; }
+  strong { font-weight: 700; }
+  em { font-style: italic; }
+
+  /* ---------- tables ---------- */
+  .tablewrap { overflow-x: auto; margin: 26px 0; }
+
+  /* §5 signal-flow schema — same visual treatment as the capabilities artifact:
+     mono structure, per-family colors mapped onto the layer palette. */
+  .sig-sub {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: 14px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    color: var(--accent); display: flex; align-items: center; gap: 14px; margin: 44px 0 18px;
+  }
+  .sig-sub::after { content: ""; height: 1px; background: var(--line); flex: 1; }
+  .sig-legend { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: 13px; color: var(--muted); margin: 14px 0 0; }
+  .sig-legend b { font-weight: 700; }
+  .sig-term { background: #0b0f15; border: 1px solid #1d2634; border-radius: 6px; margin: 26px 0 6px; overflow-x: auto; }
+  .sig-term pre { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: 13.5px; line-height: 1.75; margin: 0; padding: 18px 22px; color: #c7cfdb; white-space: pre; background: none; border: none; }
+  .sig-term .t-title { color: #a795f8; }
+  .sig-term .t-dim { color: #57627a; }
+  .sig-term .g-use { color: #9d8cff; } .sig-term .g-red { color: #f0564a; }
+  .sig-term .g-log { color: #e0a53d; } .sig-term .g-k8s { color: #4fa8e8; }
+  .sig-caption { font-size: 13.5px; color: var(--muted); margin: 0 0 8px; }
+  .sigschema { display: flex; flex-direction: column; gap: 10px; margin: 20px 0 8px;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; }
+  .sig-plane { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 14px 16px; }
+  .sig-label { font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+  .sig-cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(210px, 100%), 1fr)); gap: 10px; margin-top: 12px; }
+  .sig-card { border: 1px solid var(--line-soft); border-radius: 6px; padding: 10px 12px; display: flex; flex-direction: column; gap: 5px; background: var(--bg); }
+  .sig-card b { font-size: 14px; color: var(--ink); }
+  .sig-card span { color: var(--muted); font-size: 13px; line-height: 1.5;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  .sig-card .sig-dim { font-size: 12.5px; }
+  .sig-f { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; font-weight: 700; }
+  .sig-f.use { color: var(--l3); }
+  .sig-f.red { color: var(--sig-red); }
+  .sig-f.log { color: var(--l2); }
+  .sig-f.k8s { color: var(--l4); }
+  .sig-gate { border: 1px dashed var(--line); border-radius: 6px; padding: 8px 12px; font-size: 13px; color: var(--muted); margin-top: 12px; }
+  .sigfam { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(360px, 100%), 1fr)); gap: 14px; margin: 22px 0 8px; }
+  .sigfam.single { grid-template-columns: 1fr; }
+  .fam-card { border: 1px solid var(--line); border-radius: 8px; background: var(--surface); padding: 18px 20px 16px; }
+  .fam-card h4 { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 16px; font-weight: 700; margin: 0 0 10px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .fam-chip { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; font-size: 11px; font-weight: 700; letter-spacing: .06em; padding: 2px 8px; border-radius: 3px; color: var(--surface); }
+  .fam-chip.use { background: var(--l3); } .fam-chip.red { background: var(--sig-red); }
+  .fam-chip.log { background: var(--l2); } .fam-chip.k8s { background: var(--l4); }
+  .fam-tag { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); border: 1px solid var(--accent); border-radius: 3px; padding: 1px 6px; }
+  .fam-card p, .fam-card li { line-height: 1.6; font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  .fam-card p { font-size: 14.5px; margin: 0 0 10px; }
+  .fam-card ul { margin: 0 0 12px; padding-left: 18px; }
+  .fam-card li { font-size: 14px; margin: 4px 0; color: var(--ink); }
+  .fam-wire { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace; font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--line-soft); padding-top: 9px; margin: 0; }
+  .fam-wire code { background: none; padding: 0; color: var(--accent); }
+  .sig-arrow { text-align: center; color: var(--muted); font-size: 13px; }
+  .sig-frames { text-align: center; font-size: 13.5px; border: 1px solid var(--line-soft); border-radius: 6px; padding: 8px 10px; background: var(--code-bg); color: var(--accent); }
+  .sig-frames code { color: var(--accent); background: none; padding: 0; }
+  table {
+    border-collapse: collapse;
+    table-layout: fixed;
+    width: 100%;
+    font-size: 14.5px;
+    line-height: 1.55;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-variant-numeric: tabular-nums;
+  }
+  th {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+    font-weight: 600;
+    padding: 0 22px 9px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  td {
+    padding: 11px 22px 11px 0;
+    border-bottom: 1px solid var(--line-soft);
+    vertical-align: top;
+    overflow-wrap: break-word;
+  }
+  th:last-child, td:last-child { padding-right: 0; }
+  tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+
+  /* Below the stacking width a four-column table cannot hold its shape, so
+     each row becomes a labelled block instead of a sideways scroll. */
+  @media (max-width: 720px) {
+    .tablewrap { overflow-x: visible; }
+    table, tbody, tr, td { display: block; width: 100%; }
+    thead, colgroup { display: none; }
+    tr { padding: 14px 0; border-bottom: 1px solid var(--line); }
+    tbody tr:last-child { border-bottom: none; }
+    td, tbody tr:last-child td { padding: 3px 0; border: none; }
+    td::before {
+      content: attr(data-l);
+      display: block;
+      font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 1px;
+    }
+  }
+
+
+  /* ---------- figures: hand-authored SVG schematics ---------- */
+  figure.fig { margin: 28px 0 24px; overflow-x: auto; }
+  figure.fig svg { display: block; width: 100%; min-width: 640px; height: auto; }
+  figure.fig figcaption { font-size: 13.5px; color: var(--muted); margin: 12px 0 0; min-width: 0; }
+  .fig .surface { fill: var(--surface); stroke: var(--line); stroke-width: 1; }
+  .fig .well { fill: var(--bg); stroke: var(--line-soft); stroke-width: 1; }
+  .fig .t { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 13px; fill: var(--ink); }
+  .fig .t-sm { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 11.5px; fill: var(--muted); }
+  .fig .m { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: 0.1em; fill: var(--muted); }
+  .fig .t-lg { font-family: ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 15px; font-weight: 700; fill: var(--ink); }
+  .fig .mi { font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 12.5px; fill: var(--ink); }
+  .fig .edge { stroke: var(--muted); stroke-width: 1.25; fill: none; }
+  .fig .rail { stroke: var(--line); stroke-width: 1; fill: none; stroke-dasharray: 4 5; }
+  .fig .drop { stroke: var(--sig-red); stroke-width: 1.25; fill: none; }
+  .fig .drop-t { fill: var(--sig-red); }
+  .fig .acc { stroke: var(--accent); stroke-width: 1.25; fill: none; }
+  .fig .acc-t { fill: var(--accent); }
+  .fig .ar { fill: var(--muted); }
+  .fig .ar-drop { fill: var(--sig-red); }
+  .fig .ar-acc { fill: var(--accent); }
+
+  /* ---------- flow diagram ---------- */
+  .flow { margin: 34px auto; display: grid; gap: 0; }
+  .flow-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .inputcard {
+    background: var(--surface);
+    border: 1px dashed var(--line);
+    border-radius: 6px;
+    padding: 12px 16px;
+    font-size: 13.5px;
+    line-height: 1.6;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  }
+  .inputcard .k {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin-bottom: 4px;
+    font-weight: 700;
+  }
+  .transport {
+    margin: 12px 0 0;
+    background: color-mix(in srgb, var(--l1) 7%, var(--surface));
+    border: 1px solid color-mix(in srgb, var(--l1) 30%, var(--line));
+    border-radius: 6px;
+    padding: 10px 16px;
+    font-size: 13px;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    color: var(--ink);
+  }
+  .transport .k { color: var(--l1); font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace; font-size: 10.5px; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; margin-right: 8px; }
+  .flowcard {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-top: 3px solid var(--lc);
+    border-radius: 6px;
+    padding: 16px 20px 12px;
+  }
+  .flowcard .name {
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+    margin: 0 0 2px;
+  }
+  .flowcard .name .tag {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lc);
+    margin-left: 10px;
+    font-weight: 700;
+  }
+  .flowcard ul {
+    margin: 8px 0 6px;
+    padding-left: 1.2em;
+    font-family: ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.55;
+    color: var(--muted);
+  }
+  .flowcard li { margin-bottom: 3px; }
+  .flow-arrow {
+    text-align: center;
+    padding: 8px 0;
+    color: var(--muted);
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+  }
+  .flow-arrow .a { font-size: 15px; display: block; line-height: 1; margin-bottom: 2px; }
+  @media (max-width: 560px) { .flow-inputs { grid-template-columns: 1fr; } }
+
+  /* ---------- walkthrough timeline ---------- */
+  .timeline { margin: 30px 0; padding: 0; list-style: none; }
+  .timeline li {
+    position: relative;
+    padding: 0 0 26px 34px;
+    margin: 0;
+  }
+  .timeline li::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 22px;
+    bottom: 0;
+    width: 2px;
+    background: var(--line);
+  }
+  .timeline li:last-child::before { display: none; }
+  .timeline .dot {
+    position: absolute;
+    left: 0;
+    top: 6px;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--surface);
+    border: 4px solid var(--lc);
+  }
+  .timeline .step {
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--lc);
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .timeline p { margin: 0; font-size: 16px; }
+
+  /* ---------- code snippet ---------- */
+  pre.snippet {
+    background: var(--code-bg);
+    border: 1px solid var(--line-soft);
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0 0;
+    overflow-x: auto;
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.65;
+  }
+  pre.snippet code { background: none; padding: 0; font-size: inherit; }
+  pre.snippet .cm-map { color: var(--l2); }
+  pre.snippet .cm-enrich { color: var(--l3); }
+
+  /* ---------- footer ---------- */
+  footer {
+    margin-top: 96px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    font-family: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    a { transition: color 120ms ease; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <svg class="mark" viewBox="0 0 240 240" role="img" aria-label="Triage">
+    <defs>
+      <linearGradient id="tg1" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#c084fc"/>
+        <stop offset="100%" stop-color="#7c3aed"/>
+      </linearGradient>
+      <linearGradient id="tg2" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0%" stop-color="#a855f7"/>
+        <stop offset="100%" stop-color="#6d28d9"/>
+      </linearGradient>
+    </defs>
+    <line x1="120" y1="120" x2="68"  y2="72"  stroke="url(#tg1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <line x1="120" y1="120" x2="178" y2="68"  stroke="url(#tg1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <line x1="120" y1="120" x2="72"  y2="178" stroke="url(#tg1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <line x1="120" y1="120" x2="176" y2="176" stroke="url(#tg1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+    <line x1="68"  y1="72"  x2="178" y2="68"  stroke="url(#tg1)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+    <line x1="176" y1="176" x2="72"  y2="178" stroke="url(#tg1)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+    <circle cx="68"  cy="72"  r="16" fill="url(#tg2)" opacity="0.85"/>
+    <circle cx="178" cy="68"  r="20" fill="url(#tg2)" opacity="0.85"/>
+    <circle cx="72"  cy="178" r="14" fill="url(#tg2)" opacity="0.85"/>
+    <circle cx="176" cy="176" r="18" fill="url(#tg2)" opacity="0.85"/>
+    <circle cx="120" cy="120" r="28" fill="url(#tg1)"/>
+  </svg>
+  <span class="wordmark">Triage White Paper</span>
+</div>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <h2>Overview</h2>
+    <nav>
+      <a href="#abstract"><span class="n">1</span>Abstract<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#philosophy"><span class="n">2</span>Design philosophy: the Alive Agent<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#overview"><span class="n">3</span>System overview<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    </nav>
+    <h2 class="group">The four layers</h2>
+    <nav>
+      <a href="#perception"><span class="n">4</span>Reflection: ground truth &amp; sources<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#useredsignals"><span class="n">5</span>USE RED Signals<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#awareness"><span class="n">6</span>Awareness: Triage<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#cognition"><span class="n">7</span>Cognition: X-Ray<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#intelligence"><span class="n">8</span>Intelligence<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    </nav>
+    <h2 class="group">In practice</h2>
+    <nav>
+      <a href="#lifecycle"><span class="n">9</span>The life of an event<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#crosscutting"><span class="n">10</span>Tenancy, security &amp; onboarding<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    </nav>
+    <h2 class="group">Reference</h2>
+    <nav>
+      <a href="#roadmap"><span class="n">11</span>Roadmap<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+      <a href="#references"><span class="n">12</span>References<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    </nav>
+  </aside>
+
+  <main class="article">
+
+<header class="hero">
+  <h1>Self-Aware Infrastructure</h1>
+  <p class="updated">White paper · 2026-07-23 · last updated 2026-08-24</p>
+  <p class="dek">Predictive incident intelligence based on dual-system thinking for the early detection and prevention of production outages, cost anomalies and security breaches.</p>
+
+  <div class="strata wide">
+    <div class="stratum" style="--lc: var(--l1)">
+      <span class="tag">Reflection</span>
+      <span class="what"><strong>The triage agent</strong>: one authoritative, flap-damped <code>Ready</code> level per application, plus RED/USE/topology-drift (eBPF) and log-based precursor signals — all capped at signal class — alongside k8s, provider, and human event sources.</span>
+      <span class="repo">triage-agent</span>
+    </div>
+    <div class="stratum" style="--lc: var(--l2)">
+      <span class="tag">Awareness</span>
+      <span class="what"><strong>Triage</strong>: classifier pipeline, per-tenant service graph as level truth, incident lifecycle with state reconciliation.</span>
+      <span class="repo">triage-core</span>
+    </div>
+    <div class="stratum" style="--lc: var(--l3)">
+      <span class="tag">Cognition</span>
+      <span class="what"><strong>X-Ray</strong>: MemoryCell CRDs as one universal memory substrate, HNSW semantic graph, reflection and knowledge loops.</span>
+      <span class="repo">x-ray</span>
+    </div>
+    <div class="stratum" style="--lc: var(--l4)">
+      <span class="tag">Intelligence</span>
+      <span class="what">Root-cause analysis over the fractal incident graph, executable Kubernetes skills, conversational AI.</span>
+      <span class="repo">triage-core + x-ray</span>
+    </div>
+  </div>
+  <p class="strata-note">The whole stack runs as Kubernetes controllers; its state is inspectable with kubectl.</p>
+</header>
+
+<section id="abstract" class="measure">
+  <p class="sec-eyebrow">1 · Abstract</p>
+  <h2>The problem</h2>
+  <p>Modern observability tooling is good at collecting signals. Metrics, logs, traces, and events all arrive reliably. What stays manual is the interpretation: separating noise from signal, correlating related failures, deciding whether something is an incident, remembering what happened last time, and finding the root cause.</p>
+  <p>This stack addresses that gap with a layered architecture:</p>
+  <ul>
+    <li><strong>Reflection.</strong> The triage agent reduces raw workload state to a single authoritative <code>Ready</code> level per application — still the only signal that opens an incident on its own. The same agent streams four precursor signal families over the same channel: RED (request rate, error rate, duration → <code>RequestErrorAnomaly</code>) and USE (cgroup/PSI saturation and utilization → <code>ResourcePressureAnomaly</code>), both derived from an embedded eBPF collector with application code unchanged; observed service topology, also eBPF-derived, compared against the declared graph (→ <code>GraphDrift</code>); and windowed per-service log error/warn counts (→ <code>LogErrorAnomaly</code>). All four are capped at signal class: they absorb into incidents and backfill onto them, never open one directly. Kubernetes events, provider webhook events, and human reports feed the same pipeline.</li>
+    <li><strong>Awareness.</strong> Triage classifies every event (deterministic rules first, embeddings second, an LLM only as final arbiter), maintains a live service graph as the level source of truth, and manages the incident lifecycle against it.</li>
+    <li><strong>Cognition.</strong> X-Ray provides the durable memory substrate. Every observation and every conclusion is a <code>MemoryCell</code> custom resource, indexed in an in-process HNSW semantic graph and consolidated by reflection and knowledge loops into stable facts and operational patterns.</li>
+    <li><strong>Intelligence.</strong> The intelligence layer sits on top: root-cause analysis over a five-layer fractal incident graph, executable Kubernetes skills, and conversational AI over the whole system. Today, a human closes the loop: the system observes, classifies, correlates, predicts, and reports, and a 24/7 team follows every triage incident and decides what to do about it. Acting on a trusted root cause directly, through the same MCP and A2A tool surfaces, is a roadmap phase (<a href="#roadmap">§11</a>), not current behavior.</li>
+  </ul>
+  <p>The whole stack runs as Kubernetes controllers. CRDs serve as the event schema and the memory format, controllers manage the agent lifecycle, etcd is the durable store, and informers feed the reflection layer.</p>
+</section>
+
+<section id="philosophy" class="measure">
+  <p class="sec-eyebrow">2 · Design philosophy</p>
+  <h2>The Alive Agent pattern</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 820 200" role="img" aria-label="Three Kubernetes primitives mapped to the three things the agent gets from them: CRDs as schema, controllers as runtime, reconciliation as belief consistency">
+      <defs><marker id="ka" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="16" y="18">KUBERNETES PRIMITIVE</text>
+      <text class="m" x="466" y="18">WHAT THE AGENT GETS</text>
+      <rect class="well" x="16" y="32" width="330" height="46" rx="6"/>
+      <text class="mi" x="36" y="61">CustomResourceDefinition</text>
+      <line class="edge" x1="352" y1="55" x2="458" y2="55" marker-end="url(#ka)"/>
+      <rect class="surface" x="466" y="32" width="338" height="46" rx="6"/>
+      <text class="t" x="486" y="53">event schema and memory format</text>
+      <text class="t-sm" x="486" y="70">Application · MemoryCell · TriagePolicy</text>
+      <rect class="well" x="16" y="88" width="330" height="46" rx="6"/>
+      <text class="mi" x="36" y="117">controller + informers</text>
+      <line class="edge" x1="352" y1="111" x2="458" y2="111" marker-end="url(#ka)"/>
+      <rect class="surface" x="466" y="88" width="338" height="46" rx="6"/>
+      <text class="t" x="486" y="109">an agent runtime that holds state</text>
+      <text class="t-sm" x="486" y="126">world state · event hub · tool registries</text>
+      <rect class="well" x="16" y="144" width="330" height="46" rx="6"/>
+      <text class="mi" x="36" y="173">reconcile loop</text>
+      <line class="edge" x1="352" y1="167" x2="458" y2="167" marker-end="url(#ka)"/>
+      <rect class="surface" x="466" y="144" width="338" height="46" rx="6"/>
+      <text class="t" x="486" y="165">beliefs converge to ground truth</text>
+      <text class="t-sm" x="486" y="182">level reconciler · cell syncer</text>
+    </svg>
+    <figcaption>The pattern in one line each: the agent borrows Kubernetes' storage, runtime and convergence rather than building its own.</figcaption>
+  </figure>
+  <p>The design starts from an observation recorded in ADR-000: Kubernetes already provides the hard parts of an agent runtime. Distributed state, desired-versus-actual convergence, self-healing, and schema extension are solved problems there. The stack uses them in three ways:</p>
+  <ul>
+    <li><strong>CRD as event schema and memory format.</strong> Anything that happened or is known becomes a custom resource: an <code>Application</code>'s health, an incident (<code>MemoryCell kind=active_concern</code>), a learned fact (<code>kind=stable_fact</code>). Operators can inspect what the agent knows with standard cluster tooling.</li>
+    <li><strong>Controller as agent runtime.</strong> The agent is not request-scoped. It is a controller-managed goroutine holding world state, an event hub, a session service, and tool registries in process, restarted only when its config actually changes. Per ADR-001, this is the first design to drive an LLM agent directly from the Kubernetes reconcile loop rather than from an external queue.</li>
+    <li><strong>Reconciliation as consistency maintenance.</strong> The same watch-and-converge pattern that keeps Deployments healthy keeps the agent's beliefs consistent: a level reconciler converges incident state to graph truth, a cell syncer converges the semantic index to etcd, and strict one-way write topologies prevent the loops from feeding each other.</li>
+  </ul>
+  <p>A second principle applies at every layer: decisions are made by the cheapest adequate mechanism. Static rules run first, vector similarity second, and a generative model only when neither is enough. LLM calls are the most expensive and least predictable component, and when one fails the pipeline fails closed.</p>
+
+  <h3>2.1 Reasoning tiers: reflex, System 1, System 2</h3>
+  <p>The cheapest-adequate-mechanism principle generalizes into a three-tier gradation of reasoning depth. The System 1 / System 2 names come from Daniel Kahneman's dual-process model (<em>Thinking, Fast and Slow</em>, 2011): System 1 is fast, automatic, and cheap, recognizing patterns without effort; System 2 is slow, deliberate, and expensive, and it reasons. Kahneman's model has only the two systems; the zero-token reflex tier beneath them is this architecture's extension. The tiers are orthogonal to the pipeline layers: each layer contains work at more than one tier.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 820 400" role="img" aria-label="The three reasoning tiers and the traffic between them: every event enters at reflex, only what reflex cannot settle escalates to System 1, only what needs breadth reaches System 2, and each tier returns its output to the one below">
+      <defs><marker id="ka" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+
+      <text class="mi" x="16" y="60">System 2</text>
+      <text class="t-sm" x="16" y="80">deliberate, slow</text>
+      <text class="t-sm" x="16" y="98">outside the controller</text>
+      <rect class="surface" x="170" y="30" width="480" height="70" rx="6"/>
+      <text class="t-sm" x="190" y="60">second opinion over the substrate's own state · escalations</text>
+      <text class="t-sm" x="190" y="80">architecture feedback · corrections written back to memory</text>
+
+      <line class="edge" x1="280" y1="150" x2="280" y2="106" marker-end="url(#ka)"/>
+      <text class="t-sm" x="296" y="122">escalate: what needs breadth</text>
+      <line class="edge" x1="560" y1="106" x2="560" y2="150" marker-end="url(#ka)"/>
+      <text class="t-sm" x="546" y="144" text-anchor="end">return: corrections into memory</text>
+
+      <text class="mi" x="16" y="184">System 1</text>
+      <text class="t-sm" x="16" y="204">fast, automatic</text>
+      <text class="t-sm" x="16" y="222">flash-class models</text>
+      <rect class="surface" x="170" y="154" width="480" height="70" rx="6"/>
+      <text class="t-sm" x="190" y="184">routing arbiter · guardrail · event marker</text>
+      <text class="t-sm" x="190" y="204">reflection and knowledge consolidation · root-cause analysis</text>
+
+      <line class="edge" x1="280" y1="274" x2="280" y2="230" marker-end="url(#ka)"/>
+      <text class="t-sm" x="296" y="246">escalate: what reflex could not settle</text>
+      <line class="edge" x1="560" y1="230" x2="560" y2="274" marker-end="url(#ka)"/>
+      <text class="t-sm" x="546" y="268" text-anchor="end">return: verdicts, learned reflex rules</text>
+
+      <text class="mi" x="16" y="308">Reflex</text>
+      <text class="t-sm" x="16" y="328">automatic, always on</text>
+      <text class="t-sm" x="16" y="346">no model at all</text>
+      <rect class="surface" x="170" y="278" width="480" height="70" rx="6"/>
+      <text class="t-sm" x="190" y="308">classifier stages 0 and 2–4 · service-graph lookups</text>
+      <text class="t-sm" x="190" y="328">level reconcilers · chronic-signal sweep · summary refreshes</text>
+
+      <line class="edge" x1="410" y1="384" x2="410" y2="352" marker-end="url(#ka)"/>
+      <text class="m" x="424" y="378">EVERY EVENT · EVERY SWEEP TICK</text>
+    </svg>
+    <figcaption>Everything enters at the cheapest tier. Only what reflex cannot settle is escalated, only what needs breadth reaches a frontier model, and each tier returns its output to the one below it — System 1's verdicts and learned reflex rules, System 2's corrections into memory.</figcaption>
+  </figure>
+  <div class="tablewrap">
+    <table>
+      <colgroup><col style="width:12%"><col style="width:34%"><col style="width:22%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Tier</th><th>Mechanism</th><th>Cost</th><th>When it runs</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Tier"><strong>Reflex</strong></td><td data-l="Mechanism">classifier stages 0 and 2–4, service graph lookups, level reconcilers, the chronic-signal sweep, deterministic summary refreshes</td><td data-l="Cost">zero LLM tokens</td><td data-l="When it runs">always, on every event and every sweep tick</td></tr>
+        <tr><td data-l="Tier"><strong>System 1</strong></td><td data-l="Mechanism">routing LLM (final arbiter), guardrail, event marker for human sources, reflection and knowledge consolidation, RCA. Flash-class models</td><td data-l="Cost">bounded by a hard daily token budget, attributable per call kind</td><td data-l="When it runs">selectively: only what reflex could not settle, plus scheduled consolidation</td></tr>
+        <tr><td data-l="Tier"><strong>System 2</strong></td><td data-l="Mechanism">a frontier-model agent session running outside the controller, speaking MCP/A2A to the same surfaces any client uses</td><td data-l="Cost">its own token budget, independent of the controller's</td><td data-l="When it runs">on demand: second-opinion reflection over the substrate's own state, escalations, architecture feedback, corrections to memory</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Three properties make the gradation robust rather than decorative:</p>
+  <ul>
+    <li><strong>Each tier degrades to the one below.</strong> The guardrail fails closed. When the System-1 daily budget exhausts, reflection, knowledge, routing, and RCA suspend while the reflex tier keeps classifying, reconciling, and sweeping, and the world context reports the degraded mode explicitly. If the System-2 session disappears, triage behaves exactly as it did before one existed.</li>
+    <li><strong>System 2 is a consumer, not a component.</strong> The substrate is model-agnostic context infrastructure. The System-2 tier connects through the same OAuth MCP endpoint as any external client, reads the same world context, incident, prediction, and memory tools, and writes through the same memory write path (watch items, corrections, superseded patterns). It upgrades on its own cadence, is billed on its own budget, and holds no privileged access.</li>
+    <li><strong>The schedule is policy, not code.</strong> The TriagePolicy cell governs the System-1 consolidation cadence. The <code>system2-delegate</code> preset sets the reflection and knowledge intervals to zero for deployments where an external System-2 session drives memory synthesis on demand through <code>build_memory</code> and <code>build_knowledge</code>; the passes stay functional, only their timers stop.</li>
+  </ul>
+  <p>The division of labor follows the tiers' cognitive profiles. Reflex owns everything with a deterministic answer, including dimensions a model would waste tokens rediscovering (the chronic-signal sweep exists because event count and age need arithmetic, not reasoning). System 1 owns fast, frequent, bounded interpretation. System 2 owns what needs breadth: noticing that a memory cell, a reopen counter, and a prediction disagree about the same service, or that a "self-recovers" pattern learned from per-cycle observations is normalized deviance at the weekly timescale. The first production System-2 sessions (2026-07) produced exactly this class of output: provenance-stamped world context, a budget self-report, reopen-count surfacing, the chronic-signal sweep itself, and correction cells that the next System-1 consolidation consumes.</p>
+
+  <h3>2.2 CoALA: the memory and action structure underneath</h3>
+  <p>Kahneman's tiers describe how expensively a decision gets made. Cognitive Architectures for Language Agents (CoALA; Sumers, Yao, Narasimhan &amp; Griffiths, 2023) describes what the decision runs on: an agent as a set of memory modules (working, episodic, semantic, procedural), an action space split into internal actions that update those modules (retrieval, reasoning, learning) and external actions that touch the world (grounding), and a decision loop that proposes, evaluates, and selects the next action. The two frameworks are orthogonal by construction — one about cost, the other about structure — and this stack maps onto CoALA's structure directly, because the memory substrate was built to that shape before this document existed:</p>
+  <figure class="fig">
+    <svg viewBox="0 0 820 450" role="img" aria-label="CoALA figure 4 redrawn with this stack in it: panel A shows procedural, semantic and episodic memory over a decision procedure and working memory, grounded in dialogue, infrastructure and digital surfaces; panel B shows the decision cycle from observation through proposal, evaluation and selection to execution">
+      <defs><marker id="cb" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="t-lg" x="16" y="28">A</text>
+      <text class="t-lg" x="608" y="28">B</text>
+
+      <rect class="surface" x="34" y="34" width="566" height="290" rx="10"/>
+      <text class="m" x="148" y="56" text-anchor="middle">PROCEDURAL MEMORY</text>
+      <text class="m" x="338" y="56" text-anchor="middle">SEMANTIC MEMORY</text>
+      <text class="m" x="508" y="56" text-anchor="middle">EPISODIC MEMORY</text>
+
+      <rect class="well" x="50" y="64" width="94" height="58" rx="6"/>
+      <text class="t-sm" x="97" y="90" text-anchor="middle">flash-class</text>
+      <text class="t-sm" x="97" y="108" text-anchor="middle">models</text>
+      <rect class="well" x="152" y="64" width="94" height="58" rx="6"/>
+      <text class="t-sm" x="199" y="90" text-anchor="middle">compiled</text>
+      <text class="t-sm" x="199" y="108" text-anchor="middle">pipeline</text>
+      <rect class="well" x="262" y="64" width="152" height="58" rx="6"/>
+      <text class="t-sm" x="338" y="84" text-anchor="middle">stable_fact ·</text>
+      <text class="t-sm" x="338" y="102" text-anchor="middle">operational_pattern</text>
+      <text class="t-sm" x="338" y="118" text-anchor="middle">service graph</text>
+      <rect class="well" x="428" y="64" width="160" height="58" rx="6"/>
+      <text class="t-sm" x="508" y="84" text-anchor="middle">event ·</text>
+      <text class="t-sm" x="508" y="102" text-anchor="middle">active_concern</text>
+      <text class="t-sm" x="508" y="118" text-anchor="middle">fractal graph</text>
+
+      <rect class="well" x="42" y="140" width="44" height="22" rx="11"/>
+      <text class="t-sm" x="64" y="155" text-anchor="middle" font-size="10">prompt</text>
+      <line class="edge" x1="64" y1="180" x2="64" y2="164"/>
+      <line class="edge" x1="64" y1="138" x2="64" y2="124" marker-end="url(#cb)"/>
+      <rect class="well" x="88" y="140" width="40" height="22" rx="11"/>
+      <text class="t-sm" x="108" y="155" text-anchor="middle" font-size="10">parse</text>
+      <line class="edge" x1="108" y1="124" x2="108" y2="138"/>
+      <line class="edge" x1="108" y1="164" x2="108" y2="178" marker-end="url(#cb)"/>
+      <rect class="well" x="130" y="140" width="58" height="22" rx="11"/>
+      <text class="t-sm" x="159" y="155" text-anchor="middle" font-size="10">retrieval</text>
+      <line class="edge" x1="159" y1="124" x2="159" y2="138"/>
+      <line class="edge" x1="159" y1="164" x2="159" y2="178" marker-end="url(#cb)"/>
+      <rect class="well" x="190" y="140" width="56" height="22" rx="11"/>
+      <text class="t-sm" x="218" y="155" text-anchor="middle" font-size="10">learning</text>
+      <line class="edge" x1="218" y1="180" x2="218" y2="164"/>
+      <line class="edge" x1="218" y1="138" x2="218" y2="124" marker-end="url(#cb)"/>
+
+      <rect class="well" x="266" y="140" width="64" height="22" rx="11"/>
+      <text class="t-sm" x="298" y="155" text-anchor="middle" font-size="10">retrieval</text>
+      <line class="edge" x1="298" y1="124" x2="298" y2="138"/>
+      <line class="edge" x1="298" y1="164" x2="298" y2="178" marker-end="url(#cb)"/>
+      <rect class="well" x="336" y="140" width="62" height="22" rx="11"/>
+      <text class="t-sm" x="367" y="155" text-anchor="middle" font-size="10">learning</text>
+      <line class="edge" x1="367" y1="180" x2="367" y2="164"/>
+      <line class="edge" x1="367" y1="138" x2="367" y2="124" marker-end="url(#cb)"/>
+
+      <rect class="well" x="432" y="140" width="64" height="22" rx="11"/>
+      <text class="t-sm" x="464" y="155" text-anchor="middle" font-size="10">retrieval</text>
+      <line class="edge" x1="464" y1="124" x2="464" y2="138"/>
+      <line class="edge" x1="464" y1="164" x2="464" y2="178" marker-end="url(#cb)"/>
+      <rect class="well" x="502" y="140" width="62" height="22" rx="11"/>
+      <text class="t-sm" x="533" y="155" text-anchor="middle" font-size="10">learning</text>
+      <line class="edge" x1="533" y1="180" x2="533" y2="164"/>
+      <line class="edge" x1="533" y1="138" x2="533" y2="124" marker-end="url(#cb)"/>
+
+      <rect class="well" x="50" y="180" width="196" height="110" rx="8"/>
+      <text class="t-sm" x="68" y="212">classifier pipeline</text>
+      <text class="t-sm" x="68" y="230">stages 0–4, fail-fast</text>
+      <text class="t-sm" x="68" y="248">level reconcilers</text>
+      <text class="t-sm" x="68" y="266">guardrail · type caps</text>
+      <text class="m" x="148" y="306" text-anchor="middle">DECISION PROCEDURE</text>
+
+      <line class="edge" x1="250" y1="222" x2="262" y2="222" marker-end="url(#cb)"/>
+      <line class="edge" x1="262" y1="248" x2="250" y2="248" marker-end="url(#cb)"/>
+
+      <rect class="well" x="266" y="180" width="322" height="110" rx="8"/>
+      <text class="t-sm" x="286" y="212">LiveState · WorldContext()</text>
+      <text class="t-sm" x="286" y="230">the live view every stage</text>
+      <text class="t-sm" x="286" y="248">and every model call reads</text>
+      <rect class="well" x="450" y="222" width="110" height="26" rx="13"/>
+      <text class="t-sm" x="505" y="239" text-anchor="middle">reasoning</text>
+      <path class="edge" d="M560 230 C 582 214, 582 262, 562 250" marker-end="url(#cb)"/>
+      <text class="m" x="576" y="306" text-anchor="end">WORKING MEMORY</text>
+
+      <line class="edge" x1="200" y1="324" x2="200" y2="330"/>
+      <rect class="well" x="164" y="332" width="72" height="24" rx="12"/>
+      <text class="t-sm" x="200" y="348" text-anchor="middle">actions</text>
+      <line class="edge" x1="200" y1="356" x2="200" y2="370" marker-end="url(#cb)"/>
+      <line class="edge" x1="360" y1="370" x2="360" y2="358"/>
+      <rect class="well" x="300" y="332" width="120" height="24" rx="12"/>
+      <text class="t-sm" x="360" y="348" text-anchor="middle">observations</text>
+      <line class="edge" x1="360" y1="332" x2="360" y2="322" marker-end="url(#cb)"/>
+
+      <rect class="surface" x="120" y="372" width="380" height="64" rx="8"/>
+      <line class="rail" x1="246" y1="380" x2="246" y2="428"/>
+      <line class="rail" x1="374" y1="380" x2="374" y2="428"/>
+      <text class="m" x="183" y="396" text-anchor="middle">DIALOGUE</text>
+      <text class="t-sm" x="183" y="416" text-anchor="middle">Teams · UI</text>
+      <text class="m" x="310" y="396" text-anchor="middle">INFRASTRUCTURE</text>
+      <text class="t-sm" x="310" y="416" text-anchor="middle">clusters · workloads</text>
+      <text class="m" x="437" y="396" text-anchor="middle">DIGITAL</text>
+      <text class="t-sm" x="437" y="416" text-anchor="middle">MCP · A2A · API</text>
+
+      <rect class="well" x="632" y="34" width="164" height="30" rx="15"/>
+      <text class="t-sm" x="714" y="54" text-anchor="middle">observation · event in</text>
+      <line class="edge" x1="714" y1="64" x2="714" y2="82" marker-end="url(#cb)"/>
+      <rect class="well" x="624" y="86" width="180" height="232" rx="8"/>
+      <text class="m" x="636" y="104">PLANNING</text>
+      <rect class="surface" x="644" y="112" width="146" height="52" rx="6"/>
+      <text class="t-sm" x="658" y="134">proposal</text>
+      <text class="t-sm" x="658" y="152">reflex, else the LLM</text>
+      <line class="edge" x1="717" y1="164" x2="717" y2="178" marker-end="url(#cb)"/>
+      <rect class="surface" x="644" y="180" width="146" height="52" rx="6"/>
+      <text class="t-sm" x="658" y="202">evaluation</text>
+      <text class="t-sm" x="658" y="220">guardrail · type caps</text>
+      <line class="edge" x1="717" y1="232" x2="717" y2="246" marker-end="url(#cb)"/>
+      <rect class="surface" x="644" y="248" width="146" height="52" rx="6"/>
+      <text class="t-sm" x="658" y="270">selection</text>
+      <text class="t-sm" x="658" y="288">final classification</text>
+      <polyline class="edge" points="644,274 632,274 632,138 642,138" marker-end="url(#cb)"/>
+      <line class="edge" x1="717" y1="318" x2="717" y2="332" marker-end="url(#cb)"/>
+      <rect class="surface" x="644" y="334" width="146" height="52" rx="6"/>
+      <text class="t-sm" x="658" y="356">execution</text>
+      <text class="t-sm" x="658" y="374">open · absorb · notify</text>
+      <polyline class="edge" points="644,360 610,360 610,49 630,49" marker-end="url(#cb)"/>
+    </svg>
+    <figcaption>CoALA's own figure, redrawn with this stack's parts in it. <strong>A</strong>: the long-term modules are cell kinds and compiled code, working memory is <code>LiveState</code> rendered into <code>WorldContext()</code>, and the decision procedure is the classifier pipeline rather than a prompt-driven planner. <strong>B</strong>: the decision cycle — reflex proposes wherever it can and the routing LLM only where it cannot, evaluation is the guardrail and the type caps, execution opens, absorbs or notifies. One honest deviation from the paper: grounding is read-only outward today, so the cycle closes through a human rather than back through the digital surface.</figcaption>
+  </figure>
+  <ul>
+    <li><strong>Working memory</strong> is <code>LiveState</code> and the per-tenant status cells rendered into <code>WorldContext()</code> — the live, in-process view every pipeline stage and every model call reads.</li>
+    <li><strong>Episodic memory</strong> is incidents and events persisted as <code>MemoryCell</code>s (<code>active_concern</code>, <code>event</code>), plus the fractal incident graph's historical layer (<a href="#intelligence">§8</a>) — past occurrences a root-cause pass can retrieve.</li>
+    <li><strong>Semantic memory</strong> is the <code>stable_fact</code> and <code>operational_pattern</code> cells the knowledge pass writes, the service graph itself as structured world knowledge, and the corpus maps that index code, docs, and runbooks by meaning.</li>
+    <li><strong>Procedural memory</strong> is the closest fit, and worth stating plainly: the compiled classifier caps are the system's innate, unlearned procedure, and learned <code>reflex_rule</code> cells are the system rewriting that procedure from its own incident history — CoALA's procedural-memory update, not an analogy for it. The <code>TriagePolicy</code> cell, which governs how every tier behaves, belongs to this module too.</li>
+    <li><strong>Internal actions</strong> are retrieval (HNSW semantic search, the corpus maps' hybrid keyword/semantic fusion, RAG over similar past incidents), reasoning (RCA, the routing LLM), and learning (the reflection and knowledge passes writing their conclusions back into memory).</li>
+    <li><strong>External actions — grounding —</strong> are, today, notifications, incident records, and status surfaces: the loop still closes through a human who reads them and decides. The MCP and A2A tool surfaces are the grounding channel a future decision would act through; autonomous remediation over that channel is a roadmap item (<a href="#roadmap">§11</a>), not current behavior.</li>
+    <li><strong>The decision loop</strong> is the classifier pipeline's staged, fail-fast evaluation (§6.1), followed by the routing LLM's proposal and selection wherever reflex could not settle the case.</li>
+  </ul>
+
+  <p>Three places the mapping is an adoption rather than a copy, and they are the places this stack differs from the paper on purpose. The decision procedure is compiled code, not a prompt-driven planner: reflex proposes and selects on its own for most events, and the model is consulted as the arbiter of the remainder rather than as the thing that runs the loop. Working memory is durable — <code>WorldContext()</code> is refreshed into a singleton <code>note</code> cell, so the agent's live view of the world survives a restart instead of being the ephemeral scratchpad CoALA describes. And the cycle is not agent-invoked: it is a controller reconcile that runs on every event and every sweep tick, per tenant, whether or not anyone is asking a question.</p>
+
+  <h3>2.3 Self-tuning classification</h3>
+  <p>The procedural module has one loop that closes on its own. A periodic, leader-elected pass picks the tenants whose flap-suppression counters or reopen counts suggest their current thresholds are mis-set, and spends one System-1 call per candidate on an evidence snapshot: incident lifecycle timelines, readiness at the moment of each recurrence, how often suppression fired and how often the not-ready bypass let a recurrence through, the neighbouring recovery and reopen windows that shape the same pattern without being knobs, and excerpts from the tenant's own memory about that service. The model returns a structured proposal. Deterministic code disposes of it.</p>
+  <figure class="fig">
+    <svg viewBox="0 0 820 250" role="img" aria-label="The self-tuning loop: observe suppression counters, build an evidence snapshot, propose at System-1 depth, dispose deterministically, ledger every proposal, and hot-reload the policy so the next pass observes the change it made">
+      <defs><marker id="sa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="14" y="26">OBSERVE</text>
+      <text class="m" x="222" y="26">SNAPSHOT</text>
+      <text class="m" x="430" y="26">PROPOSE</text>
+      <text class="m" x="638" y="26">DISPOSE</text>
+
+      <rect class="well" x="14" y="44" width="172" height="68" rx="6"/>
+      <text class="t-sm" x="32" y="72">suppression drops ·</text>
+      <text class="t-sm" x="32" y="90">reopen counts</text>
+      <line class="edge" x1="190" y1="78" x2="218" y2="78" marker-end="url(#sa)"/>
+
+      <rect class="well" x="222" y="44" width="172" height="68" rx="6"/>
+      <text class="t-sm" x="240" y="66">lifecycle timelines ·</text>
+      <text class="t-sm" x="240" y="84">readiness · windows ·</text>
+      <text class="t-sm" x="240" y="102">the tenant's own memory</text>
+      <line class="edge" x1="398" y1="78" x2="426" y2="78" marker-end="url(#sa)"/>
+
+      <rect class="surface" x="430" y="44" width="172" height="68" rx="6"/>
+      <text class="t-sm" x="448" y="72">one System-1 call</text>
+      <text class="t-sm" x="448" y="90">per candidate tenant</text>
+      <line class="edge" x1="606" y1="78" x2="634" y2="78" marker-end="url(#sa)"/>
+
+      <rect class="well" x="638" y="44" width="172" height="68" rx="6"/>
+      <text class="t-sm" x="656" y="66">bounds, never clamped ·</text>
+      <text class="t-sm" x="656" y="84">one change per tenant</text>
+      <text class="t-sm" x="656" y="102">per day</text>
+
+      <polyline class="edge" points="668,112 668,134 516,134 516,154" marker-end="url(#sa)"/>
+      <line class="edge" x1="750" y1="112" x2="750" y2="154" marker-end="url(#sa)"/>
+
+      <rect class="well" x="430" y="156" width="172" height="52" rx="6"/>
+      <text class="t-sm" x="448" y="178">ledger: old → new,</text>
+      <text class="t-sm" x="448" y="196">rationale, snapshot</text>
+      <text class="m" x="430" y="226">EVERY PROPOSAL</text>
+
+      <rect class="well" x="638" y="156" width="172" height="52" rx="6"/>
+      <text class="t-sm" x="656" y="178">the loop's own policy</text>
+      <text class="t-sm" x="656" y="196">cell, merged last</text>
+      <text class="m" x="810" y="226" text-anchor="end">APPLY MODE ONLY</text>
+
+      <polyline class="edge" points="724,208 724,238 484,238"/>
+      <rect class="rail" x="336" y="226" width="146" height="24" rx="12"/>
+      <text class="t-sm" x="409" y="242" text-anchor="middle">kill switch · default off</text>
+      <polyline class="edge" points="334,238 100,238 100,114" marker-end="url(#sa)"/>
+      <text class="t-sm" x="118" y="182">hot-reload: the next pass</text>
+      <text class="t-sm" x="118" y="200">observes what it changed</text>
+    </svg>
+    <figcaption>The loop in full. It observes its own counters, reasons once per candidate tenant at System-1 depth, and is disposed of by deterministic code — every proposal ledgered whether or not it is applied. The kill switch sits on the return path because that is what it does: break it, and the operator's policy is simply what is in force.</figcaption>
+  </figure>
+
+  <p>What keeps the loop bounded is the disposal, not the prompt. The tunable surface is one field pair on one section of one tenant overlay — the flap-suppression minimum-reopens count and the not-ready bypass window — inside bounds tighter than the policy validator's own, and a proposal outside them is rejected rather than silently clamped. Proposals land in a separate policy cell the loop owns, merged after the operator's document, so the operator's value always wins and reverting the entire trial is a single cell deletion. At most one applied change per tenant per day. Every proposal, applied or not, is ledgered as a dated <code>note</code> cell carrying the old and new values, the model's rationale, and the snapshot it was derived from, so the loop is auditable after the fact rather than only observable while it runs. The whole thing sits behind a kill switch that is off by default and disables both halves at once: no proposals, and the loop's cell ignored at merge time. Its first mode is shadow — proposals are ledgered and never applied.</p>
+  <p>One prompt rule is worth stating because it is easy to violate by accident: the system prompt may explain the mechanism a knob acts on, and may never contain a rule for which direction to move it. A prescriptive <em>when X, raise Y</em> is a hardcoded heuristic wearing a model's costume, and the stack already has a deterministic sweep that mines reopen counts one tier below. This loop exists for the case that sweep cannot express — reasoning about a pattern from evidence — so the prompt hands over accurate mechanism and gets out of the way.</p>
+</section>
+
+<section id="overview">
+  <div class="measure">
+    <p class="sec-eyebrow">3 · System overview</p>
+    <h2>Data flow</h2>
+  </div>
+
+  <div class="flow wide">
+    <div class="flow-inputs">
+      <div class="inputcard">
+        <span class="k">Humans (untrusted, guardrailed)</span>
+        MS Teams · MCP <code>emit_event</code> · A2A · mobile PWA
+      </div>
+      <div class="inputcard">
+        <span class="k">Machines (deterministic marking)</span>
+        Kubernetes events · virtual-app transitions · e2e / synthetic (events server <code>:8086</code>)
+      </div>
+    </div>
+    <div class="transport"><span class="k">Remote clusters</span> cluster-agent WebSocket / triage-agent push mode: a per-cluster token authenticates the cluster, and cluster identity selects the tenant stamped on every event</div>
+
+    <div class="flow-arrow"><span class="a">↓</span></div>
+
+    <div class="flowcard" style="--lc: var(--l2)">
+      <p class="name">Triage <span class="tag">Awareness</span></p>
+      <ul>
+        <li>Event Hub → classifier pipeline, stages 0–4, fail-fast, cheapest stage first</li>
+        <li>Per-tenant service graph (HNSW), the level source of truth</li>
+        <li>Incident lifecycle: edge-driven for speed, level-reconciled for correctness</li>
+        <li>Routing LLM as final arbiter only, behind a validated semantic cache</li>
+      </ul>
+    </div>
+
+    <div class="flow-arrow"><span class="a">↓</span>MemoryCells · xray.ai/v1</div>
+
+    <div class="flowcard" style="--lc: var(--l3)">
+      <p class="name">X-Ray <span class="tag">Cognition</span></p>
+      <ul>
+        <li>One substrate in and out: <code>event</code> / <code>active_concern</code> in, <code>stable_fact</code> / <code>operational_pattern</code> / <code>note</code> out</li>
+        <li>In-process HNSW semantic graph, reseeded from CRs on restart</li>
+        <li>Reflection loop (3h timer, per tenant) · knowledge loop (8h)</li>
+        <li>ThoughtLink typed edges: <code>caused_by</code>, <code>triggers</code>, <code>correlates_with</code>, …</li>
+      </ul>
+    </div>
+
+    <div class="flow-arrow"><span class="a">↓</span>fractal incident graph · memory tools</div>
+
+    <div class="flowcard" style="--lc: var(--l4)">
+      <p class="name">Intelligence</p>
+      <ul>
+        <li>RCA over five converging context layers</li>
+        <li>Skills: delegated Kubernetes sub-agent, routed per cluster</li>
+        <li>MS Teams · web push · MCP · A2A</li>
+      </ul>
+    </div>
+  </div>
+
+</section>
+
+<section id="perception" class="measure">
+  <p class="sec-eyebrow c1">4 · Reflection</p>
+  <h2>Ground truth and event sources</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 820 250" role="img" aria-label="Many watched workload objects reduce through the cluster agent to a single Ready condition with one transition timestamp">
+      <defs><marker id="ra" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="16" y="16">WATCHED OBJECTS</text>
+      <rect class="well" x="16" y="28" width="178" height="30" rx="5"/>
+      <text class="mi" x="34" y="48">Deployment</text>
+      <line class="edge" x1="194" y1="43" x2="220" y2="43"/>
+      <rect class="well" x="16" y="66" width="178" height="30" rx="5"/>
+      <text class="mi" x="34" y="86">StatefulSet</text>
+      <line class="edge" x1="194" y1="81" x2="220" y2="81"/>
+      <rect class="well" x="16" y="104" width="178" height="30" rx="5"/>
+      <text class="mi" x="34" y="124">DaemonSet</text>
+      <line class="edge" x1="194" y1="119" x2="220" y2="119"/>
+      <rect class="well" x="16" y="142" width="178" height="30" rx="5"/>
+      <text class="mi" x="34" y="162">Argo Rollout</text>
+      <line class="edge" x1="194" y1="157" x2="220" y2="157"/>
+      <rect class="well" x="16" y="180" width="178" height="30" rx="5"/>
+      <text class="mi" x="34" y="200">Service · PVC</text>
+      <line class="edge" x1="194" y1="195" x2="220" y2="195"/>
+      <line class="rail" x1="222" y1="43" x2="222" y2="195"/>
+      <line class="edge" x1="222" y1="119" x2="300" y2="119" marker-end="url(#ra)"/>
+      <text class="m" x="261" y="110" text-anchor="middle">SELECTOR</text>
+      <rect class="surface" x="306" y="71" width="232" height="96" rx="6"/>
+      <text class="t-lg" x="324" y="101">cluster agent</text>
+      <text class="t-sm" x="324" y="123">read-only aggregator</text>
+      <text class="t-sm" x="324" y="143">30s stabilization damper</text>
+      <line class="edge" x1="542" y1="119" x2="600" y2="119" marker-end="url(#ra)"/>
+      <text class="m" x="571" y="110" text-anchor="middle">ONE EDGE</text>
+      <rect class="surface" x="606" y="87" width="198" height="64" rx="6"/>
+      <text class="mi" x="626" y="113">Ready</text>
+      <text class="t-sm" x="626" y="133">with lastTransitionTime</text>
+      <text class="t-sm" x="804" y="180" text-anchor="end">no Kubernetes events emitted</text>
+      <text class="t-sm" x="804" y="200" text-anchor="end">componentsReady is context, not a gate</text>
+    </svg>
+    <figcaption>The reduction the rest of the stack depends on: N workload objects in, one flap-damped level out, with a durable timestamp that survives a controller restart.</figcaption>
+  </figure>
+
+  <h3>4.1 Applications: virtual apps from workload labels</h3>
+  <p>An application in Triage is a <strong>virtual app</strong>. The cluster push agent synthesizes it in memory straight from workload labels, grouping Deployments, StatefulSets, and DaemonSets by <code>part-of</code> → <code>instance</code> → <code>name</code>, and aggregates their health into a single <strong><code>Ready</code> condition</strong>. A service reports live readiness the moment it carries standard labels, with no manifest ever deployed. Namespace onboarding is two <code>kubectl annotate</code> commands (§4.2); nothing else is installed on the application side. There is no <code>app.k8s.io</code> Application custom resource anywhere in this path: the core reads virtual apps only.</p>
+  <p>The agent's synthesis carries anti-flap health semantics:</p>
+  <ul>
+    <li><strong>It is a read-only aggregator.</strong> The agent never modifies the workloads it observes. The <code>Ready</code> condition transition, with its <code>lastTransitionTime</code>, is the only downstream signal: one edge, one timestamp.</li>
+    <li><strong>Anti-flap health semantics.</strong> A workload counts as Ready when it is serving, before it reaches full desired count: a Deployment with <code>Available=True</code> qualifies even mid-scale-up, and readiness deliberately does not gate on <code>observedGeneration</code>, because generation skew during HPA activity was itself a flap source. A 30-second stabilization period damps NotReady-to-Ready transitions. Crash-looping Argo Rollouts are detected via the <code>Available</code> condition rather than the <code>Progressing</code> phase, which reports progress even while pods crash-loop.</li>
+    <li><strong>Two object sets.</strong> The <code>Ready</code> gate aggregates workload kinds only; the <code>componentsReady</code> "N/M" string counts all matched objects (Services, PVCs, and so on) for human context. Consumers must treat "2/3" as context, never as the health gate.</li>
+    <li><strong>Push mode.</strong> For clusters with no inbound API access, the agent streams outbound over an HMAC-authenticated WebSocket: virtual-app status, Kubernetes Warning events, and the USE RED signal families (<a href="#useredsignals">§5</a>). This is the producer side of Triage's cluster-agent receiver. The hello frame declares which collectors are armed, so the receiver can distinguish a collector that is off from one that is quiet.</li>
+    <li><strong>Unprivileged collectors, aggregates only.</strong> Every collector the agent ships runs without privileged containers, and only aggregates cross the wire: counts, rates, pressure percentages. Request payloads and log lines never leave the cluster.</li>
+    <li><strong>Counter honesty.</strong> Kernel and runtime counters are lifetime values; on first sighting the agent records a baseline and reports deltas only, so a restarted agent can never present a pod's history as a fresh burst.</li>
+  </ul>
+  <p>As a result, the layer above never interprets pod-level detail. Each virtual app in each cluster has one authoritative, flap-damped answer to whether it is healthy, with a durable timestamp for its last transition.</p>
+
+  <h3>4.2 The <code>triageagent.dev/*</code> annotation contract</h3>
+  <p>The annotation contract is how owners steer observation without deploying a manifest. The triage agent's reconciler does not read these keys. They are read by the cluster push agent: at synthesis time for grouping and scope, carried with the pushed status to the core where they annotate the resulting graph node, and one key reaches down into the eBPF probe's discovery config (<a href="#useredsignals">§5</a>). This is the standard Kubernetes opt-in idiom, the same mechanism as <code>istio-injection</code> or Flux's reconcile annotations, and the security boundary is namespace-edit RBAC itself.</p>
+  <div class="tablewrap">
+    <table>
+      <colgroup><col style="width:28%"><col style="width:18%"><col style="width:54%"></colgroup>
+      <thead><tr><th>Annotation</th><th>Set on</th><th>Effect</th></tr></thead>
+      <tbody>
+        <tr><td><code>triageagent.dev/virtual-app: "false"</code></td><td>workload</td><td>Excludes the workload from virtual-app synthesis.</td></tr>
+        <tr><td><code>triageagent.dev/virtual-app-group: &lt;name&gt;</code></td><td>workload</td><td>Folds the workload into the named shared virtual app instead of the inferred <code>part-of</code> → <code>instance</code> → <code>name</code> group.</td></tr>
+        <tr><td><code>triageagent.dev/domain: &lt;domain&gt;</code></td><td>workload or namespace</td><td>Domain on the resulting graph node. Fill-in only: a curated catalog entry always wins.</td></tr>
+        <tr><td><code>triageagent.dev/description: &lt;text&gt;</code></td><td>workload or namespace</td><td>Description on the resulting graph node. Fill-in only.</td></tr>
+        <tr><td><code>triageagent.dev/tier: &lt;0-9&gt;</code></td><td>workload or namespace</td><td>Service tier on auto-created graph nodes. Fill-in only.</td></tr>
+        <tr><td><code>triageagent.dev/weight: &lt;0.1-10&gt;</code></td><td>workload or namespace</td><td>Blast-radius multiplier on the resulting graph node, default <code>1.0</code>. Unlike the other keys above, this annotation wins over a catalog-declared weight — correcting blast radius live, without a graph rebuild, is the point. Multiple instances, and a virtual-app group's members, reduce by <code>max</code>.</td></tr>
+        <tr><td><code>triageagent.dev/tenant: &lt;tenant&gt;</code></td><td>namespace</td><td>Pulls the whole namespace into the agent's observed scope when the value matches the agent's own tenant. Adds to the static namespace list; an agent configured to watch everything is unaffected.</td></tr>
+        <tr><td><code>triageagent.dev/instrument: "false"</code></td><td>pod template</td><td>Excludes the pod's processes from eBPF instrumentation entirely.</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Any of the workload-level keys set on the Namespace object act as defaults inherited by every application in that namespace, applied live on annotation change; a workload's own annotation always wins over the namespace default. Between <code>triageagent.dev/tenant</code> for scope, namespace defaults for metadata, and the synthesis floor above, a team onboards a whole namespace with two <code>kubectl annotate</code> commands and no deployment at all.</p>
+
+  <h3>4.3 Event sources</h3>
+  <p>Triage ingests four classes of signal, all normalized into one <code>InfraEvent</code> shape with a source path (<code>k8s/&lt;cluster&gt;/Kind/ns/name</code>, <code>app/&lt;cluster&gt;/ns/name</code>, <code>mcp/&lt;service&gt;</code>, <code>msteams/…</code>):</p>
+  <div class="tablewrap">
+    <table>
+      <colgroup><col style="width:16%"><col style="width:52%"><col style="width:32%"></colgroup>
+      <thead><tr><th>Class</th><th>Sources</th><th>Trust model</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Class">Kubernetes</td><td data-l="Sources">event informers: in-pod, multi-cluster via Workload Identity, or cluster-agent WS</td><td data-l="Trust model">machine, deterministic marking</td></tr>
+        <tr><td data-l="Class">Application</td><td data-l="Sources">virtual-app Ready-condition transitions (cluster push agent) → <code>AppDegraded</code> / <code>AppRecovered</code> / <code>AppStatusChanged</code></td><td data-l="Trust model">machine, the authoritative incident trigger</td></tr>
+        <tr><td data-l="Class">Synthetic / e2e</td><td data-l="Sources">events server <code>:8086</code> (uptrends, datadog, gcp, wiz, generic JSON), Bearer-authenticated</td><td data-l="Trust model">machine-external</td></tr>
+        <tr><td data-l="Class">Human</td><td data-l="Sources">MS Teams outgoing webhook, MCP <code>emit_event</code>, A2A</td><td data-l="Trust model">untrusted, guardrailed, capped</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Remote clusters connect through the cluster-agent WebSocket. Each cluster presents a per-cluster Bearer token, and the Secret's keys double as the allowlist: the token proves cluster identity, and cluster identity selects the tenant stamped onto every event. Tenancy is decided once, at the receiver, and carried through classification, incidents, and memory.</p>
+  <p>There is no dedicated security engine. Security findings are one case of a broader class — any security-finding source (a CNAPP/CSPM tool, a vulnerability scanner, a bug-bounty program) rides the same pipeline as every other provider event, and adding one is configuration, not code: the events server accepts <code>POST /events/&lt;provider&gt;/</code> under Bearer auth for an arbitrary provider segment, so pointing a new source at it is a routing entry, not a new code path. Wiz is the live, verified example: a webhook at <code>/events/wiz/</code> delivers a finding — an exposed host, a CVE, a compromised dependency — as an event, and a bug-bounty submission would arrive the same way, say at <code>/events/bugbounty/</code>. It passes through the same classifier, resolves to a service and a blast radius from the service graph, opens an incident, notifies the owning channel, and correlates with whatever else is open for that service — one more event source, not a separate product surface. Today, a human on the incident team acts on that finding; the agent closing that loop itself, through the same MCP and A2A tool surfaces, is a roadmap phase (<a href="#roadmap">§11</a>).</p>
+  <p>The same posture rules out a receiver embedded in the core for either OTLP or Pub/Sub: Pub/Sub-sourced signals already ride that one webhook today — <code>gcpevents</code>, a small Cloud Run function outside the core, subscribes to Cloud Billing cost anomalies and Personalized Service Health events and posts them to <code>/events/gcp-cost/&lt;service&gt;</code> and <code>/events/gcp-status/&lt;service&gt;</code> — and the telemetry an OTLP receiver was meant to carry already reaches the core as the RED and USE families over the cluster-agent WebSocket (<a href="#useredsignals">§5</a>). A small ingress surface plus an outside translator per protocol, not a receiver per protocol inside the core, is the deliberate shape.</p>
+  <p>That same pipeline has a second, cheaper surface: detection from inside the cluster, through infrastructure the agent already runs. The embedded eBPF collector is on every node for RED and USE, and the Kubernetes event watch already forwards every Warning event in a watched namespace — a security detector on either side is a new signal type on an existing pipe, not new infrastructure. Kyverno is the concrete case: its audit-mode policy violations are ordinary Kubernetes Warning events, so they already reach the same <code>k8s/</code> path a pod failure does wherever the namespace is in <code>--k8s-event-namespaces</code>, with no Kyverno-specific code — its separate PolicyReport resources are not parsed here. Cilium/Hubble already feeds RED metrics on the same collector (<a href="#useredsignals">§5</a>); turning its flow data into anomaly detection, and eBPF-derived runtime-security signals more broadly, are integration options, not shipped capability today.</p>
+</section>
+
+<section id="useredsignals" class="wide">
+  <p class="sec-eyebrow c1">5 · USE RED Signals</p>
+  <h2>USE RED Signals</h2>
+  <p>Beyond the readiness level, the cluster agent collects four precursor signal families and streams them to the core over one authenticated WebSocket. The core classifies each as a precursor signal, capped at signal class: they absorb into open incidents, backfill new ones, and feed the prediction engine. They never open incidents themselves.</p>
+  <p class="sig-legend"><b class="sig-f use">use</b>=saturation · <b class="sig-f red">red</b>=wire errors · <b class="sig-f log">log</b>=log errors · <b class="sig-f k8s">k8s</b>=platform events</p>
+
+  <div class="sig-term">
+<pre><span class="t-title">── signals · last ~2.5h · 5m/bucket ──────────────────────────</span>
+  use  3    <span class="g-use">▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</span>
+  red  1    <span class="g-red">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁█▁▁▁▁▁▁▁▁</span>
+  log  720  <span class="g-log">▂▁▃▂▄▁▂█▃▁▂▄▁▂▃▁▅▂▁▃▂▁▄▂▃▁▂▃▁▂</span>
+  k8s  0    <span class="t-dim">▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁</span>
+  <span class="t-dim">use=saturation · red=wire errors · log=log errors · k8s=platform events</span></pre>
+  </div>
+  <p class="sig-caption">The CLI Signals panel. Wall-clock axis from the core's 24h history, one glyph per 5 minutes, glyph heights scaled per family so a single use or red event remains visible next to hundreds of log errors.</p>
+
+  <p class="sig-sub">Architecture</p>
+  <div class="sigschema">
+    <div class="sig-plane">
+      <div class="sig-label">cluster · one agent per tenant cluster</div>
+      <div class="sig-cols">
+        <div class="sig-card"><b>Embedded eBPF engine</b><span>one process, one container per node: eBPF <span class="sig-f red">RED</span> + topology, <span class="sig-f use">USE</span> per pod (cgroup v2 + PSI), <span class="sig-f log">log</span> error/warn counts</span><span class="sig-dim">OpenTelemetry eBPF Instrumentation (OBI, the Grafana Beyla core) embedded as a Go library · <code>--mode</code> selects roles · file-driven config, Beyla's own format · or any Prometheus-scrape source for log (Fluent Bit, custom exporters)</span></div>
+        <div class="sig-card"><b>Informers</b><span><span class="sig-f k8s">k8s</span> warning events</span><span>virtual-app readiness</span></div>
+      </div>
+      <div class="sig-gate">agent gates: per-family thresholds · USE OR-gate · first-seen counter baseline</div>
+    </div>
+    <div class="sig-arrow">↓&nbsp;&nbsp;one WebSocket · per-cluster token · tenant bound at handshake</div>
+    <div class="sig-frames"><code>red_metrics</code> · <code>log_metrics</code> · <code>use_metrics</code> · <code>topology_snapshot</code> · apps · k8s events</div>
+    <div class="sig-arrow">↓</div>
+    <div class="sig-plane">
+      <div class="sig-label">core</div>
+      <div class="sig-gate">receiver mints signals → classifier stages 0–4 → capped at signal class</div>
+      <div class="sig-cols">
+        <div class="sig-card"><b>Incidents</b><span>absorb into open same-deployment incidents; precursor backfill on create and reopen</span></div>
+        <div class="sig-card"><b>Predictions</b><span>pattern matching over precursor sequences; per-tenant outlook</span></div>
+        <div class="sig-card"><b>Graph drift</b><span>topology comparer; per-tenant drift record</span></div>
+      </div>
+    </div>
+  </div>
+  <p>The core treats every family the same way: capped at signal class, absorbed into open same-deployment incidents, backfilled as precursors on incident create and reopen, and fed to the prediction engine. The readiness edge from §4.1 remains the only incident trigger.</p>
+
+  <p class="sig-sub">Signal families</p>
+  <div class="sigfam">
+    <div class="fam-card">
+      <h4>RED metrics <span class="fam-chip red">red</span></h4>
+      <p>Per-service request rate, error count, and latency from eBPF, with no application code changes. HTTP, gRPC, SQL, and Redis protocols.</p>
+      <ul>
+        <li>Frame sent only when the error threshold is crossed (rate and count floors, configurable)</li>
+        <li>p99 latency from histogram buckets, carried on each report</li>
+        <li>Error sample (method, path, status) included for context</li>
+        <li>Two source modes as built-in profiles of one embedded collector engine: OBI (OpenTelemetry eBPF Instrumentation, the donated Grafana Beyla core, vendored as a Go library — default, any cluster) or Hubble — on Cilium-CNI clusters the platform's own eBPF layer is scraped with zero added privilege</li>
+        <li>OBI hardened: scoped capabilities instead of privileged mode; node-local metadata cache</li>
+      </ul>
+      <p class="fam-wire"><code>red_metrics</code> → <code>RequestErrorAnomaly</code></p>
+    </div>
+    <div class="fam-card">
+      <h4>Log error metrics <span class="fam-chip log">log</span> <span class="fam-tag">native 08/2026</span></h4>
+      <p>Windowed per-service error, warn, and total log counts. The default source is the log role of the same embedded eBPF-engine process that runs RED and USE, tailing container logs from each file's current end; the collector speaks a standard Prometheus-scrape contract, so an existing Fluent Bit or any exporter emitting compatible counters plugs into the same path. Counts and fingerprinted error samples cross the wire, never raw log lines.</p>
+      <ul>
+        <li>Agent-side threshold gate: quiet services send nothing</li>
+        <li>Per-service attribution from pod labels, namespace-scoped</li>
+        <li>Error samples: JSON message extraction, IDs collapsed to templates, one series per error template, capped per service</li>
+        <li>Tens of MiB per node; millions of lines per second of headroom — counters lag rather than buffer under overload</li>
+      </ul>
+      <p class="fam-wire"><code>log_metrics</code> → <code>LogErrorAnomaly</code></p>
+    </div>
+    <div class="fam-card">
+      <h4>USE metrics <span class="fam-chip use">use</span> <span class="fam-tag">new 08/2026</span></h4>
+      <p>Per-pod saturation from cgroup v2 and PSI, read by the USE role of the same embedded engine, unprivileged. Works on any cgroup v2 node, Kubernetes or bare metal.</p>
+      <ul>
+        <li>Memory %, CPU, PSI pressure (mem/cpu/io), OOM kill counters</li>
+        <li>OR-gate send condition: pressure threshold crossed or OOM kill delta</li>
+        <li>First-seen suppression: lifetime counters baseline on first sighting, deltas only after</li>
+      </ul>
+      <p class="fam-wire"><code>use_metrics</code> → <code>ResourcePressureAnomaly</code></p>
+    </div>
+    <div class="fam-card">
+      <h4>Platform events <span class="fam-chip k8s">k8s</span></h4>
+      <p>Kubernetes warning events and application readiness transitions from informers, in-pod or pushed over the same WebSocket.</p>
+      <ul>
+        <li>Pod failure types (crash, backoff, OOMKilled) capped at signal class</li>
+        <li><code>AppDegraded</code> readiness edge is the incident trigger</li>
+        <li>Level reconciliation resolves incidents when readiness returns</li>
+      </ul>
+      <p class="fam-wire">k8s events → pod-failure signals</p>
+    </div>
+  </div>
+
+  <p class="sig-sub">Framework capabilities</p>
+  <div class="sigfam single">
+    <div class="fam-card">
+      <h4>Topology drift detection <span class="fam-tag">new 08/2026</span></h4>
+      <p>The agent derives the observed service topology from the RED series every 10 minutes: server workloads, client-to-server edges, calls leaving the cluster. The core compares it against the tenant's service graph using the classifier's own name resolution and records differences in a per-tenant drift record. Report-only in v1; transitions emit a <code>GraphDrift</code> signal.</p>
+    </div>
+    <div class="fam-card">
+      <h4>Continuous golden-signal summaries <span class="fam-tag">new 08/2026</span></h4>
+      <p>Beside the threshold-gated <code>RequestErrorAnomaly</code> and <code>ResourcePressureAnomaly</code> frames above, the agent streams an ungated RED (rate, error percentage, p99) and USE (CPU, memory, I/O PSI) summary per service on every scrape window. The core keeps the latest per-instance snapshot of each and surfaces it as a red/use readout on every application detail surface — API, CLI, MCP — whether or not anything is wrong. Anomalies open signals; summaries keep steady state visible between them.</p>
+    </div>
+    <div class="fam-card">
+      <h4>Persistent 24h signal history <span class="fam-tag">new 08/2026</span></h4>
+      <p>Per tenant per family, the core keeps a ring of 5-minute delta buckets, incremented at the same call site as the cumulative counters, persisted in the memory substrate, and merged across replicas by per-bucket max. Exposed on the REST status, the WS status push, the MCP status tool, and the OpenAPI spec; the CLI seeds its charts from it, so history survives CLI and controller restarts.</p>
+    </div>
+    <div class="fam-card">
+      <h4>Per-tenant attribution and surfaces</h4>
+      <p>Every signal carries its tenant from the authenticated handshake. Counters, history, scorecard fields, and predictions are grouped per tenant and filtered by the caller's access grants on every surface: REST, WS streams, MCP tools, and the CLI.</p>
+    </div>
+    <div class="fam-card">
+      <h4>Bandwidth and safety properties</h4>
+      <p>No collector runs in privileged mode: the embedded engine runs with six scoped capabilities (drop ALL first) on any node where its RED role is armed, and a node running only the USE or log role needs no elevated capability at all — <code>/var/log</code> is mounted read-only for the log role. Threshold gates keep quiet clusters silent; only aggregates cross the wire, never payloads or log lines. Probes are kernel-verified and application code is unchanged, so an instrumented process has no way to tell it is being watched. The hello frame declares which collectors are armed, so the core can distinguish "off" from "quiet". Unknown frame kinds are ignored by older cores, which makes core-first rollout safe for every new frame type.</p>
+    </div>
+  </div>
+</section>
+
+<section id="awareness" class="measure">
+  <p class="sec-eyebrow c2">6 · Awareness</p>
+  <h2>Triage</h2>
+
+  <h3>6.1 The classifier pipeline</h3>
+  <p>Every event passes through a fail-fast pipeline ordered from cheapest to most expensive stage:</p>
+  <figure class="fig">
+    <svg viewBox="0 0 820 400" role="img" aria-label="The classifier pipeline: five stages in cost order, dropping events at stage 0 and stage 1 and returning a verdict at stage 4">
+      <defs><marker id="pa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker><marker id="pd" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar-drop"/></marker><marker id="pc" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar-acc"/></marker></defs>
+      <text class="m" x="56" y="16">EVENT IN</text>
+      <rect class="surface" x="56" y="26" width="400" height="56" rx="6"/>
+      <text class="t" x="74" y="50">0 · pre-embed graph check</text>
+      <text class="t-sm" x="74" y="69">resolve the service in the tenant graph, stamp blast radius</text>
+      <text class="m" x="440" y="50" text-anchor="end">MACHINE</text>
+      <line class="drop" x1="462" y1="54" x2="502" y2="54" marker-end="url(#pd)"/>
+      <text class="t-sm drop-t" x="512" y="50">drop: unknown service,</text>
+      <text class="t-sm drop-t" x="512" y="67">noise tier, zero blast radius</text>
+      <line class="edge" x1="256" y1="82" x2="256" y2="100" marker-end="url(#pa)"/>
+      <rect class="surface" x="56" y="102" width="400" height="56" rx="6"/>
+      <text class="t" x="74" y="126">1 · guardrail</text>
+      <text class="t-sm" x="74" y="145">LLM verdict on human input: INFRA / NOISE / INJECTION</text>
+      <text class="m" x="440" y="126" text-anchor="end">HUMAN</text>
+      <line class="drop" x1="462" y1="130" x2="502" y2="130" marker-end="url(#pd)"/>
+      <text class="t-sm drop-t" x="512" y="126">drop: NOISE / INJECTION</text>
+      <text class="t-sm drop-t" x="512" y="143">— and fails closed on model error</text>
+      <line class="edge" x1="256" y1="158" x2="256" y2="176" marker-end="url(#pa)"/>
+      <rect class="surface" x="56" y="178" width="400" height="56" rx="6"/>
+      <text class="t" x="74" y="202">2 · event marker</text>
+      <text class="t-sm" x="74" y="221">deterministic state-signal marking for k8s and flux; LLM for the rest</text>
+      <text class="m" x="440" y="202" text-anchor="end">ALL SURVIVORS</text>
+      <line class="edge" x1="256" y1="234" x2="256" y2="252" marker-end="url(#pa)"/>
+      <rect class="surface" x="56" y="254" width="400" height="56" rx="6"/>
+      <text class="t" x="74" y="278">3 · post-guardrail graph check</text>
+      <text class="t-sm" x="74" y="297">service resolution, blast-radius stamping</text>
+      <text class="m" x="440" y="278" text-anchor="end">ALL</text>
+      <line class="edge" x1="256" y1="310" x2="256" y2="328" marker-end="url(#pa)"/>
+      <rect class="surface" x="56" y="330" width="400" height="56" rx="6"/>
+      <text class="t" x="74" y="354">4 · vector classifier</text>
+      <text class="t-sm" x="74" y="373">embedding similarity against known events</text>
+      <text class="m" x="440" y="354" text-anchor="end">STILL-UNKNOWN</text>
+      <line class="acc" x1="462" y1="358" x2="502" y2="358" marker-end="url(#pc)"/>
+      <text class="t-sm acc-t" x="512" y="362">Signal · Incident · Noise</text>
+    </svg>
+    <figcaption>Cheapest stage first, fail-fast: two stages can end the event before it reaches an embedding or a model call. Stage 1 is the only place a generative model sees human input, and it fails closed. Stage 4 is the final arbiter for what stages 0–3 could not settle.</figcaption>
+  </figure>
+  <p>Two caps in the pipeline encode trust decisions. Pod-failure types (crash, backoff, OOM) are capped at Signal: the Application layer's <code>AppDegraded</code> is the only authoritative incident trigger, so pod churn can never open incidents directly. Human sources are also capped at Signal: a Teams message or MCP report cannot fast-path an incident open; it has to convince the routing LLM with evidence. The generative model appears once in the main path, as the final arbiter for what the deterministic and semantic stages could not settle, behind a semantic routing cache that is validated against live incident state before reuse.</p>
+  <p>Log-based metrics (ADR-039) add a precursor signal without shipping log lines. The agent's own log collector (the log role of the embedded eBPF engine, <a href="#useredsignals">§5</a>) fingerprints each error at the edge, collapsing variable tokens into a template so a thousand near-identical errors become one series, gates those series on an error-rate threshold, and streams windowed per-service error/warn/total counts over the cluster-agent WS. The receiver emits one <code>LogErrorAnomaly</code> event per service on the same <code>app/&lt;cluster&gt;/&lt;ns&gt;/&lt;service&gt;</code> source shape the service graph already resolves. Like pod-failure types, it is capped at Signal: it absorbs into an open same-service incident and attaches as predictive evidence when one later opens, but never opens an incident on its own.</p>
+
+  <h3>6.2 The service graph as level truth</h3>
+  <p>Each tenant owns an isolated service graph: an in-memory HNSW index over the service catalog, continuously enriched by live informers with per-cluster application status and per-instance RED/USE snapshots. Blast radius (transitive downstream impact) is computed from graph topology and stamped on every event. Tenant isolation defaults to DENY: an event from tenant A never resolves tenant B's services, never absorbs into B's incidents, and RAG over incident history never crosses tenants. Graphs are delivered as prebuilt artifacts inside <code>mental_map</code> MemoryCells, so the graph itself travels through the same memory substrate as everything else.</p>
+
+  <h3>6.3 Incident lifecycle</h3>
+  <p>Incident state is edge-driven for latency: an <code>AppRecovered</code> edge resolves an incident within seconds. But edges can be missed. A restart loses in-memory hysteresis timers, a snapshot seed is deliberately silent for healthy apps, and a message can be dropped. Before the level reconciler existed, a missed edge stranded an incident indefinitely and produced a visible split brain: the graph shows the app 3/3 Ready while the incident stays open.</p>
+  <p>ADR-032 makes incident state converge to the graph. The service graph is the level source of truth, and a level reconciler sweeps every minute (and immediately at startup), auto-resolving any open <code>app/</code>-sourced incident whose instance has been continuously Ready beyond the hysteresis window. It uses the virtual app's Ready-condition transition time, which survives restarts because the cluster push agent maintains it. Reconciliation flows strictly one way, from graph to incidents. Incident state is never injected back into the graph: the graph is the classifiers' ground truth fed by live informers, and contaminating it with derived state would corrupt every classification downstream.</p>
+  <p>Identity and recurrence follow the same discipline. One identity matcher applies everywhere (exact source first, then same service within the same tenant, never across app instances), and a recurrence within six hours reopens the resolved incident, preserving history and reopen count, rather than minting a chain of near-duplicate incidents.</p>
+  <p>Application removal is treated as lifecycle, not failure. In ephemeral environments (preview namespaces), apps are deleted routinely; an <code>AppRemoved</code> event can never open an incident. If an incident is open for the removed app, it is auto-resolved and a low-severity watch entry is recorded instead, so the disappearance stays visible without masquerading as an outage.</p>
+</section>
+
+<section id="cognition" class="measure">
+  <p class="sec-eyebrow c3">7 · Cognition</p>
+  <h2>X-Ray</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 820 300" role="img" aria-label="Observations and conclusions share one substrate: events and incidents enter the HNSW graph, consolidation loops write facts, patterns and notes back out, and every cell persists as a MemoryCell in etcd">
+      <defs><marker id="xa" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="16" y="16">IN</text>
+      <text class="m" x="804" y="16" text-anchor="end">OUT</text>
+      <rect class="well" x="16" y="70" width="164" height="40" rx="6"/>
+      <text class="mi" x="34" y="95">event</text>
+      <rect class="well" x="16" y="130" width="164" height="40" rx="6"/>
+      <text class="mi" x="34" y="155">active_concern</text>
+      <line class="edge" x1="184" y1="90" x2="244" y2="108" marker-end="url(#xa)"/>
+      <line class="edge" x1="184" y1="150" x2="244" y2="140" marker-end="url(#xa)"/>
+      <rect class="surface" x="250" y="44" width="310" height="160" rx="8"/>
+      <text class="t-lg" x="270" y="76">HNSW semantic graph</text>
+      <text class="t-sm" x="270" y="98">in-process · the fast read surface</text>
+      <line class="rail" x1="268" y1="116" x2="542" y2="116"/>
+      <text class="m" x="270" y="138">TYPED EDGES</text>
+      <text class="t-sm" x="270" y="158">caused_by · triggers · correlates_with</text>
+      <text class="m" x="270" y="186">SUBJECT = TENANT KEY</text>
+      <rect class="well" x="620" y="48" width="184" height="38" rx="6"/>
+      <text class="mi" x="638" y="72">stable_fact</text>
+      <line class="edge" x1="564" y1="67" x2="616" y2="67" marker-end="url(#xa)"/>
+      <rect class="well" x="620" y="104" width="184" height="38" rx="6"/>
+      <text class="mi" x="638" y="128">operational_pattern</text>
+      <line class="edge" x1="564" y1="123" x2="616" y2="123" marker-end="url(#xa)"/>
+      <rect class="well" x="620" y="160" width="184" height="38" rx="6"/>
+      <text class="mi" x="638" y="184">note</text>
+      <line class="edge" x1="564" y1="179" x2="616" y2="179" marker-end="url(#xa)"/>
+      <polyline class="edge" points="560,52 594,52 594,30 280,30 280,42" marker-end="url(#xa)"/>
+      <text class="m" x="437" y="22" text-anchor="middle">CONSOLIDATION · REFLECTION 3H · KNOWLEDGE 8H</text>
+      <rect class="well" x="250" y="248" width="310" height="40" rx="6"/>
+      <text class="mi" x="270" y="273">MemoryCell CRs · etcd</text>
+      <line class="edge" x1="330" y1="206" x2="330" y2="244" marker-end="url(#xa)"/>
+      <text class="t-sm" x="344" y="230">persist</text>
+      <line class="edge" x1="490" y1="244" x2="490" y2="206" marker-end="url(#xa)"/>
+      <text class="t-sm" x="504" y="230">reseed on restart</text>
+    </svg>
+    <figcaption>One substrate in and out. The graph is the fast read surface; the CRs are the durable truth, which is why a restart costs a reseed and nothing else.</figcaption>
+  </figure>
+
+  <h3>7.1 One substrate for observations and conclusions</h3>
+  <p>X-Ray uses a single memory format: the <code>MemoryCell</code> CRD (<code>xray.ai/v1</code>). Triage's inputs and outputs are the same kind of object:</p>
+  <ul>
+    <li><strong>Source artifacts.</strong> Every processed event (<code>kind=event</code>) and every incident (<code>kind=active_concern</code>) persist as cells.</li>
+    <li><strong>Outcome artifacts.</strong> Reflection and knowledge passes emit <code>stable_fact</code>, <code>operational_pattern</code>, <code>note</code>, and <code>system_identity</code> cells, including the agent's own prompts, its world-status note, and each tenant's service graph (<code>mental_map</code>).</li>
+  </ul>
+  <p>Because ingest and insight share a substrate, the whole cognitive state is uniform: durable in etcd, inspectable with <code>kubectl get memcell</code>, segmentable by <code>subject</code> (the multi-tenant key), scoped public/private, and rendered by X-Ray's memory-graph UI without any triage-specific integration.</p>
+  <p>The runtime representation is an in-process HNSW graph that serves as both the similarity engine and the memory topology (X-Ray ADR-000 describes it as a living semantic graph). CRs are the durable truth; HNSW is the fast read surface, reseeded from CRs on restart. Embeddings come from a llama.cpp sidecar serving <code>nomic-embed-text</code> truncated to 256 dimensions: local, cheap, and provider-independent.</p>
+  <p>Cells carry typed ThoughtLink edges (<code>caused_by</code>, <code>triggers</code>, <code>correlates_with</code>, <code>precedes</code>, <code>explains</code>, <code>contradicts</code>). Triage's knowledge pass emits link operations, and its <code>get_memory_context</code> traverses the resulting associative graph from an anchor cell. In the X-Ray product runtime, link traversal at retrieval time is schema-ready but still on the roadmap.</p>
+
+  <h3>7.2 The reflection and knowledge loops</h3>
+  <p>A single goroutine drives two consolidation passes:</p>
+  <div class="tablewrap">
+    <table>
+      <colgroup><col style="width:14%"><col style="width:26%"><col style="width:34%"><col style="width:26%"></colgroup>
+      <thead><tr><th>Pass</th><th>Cadence</th><th>Context</th><th>Output</th></tr></thead>
+      <tbody>
+        <tr><td data-l="Pass"><strong>Reflection</strong></td><td data-l="Cadence">3h timer, per tenant (policy-governed; 0 = on-demand only)</td><td data-l="Context">fractal graphs of up to 3 active incidents + memory cells + elevated predictions</td><td data-l="Output">any cell kind; refreshes the global awareness summary</td></tr>
+        <tr><td data-l="Pass"><strong>Knowledge</strong></td><td data-l="Cadence">8h timer (policy-governed; 0 = on-demand only)</td><td data-l="Context">knowledge digest + resolved incidents in the interval</td><td data-l="Output"><code>stable_fact</code> and <code>operational_pattern</code> only</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>Reflection is deliberately timer-only. Incident changes used to trigger it, and a flapping incident could re-trigger an expensive consolidation pass on every degrade/recover cycle. That wiring is gone: resolving an incident updates the live status summary deterministically, without a model call, while reflection consolidates on its own schedule. Both passes run per tenant, so consolidation never mixes tenants' memories. Under the <code>system2-delegate</code> policy preset both timers are zero and an external System-2 session (section 2.1) invokes the passes on demand instead.</p>
+  <p>Reflection works on current state: live incidents and fresh causal context. Knowledge extracts what recurs across resolved incidents (stable facts, operational patterns) into a knowledge digest. This is where proactive detection grows from: a pattern like "explore-persona flaps after catalog deploys" becomes an operational-pattern cell that informs future classification and conversation.</p>
+
+  <h3>7.3 Write topology</h3>
+  <p>Two reconcilers connect memory and etcd, and they are strictly one-way. The mutation watch persists live-state changes to cells (memory to etcd, the only writer in that direction). The MemoryCell reconciler seeds the index and mirrors external edits (etcd to memory). The governing invariant: every edge between them must be a no-op when state is already equal. A mirror that stamps timestamps, or a note refresh that rewrites identical content, creates a self-sustaining write loop; ADR-033 documents one that shipped and how it was closed. This invariant is what makes memory-as-CRDs workable in practice.</p>
+  <p>The same discipline extends across controllers: configuration cells are never embedded or indexed, and cells owned by another instance are never mirrored, so two controllers sharing a namespace cannot feed each other's write loops.</p>
+
+  <h3>7.4 Operational state as memory</h3>
+  <p>The substrate also carries the agent's own operational state: runtime statistics, authenticated user sessions (stored hashed, with encrypted identity), and per-user voice usage persist in a system-configuration cell. A pod restart neither logs users out nor resets quotas, and the state remains inspectable with the same tooling as everything else.</p>
+
+  <h3>7.5 Composition</h3>
+  <p>Triage and X-Ray do not share databases and do not reach across namespaces. They compose through two narrow channels: the MemoryCell CRD (Triage writes cells; the <code>triage-xray</code> release reads, indexes, and visualizes them) and MCP (X-Ray's voice sessions register Triage's MCP server, so voice sessions call live Triage tools alongside memory tools). Both X-Ray releases run the same binary and chart; separation comes from namespaces and the <code>subject</code> key.</p>
+</section>
+
+<section id="intelligence" class="measure">
+  <p class="sec-eyebrow c4">8 · Intelligence</p>
+  <h2>The intelligence layer</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 820 240" role="img" aria-label="Five context layers from five different subsystems converge into one root-cause analysis, which answers on every interface">
+      <defs><marker id="ia" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="16" y="16">FRACTAL CONTEXT · FIVE SUBSYSTEMS</text>
+      <rect class="well" x="16" y="26" width="228" height="32" rx="5"/>
+      <text class="mi" x="34" y="47">1 · blast radius</text>
+      <line class="edge" x1="248" y1="42" x2="382" y2="96" marker-end="url(#ia)"/>
+      <rect class="well" x="16" y="66" width="228" height="32" rx="5"/>
+      <text class="mi" x="34" y="87">2 · live app status</text>
+      <line class="edge" x1="248" y1="82" x2="382" y2="108" marker-end="url(#ia)"/>
+      <rect class="well" x="16" y="106" width="228" height="32" rx="5"/>
+      <text class="mi" x="34" y="127">3 · causal events</text>
+      <line class="edge" x1="248" y1="122" x2="382" y2="120" marker-end="url(#ia)"/>
+      <rect class="well" x="16" y="146" width="228" height="32" rx="5"/>
+      <text class="mi" x="34" y="167">4 · 30-day history</text>
+      <line class="edge" x1="248" y1="162" x2="382" y2="132" marker-end="url(#ia)"/>
+      <rect class="well" x="16" y="186" width="228" height="32" rx="5"/>
+      <text class="mi" x="34" y="207">5 · similar incidents</text>
+      <line class="edge" x1="248" y1="202" x2="382" y2="144" marker-end="url(#ia)"/>
+      <rect class="surface" x="386" y="80" width="170" height="80" rx="6"/>
+      <text class="t-lg" x="406" y="112">RCA</text>
+      <text class="t-sm" x="406" y="134">one reasoning context</text>
+      <line class="rail" x1="586" y1="64" x2="586" y2="196"/>
+      <line class="edge" x1="556" y1="120" x2="586" y2="120"/>
+      <rect class="well" x="612" y="48" width="192" height="32" rx="5"/>
+      <text class="mi" x="630" y="69">web push</text>
+      <line class="edge" x1="586" y1="64" x2="608" y2="64"/>
+      <rect class="well" x="612" y="88" width="192" height="32" rx="5"/>
+      <text class="mi" x="630" y="109">MS Teams</text>
+      <line class="edge" x1="586" y1="104" x2="608" y2="104"/>
+      <rect class="well" x="612" y="128" width="192" height="32" rx="5"/>
+      <text class="mi" x="630" y="149">mobile PWA</text>
+      <line class="edge" x1="586" y1="144" x2="608" y2="144"/>
+      <rect class="well" x="612" y="168" width="192" height="32" rx="5"/>
+      <text class="mi" x="630" y="189">MCP · A2A</text>
+      <line class="edge" x1="586" y1="184" x2="608" y2="184"/>
+    </svg>
+    <figcaption>Each layer comes from a different part of the stack — service graph, live status, event stream, history, vector store — and the intelligence layer keeps none of it privately.</figcaption>
+  </figure>
+  <p>The intelligence layer is the conversational surface of the stack, and it draws on everything below it.</p>
+  <ul>
+    <li><strong>Root-cause analysis</strong> runs over the fractal incident graph: a five-layer context assembly per incident. (1) blast-radius summary from the service graph, (2) live application status, (3) tagged causal events, (4) 30-day event history for the service, (5) similar resolved incidents retrieved from the vector store. Each layer comes from a different subsystem; the fractal graph is where reflection, awareness, and memory converge into one reasoning context.</li>
+    <li><strong>Skills</strong> (<code>JucceSkill</code> CRD): a delegated sub-agent with a Kubernetes tool set (get, describe, logs, events, CRUD across clusters, routed by the cluster segment of the incident source), reporting progress through a task-poll pattern so long-running investigations do not block the conversation.</li>
+    <li><strong>Interfaces</strong>: a mobile PWA, web push on new incidents, MS Teams threads, MCP tools for other agents, and optional A2A for agent-to-agent delegation.</li>
+    <li><strong>Voice quota</strong>: a per-user daily voice token budget is tracked and enforced (ADR-038); quotas survive restarts.</li>
+  </ul>
+  <p>The layering discipline holds here too. The intelligence layer keeps no private state: its memory is X-Ray cells, its incident context is the fractal graph, its ground truth is the service graph.</p>
+</section>
+
+<section id="lifecycle" class="measure">
+  <p class="sec-eyebrow">9 · Walkthrough</p>
+  <h2>The life of an event</h2>
+  <p>A concrete end-to-end trace: a bad deploy of <code>explore-persona</code> in the <code>dev</code> namespace of a remote cluster.</p>
+
+  <ol class="timeline">
+    <li style="--lc: var(--l1)">
+      <span class="dot"></span>
+      <span class="step">Reflection</span>
+      <p>New pods crash-loop. The Rollout reports <code>Available=False</code>; the cluster agent flips the app's <code>Ready</code> condition to <code>False</code> (an edge, with <code>lastTransitionTime</code> recorded) and updates <code>componentsReady</code> to 2/3. No Kubernetes event is emitted; the condition change is the signal.</p>
+    </li>
+    <li style="--lc: var(--l1)">
+      <span class="dot"></span>
+      <span class="step">Transport</span>
+      <p>The cluster-agent streams the virtual app's status over its WebSocket. Its per-cluster token authenticates the cluster, which resolves the tenant stamped on the resulting <code>AppDegraded</code> event (<code>app/tenant-a-aks/dev/explore-persona</code>).</p>
+    </li>
+    <li style="--lc: var(--l2)">
+      <span class="dot"></span>
+      <span class="step">Awareness</span>
+      <p>Stage 0 resolves the service in the tenant's graph and stamps blast radius. <code>AppDegraded</code> is the authoritative trigger. The classifier fast-path finds no active incident for the source, finds one resolved 40 minutes ago, and reopens it (reopen count incremented, history preserved) instead of minting a duplicate. The pod-level crash and backoff events arriving in parallel are capped at Signal and absorbed as contributing evidence, not new incidents.</p>
+    </li>
+    <li style="--lc: var(--l3)">
+      <span class="dot"></span>
+      <span class="step">Cognition</span>
+      <p>The incident and its events persist as MemoryCells. The reflection pass builds the fractal graph, matches the pattern against last week's flap, and records it; a later knowledge pass distills an <code>operational_pattern</code> cell.</p>
+    </li>
+    <li style="--lc: var(--l4)">
+      <span class="dot"></span>
+      <span class="step">Intelligence</span>
+      <p>Web push fires. The operator opens a conversation; RCA over the fractal graph correlates the deploy with the crash evidence and the similar past incident, and a skill sub-agent pulls the failing container's logs from the right cluster.</p>
+    </li>
+    <li style="--lc: var(--l2)">
+      <span class="dot"></span>
+      <span class="step">Convergence</span>
+      <p>The deploy is rolled back. Pods serve; after the 30-second stabilization the <code>Ready</code> condition flips <code>True</code>; the recovery edge resolves the incident after the 5-minute hysteresis. If that edge had been lost (restart, drop, missed timer), the level reconciler would have resolved the incident within a minute of the hysteresis window expiring, from the CR's durable transition time. Both paths converge to the same resolved state.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="crosscutting" class="measure">
+  <p class="sec-eyebrow">10 · Tenancy &amp; onboarding</p>
+  <h2>Tenancy, security, onboarding</h2>
+  <figure class="fig">
+    <svg viewBox="0 0 820 220" role="img" aria-label="A per-cluster token identifies the cluster at the core's receiver, the tenant is stamped once, and each tenant keeps its own graph, incidents and memory behind a default-deny boundary">
+      <defs><marker id="ta" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0 L8 4 L0 8 Z" class="ar"/></marker></defs>
+      <text class="m" x="16" y="16">PER-CLUSTER TOKEN</text>
+      <rect class="well" x="16" y="44" width="180" height="34" rx="5"/>
+      <text class="mi" x="34" y="66">cluster A</text>
+      <rect class="well" x="16" y="120" width="180" height="34" rx="5"/>
+      <text class="mi" x="34" y="142">cluster B</text>
+      <line class="edge" x1="200" y1="61" x2="244" y2="84" marker-end="url(#ta)"/>
+      <line class="edge" x1="200" y1="137" x2="244" y2="114" marker-end="url(#ta)"/>
+      <rect class="surface" x="250" y="61" width="170" height="76" rx="6"/>
+      <text class="t-lg" x="268" y="92">core</text>
+      <text class="t-sm" x="268" y="112">stamps the tenant once</text>
+      <line class="edge" x1="424" y1="84" x2="466" y2="56" marker-end="url(#ta)"/>
+      <line class="edge" x1="424" y1="114" x2="466" y2="146" marker-end="url(#ta)"/>
+      <rect class="surface" x="472" y="18" width="332" height="68" rx="6"/>
+      <text class="t" x="492" y="45">tenant A</text>
+      <text class="t-sm" x="492" y="66">own graph · incidents · memory · grants</text>
+      <rect class="surface" x="472" y="120" width="332" height="68" rx="6"/>
+      <text class="t" x="492" y="147">tenant B</text>
+      <text class="t-sm" x="492" y="168">own graph · incidents · memory · grants</text>
+      <text class="m" x="472" y="107">DEFAULT DENY</text>
+      <line class="rail" x1="564" y1="103" x2="804" y2="103"/>
+    </svg>
+    <figcaption>Tenancy is decided once, at the receiver, from the credential the cluster presents — every boundary above it inherits that decision rather than re-deciding it.</figcaption>
+  </figure>
+  <p><strong>Multi-cluster and multi-tenant.</strong> One controller serves N tenants with isolated graphs, classifiers, and incident spaces; one Helm chart also deploys as fully separate per-project releases when isolation must be physical. Tenancy is stamped once at the receiver and defaults to DENY across every boundary.</p>
+  <p><strong>Security posture.</strong> Human input is guardrailed (INFRA / NOISE / INJECTION) and fails closed; prompt-injection defense is a dedicated design; human sources cannot fast-path incidents; per-cluster tokens bind cluster identity and hot-reload on rotation; API auth composes static tokens and SSO sessions without breaking browser or M2M clients, with per-tenant access grants enforced on every surface; voice usage is quota-capped per authenticated user per day.</p>
+  <p><strong>Self-observability.</strong> The agent monitors itself the way it monitors infrastructure: OTel traces to Phoenix, per-call LLM token and latency stats, and a pytest eval suite (batch evals scoring live traces, plus end-to-end RCA scenarios judged by an LLM), so prompt and pipeline changes are evaluated against a baseline.</p>
+  <p><strong>Implementation status.</strong> ThoughtLink retrieval-time traversal ships in Triage's memory context but not yet in the X-Ray product runtime. X-Ray's own reflection loop and the three-tier write-approval pipeline (guardrails, model-as-judge, human-in-the-loop) are designed but not fully implemented. The cluster agent's push protocol is a hand-synced mirror of the receiver's and can drift.</p>
+
+  <h3 id="onboarding">10.1 Onboarding a tenant</h3>
+  <p>Bringing a new tenant onto the stack takes three steps. The work is front-loaded into the service map; the agent itself needs no code change.</p>
+
+  <ol class="timeline">
+    <li style="--lc: var(--l2)">
+      <span class="dot"></span>
+      <span class="step">1 · Prepare the service map</span>
+      <p>List the tenant's services and how they depend on each other, including the alternate names each service goes by in alerts and deployments. Topology is the load-bearing part: blast radius, event correlation, and noise gating are all computed from these dependency edges.</p>
+    </li>
+    <li style="--lc: var(--l3)">
+      <span class="dot"></span>
+      <span class="step">2 · Enrich with domain data</span>
+      <p>Add what only the owning team knows: business domain, criticality tier, ownership, what breaks when the service does, and how its failures actually read in alerts. This is the text the classifier matches incoming events against, so enrichment quality directly sets classification quality. The enriched map is compiled once into the tenant's service-graph artifact.</p>
+<pre class="snippet"><code>services:
+  - name: checkout-api            <span class="cm-map"># 1 · service map</span>
+    aliases: [helmrelease/checkout]
+    calls: [payments, cart]
+    called_by: [storefront]
+    domain: Commerce              <span class="cm-enrich"># 2 · domain data</span>
+    tier: 1
+    team: platform
+    description: Order checkout API. Outage blocks all purchases.
+    symptoms: 502 bad gateway, checkout timeout, payment step failing</code></pre>
+    </li>
+    <li style="--lc: var(--l1)">
+      <span class="dot"></span>
+      <span class="step">3 · Install the cluster agent</span>
+      <p>Deploy the cluster agent into each of the tenant's clusters in push mode. It aggregates workload health into one <code>Ready</code> level per application and streams status and warning events outbound over an authenticated WebSocket, so the tenant's cluster needs no inbound access. On the triage side, register the tenant with its service graph and clusters and issue one credential per cluster. From the first event, tenancy is stamped at the receiver and isolation is default-DENY: the tenant gets its own service graph, classifier, incident space, and memory visibility.</p>
+    </li>
+  </ol>
+</section>
+
+<section id="roadmap" class="measure">
+  <p class="sec-eyebrow">11 · Roadmap</p>
+  <h2>Planned work</h2>
+  <ul>
+    <li><strong>Graph drift v2</strong>: drift badges on incident surfaces and cross-replica sync for the drift status block (detection itself ships report-only today).</li>
+    <li><strong>Replica scale-out: shared budgets</strong>: leader-gated singleton loops already ship — multi-replica deployments no longer run every loop N times. What remains is peer-sum gating, so the LLM daily token budget and the guardrail reserve are enforced across replicas instead of per replica.</li>
+    <li><strong>Autonomous remediation</strong>: once a root cause is trusted for an incident class, the agent acts on it directly — through the same MCP and A2A tool surfaces it already exposes for skills and conversation — instead of leaving every finding, security findings included, for the incident team to act on by hand.</li>
+    <li><strong>The AI teammate: the feedback loop</strong>: a System-2 delegate can already hold the standing role for a tenant's status cells, with heartbeat-gated failover back to reflection when it goes dark. Still unbuilt is the reward channel itself: feedback cells synthesized from the system's own contradictions (reopens after auto-resolve, reconciler catches, cascade-gate denials, human corrections), zero-token consumers for it (classifier exemplars, verified link priors), <code>consult_request</code> emission on novelty, blast-radius, and reopen-storm triggers, and a graduated autonomy ledger where action classes earn autonomy from proposal-approval history.</li>
+  </ul>
+</section>
+
+<section id="references" class="measure">
+  <p class="sec-eyebrow">12 · References</p>
+  <h2>Design records</h2>
+  <p><strong>Triage</strong>: ADR-000 (Alive Agent pattern), 001 (architecture), 002 (classifier pipeline), 003 (service graph HNSW), 004 (recovery hysteresis), 007 (prompt-injection defense), 009/010 (fractal incident graph / fractal RAG), 012 (skill system), 014 (knowledge graph), 017 (multi-cluster sources), 019 (MCP server), 028 (MemoryCell backend adoption), 029 (cluster-agent WS), 030/031 (multi-tenant graphs / prebuilt graph artifact), 032 (incident state reconciliation), 033 (memory-cell write topology), 034 (context headroom / token compression), 035 (debounced stats persistence), 036 (voice session management), 037 (GitHub session persistence), 038 (per-user voice token quotas).</p>
+  <p><strong>X-Ray</strong>: ADR-000 (architecture; HNSW as a living graph), 020 (associative memory: kind taxonomy, consolidation, approval pipeline), 021 (reflection/knowledge loop), 037 (scope as privacy axis), 043/045 (code-graph cognition), 044 (session recap continuity), 051 (MCP tools as general agentic memory; subject as tenant key).</p>
+  <p><strong>Triage agent</strong>: ADR-0001 (stabilization-period fix), 0003 (anti-flap readiness predicates; no-events contract), 0004 (dynamic component watches), 0005 (push mode).</p>
+  <p><strong>Literature</strong>: Daniel Kahneman, <em>Thinking, Fast and Slow</em> (Farrar, Straus and Giroux, 2011), the dual-process model behind the System 1 / System 2 reasoning tiers (section 2.1). Tim Sumers, Shunyu Yao, Karthik Narasimhan, and Thomas L. Griffiths, "Cognitive Architectures for Language Agents" (arXiv:2309.02427, 2023), the memory-module/action-space/decision-loop framework behind section 2.2.</p>
+</section>
+
+<footer class="wide">
+  Self-Aware Infrastructure · white paper · 2026-07-23 · last updated 2026-08-24<br>
+  Source: triage-core/docs/whitepaper.md · x-ray · triage-agent
+</footer>
+
+  </main>
+
+</div>
+
+<script>
+  var links = {};
+  document.querySelectorAll(".sidebar a").forEach(function (a) {
+    links[a.getAttribute("href").slice(1)] = a;
+  });
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      Object.keys(links).forEach(function (k) { links[k].classList.remove("on"); });
+      if (links[e.target.id]) links[e.target.id].classList.add("on");
+    });
+  }, { rootMargin: "-15% 0px -70% 0px" });
+  document.querySelectorAll("main section").forEach(function (s) { obs.observe(s); });
+</script>
+
+</body>
+</html>
