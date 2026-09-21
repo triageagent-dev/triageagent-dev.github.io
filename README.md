@@ -8,7 +8,7 @@ a static port of the page the core HTTP API serves at `/`
 | File | Source |
 |------|--------|
 | `index.html` | `core/docs/landing.html` |
-| `whitepaper.html` | `core/docs/whitepaper.html` (verbatim, self-contained) |
+| `whitepaper.html` | `core/docs/whitepaper.html`, minus the stale `JucceSkill` CRD name |
 
 Served by GitHub Pages from `main`. `.nojekyll` keeps Jekyll out of the way.
 

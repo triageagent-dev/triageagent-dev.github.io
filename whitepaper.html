@@ -1467,7 +1467,7 @@
   <p>The intelligence layer is the conversational surface of the stack, and it draws on everything below it.</p>
   <ul>
     <li><strong>Root-cause analysis</strong> runs over the fractal incident graph: a five-layer context assembly per incident. (1) blast-radius summary from the service graph, (2) live application status, (3) tagged causal events, (4) 30-day event history for the service, (5) similar resolved incidents retrieved from the vector store. Each layer comes from a different subsystem; the fractal graph is where reflection, awareness, and memory converge into one reasoning context.</li>
-    <li><strong>Skills</strong> (<code>JucceSkill</code> CRD): a delegated sub-agent with a Kubernetes tool set (get, describe, logs, events, CRUD across clusters, routed by the cluster segment of the incident source), reporting progress through a task-poll pattern so long-running investigations do not block the conversation.</li>
+    <li><strong>Skills</strong>: a delegated sub-agent with a Kubernetes tool set (get, describe, logs, events, CRUD across clusters, routed by the cluster segment of the incident source), reporting progress through a task-poll pattern so long-running investigations do not block the conversation.</li>
     <li><strong>Interfaces</strong>: a mobile PWA, web push on new incidents, MS Teams threads, MCP tools for other agents, and optional A2A for agent-to-agent delegation.</li>
     <li><strong>Voice quota</strong>: a per-user daily voice token budget is tracked and enforced (ADR-038); quotas survive restarts.</li>
   </ul>
