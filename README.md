@@ -1,16 +1,32 @@
-# triageagent-dev.github.io
+# Triage X-Ray
 
-Landing page for the [Triage X-Ray](https://github.com/triageagent-dev) organisation —
-a static port of the page the core HTTP API serves at `/`
-(`core/docs/landing.html`), with the server-rendered slots
-(`{{VERSION}}`, `{{AUTH}}`, `{{ONBOARDING}}`) replaced by static public links.
+Landing page for **Triage X-Ray** — self-aware infrastructure.
 
-| File | Source |
-|------|--------|
-| `index.html` | `core/docs/landing.html` |
-| `whitepaper.html` | `core/docs/whitepaper.html`, minus the stale `JucceSkill` CRD name |
+Predictive incident intelligence for the early detection and prevention of
+production outages, cost anomalies and security breaches. Built on an agentic
+memory substrate, Kahneman's dual-system thinking, the CoALA architecture and
+the USE, RED and SIG signal frameworks.
 
-Served by GitHub Pages from `main`. `.nojekyll` keeps Jekyll out of the way.
+Live at **<https://triageagent-dev.github.io>**
 
-When the landing page changes in core, regenerate rather than hand-editing, so the
-two stay in step.
+## Contents
+
+| File | |
+|------|--|
+| `index.html` | The landing page |
+| `whitepaper.html` | *Self-Aware Infrastructure* — the white paper behind the project |
+
+Both pages are self-contained: no build step, no dependencies, no external
+assets or fonts to fetch.
+
+## Local preview
+
+```bash
+python3 -m http.server 8000
+```
+
+Then open <http://localhost:8000>.
+
+---
+
+Served by GitHub Pages from `main`.
