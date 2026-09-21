@@ -687,7 +687,7 @@
 
 <header class="hero">
   <h1>Self-Aware Infrastructure</h1>
-  <p class="updated">White paper · 2026-07-23 · last updated 2026-08-24</p>
+  <p class="updated">White paper · 2026-07-23 · last updated 2026-09-21</p>
   <p class="dek">Predictive incident intelligence based on dual-system thinking for the early detection and prevention of production outages, cost anomalies and security breaches.</p>
 
   <div class="strata wide">
@@ -1583,8 +1583,8 @@
   <p class="sec-eyebrow">11 · Roadmap</p>
   <h2>Planned work</h2>
   <ul>
-    <li><strong>Graph drift v2</strong>: drift badges on incident surfaces and cross-replica sync for the drift status block (detection itself ships report-only today).</li>
-    <li><strong>Replica scale-out: shared budgets</strong>: leader-gated singleton loops already ship — multi-replica deployments no longer run every loop N times. What remains is peer-sum gating, so the LLM daily token budget and the guardrail reserve are enforced across replicas instead of per replica.</li>
+    <li><strong>Graph drift v2</strong>: drift detection now runs end to end — the agent-side collector (<code>--topology-enabled</code>), hub-side detection (ADR-047), observed edges so a catalog-less tenant still gets a dependency graph (ADR-050), CLI panel-1 <code>NEW</code>/<code>EDGES+n</code> badges, and the FDE catalog export (<code>triagectl graph drift</code>). What remains is drift badges on the incident surfaces themselves, and auto-PREPARE tooling that turns a drift report into a graph update without a hand-written catalog edit.</li>
+    <li><strong>Replica scale-out: shared budgets</strong>: leader-gated singleton loops ship — multi-replica deployments no longer run every loop N times — and the read surface is merged too: <code>replica_counters</code> gossip folds every replica's hub, queue, LLM, guardrail, classifier and RAG counters into <code>GET /v2/agent/status</code>. What remains is exact peer-sum gating, so the LLM daily token budget and the guardrail reserve are enforced across replicas instead of per replica; the chronic sweep, the correlation pass and the embedding self-write sweep also still run per replica.</li>
     <li><strong>Autonomous remediation</strong>: once a root cause is trusted for an incident class, the agent acts on it directly — through the same MCP and A2A tool surfaces it already exposes for skills and conversation — instead of leaving every finding, security findings included, for the incident team to act on by hand.</li>
     <li><strong>The AI teammate: the feedback loop</strong>: a System-2 delegate can already hold the standing role for a tenant's status cells, with heartbeat-gated failover back to reflection when it goes dark. Still unbuilt is the reward channel itself: feedback cells synthesized from the system's own contradictions (reopens after auto-resolve, reconciler catches, cascade-gate denials, human corrections), zero-token consumers for it (classifier exemplars, verified link priors), <code>consult_request</code> emission on novelty, blast-radius, and reopen-storm triggers, and a graduated autonomy ledger where action classes earn autonomy from proposal-approval history.</li>
   </ul>
@@ -1593,14 +1593,14 @@
 <section id="references" class="measure">
   <p class="sec-eyebrow">12 · References</p>
   <h2>Design records</h2>
-  <p><strong>Triage</strong>: ADR-000 (Alive Agent pattern), 001 (architecture), 002 (classifier pipeline), 003 (service graph HNSW), 004 (recovery hysteresis), 007 (prompt-injection defense), 009/010 (fractal incident graph / fractal RAG), 012 (skill system), 014 (knowledge graph), 017 (multi-cluster sources), 019 (MCP server), 028 (MemoryCell backend adoption), 029 (cluster-agent WS), 030/031 (multi-tenant graphs / prebuilt graph artifact), 032 (incident state reconciliation), 033 (memory-cell write topology), 034 (context headroom / token compression), 035 (debounced stats persistence), 036 (voice session management), 037 (GitHub session persistence), 038 (per-user voice token quotas).</p>
+  <p><strong>Triage</strong>: ADR-000 (Alive Agent pattern), 001 (architecture), 002 (classifier pipeline), 003 (service graph HNSW), 004 (recovery hysteresis), 007 (prompt-injection defense), 009/010 (fractal incident graph / fractal RAG), 012 (skill system), 014 (knowledge graph), 017 (multi-cluster sources), 019 (MCP server), 028 (MemoryCell backend adoption), 029 (cluster-agent WS), 030/031 (multi-tenant graphs / prebuilt graph artifact), 032 (incident state reconciliation), 033 (memory-cell write topology), 034 (context headroom / token compression), 035 (debounced stats persistence), 036 (voice session management), 037 (GitHub session persistence), 038 (per-user voice token quotas), 039 (log-based metrics source), 040 (prediction-aware reflection), 041 (policy cell), 042 (replica scale-out), 043 (cell TTL and forgetting), 044 (mindset cell), 045/046 (RED / USE metrics sources), 047/050 (graph drift / observed edges), 048 (service weight), 051 (token capability bits), 052 (private memory scope), 053 (redacted memory stream), 054 (SAI vocabulary), 055 (case interface).</p>
   <p><strong>X-Ray</strong>: ADR-000 (architecture; HNSW as a living graph), 020 (associative memory: kind taxonomy, consolidation, approval pipeline), 021 (reflection/knowledge loop), 037 (scope as privacy axis), 043/045 (code-graph cognition), 044 (session recap continuity), 051 (MCP tools as general agentic memory; subject as tenant key).</p>
   <p><strong>Triage agent</strong>: ADR-0001 (stabilization-period fix), 0003 (anti-flap readiness predicates; no-events contract), 0004 (dynamic component watches), 0005 (push mode).</p>
   <p><strong>Literature</strong>: Daniel Kahneman, <em>Thinking, Fast and Slow</em> (Farrar, Straus and Giroux, 2011), the dual-process model behind the System 1 / System 2 reasoning tiers (section 2.1). Tim Sumers, Shunyu Yao, Karthik Narasimhan, and Thomas L. Griffiths, "Cognitive Architectures for Language Agents" (arXiv:2309.02427, 2023), the memory-module/action-space/decision-loop framework behind section 2.2.</p>
 </section>
 
 <footer class="wide">
-  Self-Aware Infrastructure · white paper · 2026-07-23 · last updated 2026-08-24<br>
+  Self-Aware Infrastructure · white paper · 2026-07-23 · last updated 2026-09-21<br>
   Source: triage-core/docs/whitepaper.md · x-ray · triage-agent
 </footer>
 
