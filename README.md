@@ -15,9 +15,11 @@ Live at **<https://triageagent-dev.github.io>**
 |------|--|
 | `index.html` | The landing page |
 | `whitepaper.html` | *Self-Aware Infrastructure* — the white paper behind the project |
+| `agent.html` | The agent specification |
 
-Both pages are self-contained: no build step, no dependencies, no external
-assets or fonts to fetch.
+No build step. The landing page and the white paper are self-contained, with
+no external assets or fonts to fetch; the agent specification loads its fonts
+from Google Fonts and its code highlighting from a CDN.
 
 ## Local preview
 
