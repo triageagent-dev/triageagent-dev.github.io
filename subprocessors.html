@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Subprocessors — Triage Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Providers that process personal data on behalf of Triage Agent.">
+<!-- DRAFT: fill every [bracketed] value and have a lawyer review before publishing. -->
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#0b0e14;color:#c9d1d9;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.65}
+header,main,footer{max-width:760px;margin:0 auto;padding-left:1rem;padding-right:1rem}
+header{padding-top:1.5rem;padding-bottom:1rem}
+header a{color:#8b949e;text-decoration:none;font-size:.9rem}
+header a:hover{color:#4fd8c4}
+main{padding-top:1rem;padding-bottom:3rem}
+h1{margin:0 0 .25rem;font-size:1.9rem;font-weight:600;color:#f0f3f8}
+.meta{margin:0 0 2rem;color:#8b949e;font-size:.9rem}
+h2{margin:2.25rem 0 .5rem;font-size:1.15rem;font-weight:600;color:#e6edf3}
+p,li{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
+p{margin:.6rem 0}
+ul{margin:.6rem 0;padding-left:1.25rem}
+li{margin:.25rem 0}
+a{color:#4fd8c4}
+table{width:100%;border-collapse:collapse;margin:1rem 0;font-size:.9rem}
+th,td{text-align:left;vertical-align:top;padding:.6rem .75rem;border-bottom:1px solid #1c2230}
+th{color:#e6edf3;font-weight:600}
+footer{padding-top:1.5rem;padding-bottom:2.5rem;border-top:1px solid #1c2230;color:#4a5262;font-size:.8rem;display:flex;flex-wrap:wrap;gap:.5rem 1.5rem;justify-content:space-between}
+footer a{color:#8b949e;text-decoration:none}
+footer a:hover{color:#4fd8c4}
+footer nav{display:flex;gap:1.25rem}
+@media (max-width:600px){table,thead,tbody,tr,th,td{display:block}thead{display:none}td{border:0;padding:.2rem 0}tr{border-bottom:1px solid #1c2230;padding:.6rem 0}}
+</style>
+</head>
+<body>
+<header><a href="/">&larr; Triage Agent</a></header>
+<main>
+<h1>Subprocessors</h1>
+<p class="meta">Effective 11 October 2026</p>
+
+<p>These providers process personal data for us. We list a provider here before we start using it, and add a note of the change to this page.</p>
+
+<table>
+<thead><tr><th>Provider</th><th>Purpose</th><th>Data</th><th>Location</th></tr></thead>
+<tbody>
+<tr><td>GitHub, Inc.</td><td>Hosts the website (GitHub Pages)</td><td>IP address and request data in server logs</td><td>United States</td></tr>
+<tr><td>[Email delivery provider]</td><td>Sends the confirmation email</td><td>Email address, confirmation link</td><td>[Region]</td></tr>
+<tr><td>[Cloud hosting provider]</td><td>Runs the waitlist service and its database</td><td>Waitlist entries (email, plan, company, consent record)</td><td>[Region, EU]</td></tr>
+</tbody>
+</table>
+
+<h2>Third parties loaded by one page</h2>
+<p>The agent specification page (/agent.html) loads resources directly from Google Fonts and the Cloudflare cdnjs network. These providers receive your IP address when you open that page. They act on their own account, and the other pages of the site do not load them.</p>
+
+<h2>Questions</h2>
+<p>Write to <a href="mailto:privacy@triageagent.dev">privacy@triageagent.dev</a>. For enterprise customers, the data processing agreement lists the subprocessors that apply to your contract.</p>
+</main>
+<footer>
+<span>&copy; 2026 [Legal entity name]</span>
+<nav><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/subprocessors.html">Subprocessors</a></nav>
+</footer>
+</body>
+</html>

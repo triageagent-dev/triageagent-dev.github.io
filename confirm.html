@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Confirm your email — Triage Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="referrer" content="no-referrer">
+<meta name="accounts-api" content="https://api.triageagent.dev">
+<style>
+:root{color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0b0e14;color:#c9d1d9;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.55;padding:2rem 1rem}
+main{max-width:30rem;width:100%}
+h1{margin:0 0 .75rem;font-size:1.5rem;font-weight:600;color:#f0f3f8}
+p{margin:.5rem 0 1.25rem;color:#c9d1d9}
+p.hint{color:#8b949e;font-size:.9rem}
+a.btn,button.btn{display:inline-block;padding:.65rem 1.25rem;border:0;border-radius:.5rem;text-decoration:none;font:inherit;font-size:.9rem;font-weight:500;cursor:pointer;background:#4fd8c4;color:#062622}
+a.btn:hover,button.btn:hover:not(:disabled){background:#6ee6d4}
+button.btn:disabled{opacity:.6;cursor:default}
+a.link{color:#4fd8c4}
+.err{color:#f0883e}
+</style>
+</head>
+<body>
+<main>
+<h1 id="title">Confirm your email</h1>
+<p id="msg">Press the button to confirm that you want to join the Triage Agent waitlist.</p>
+<p><button class="btn" id="go" type="button">Confirm</button></p>
+<p class="hint" id="hint">Read our <a class="link" href="/privacy.html">privacy policy</a>.</p>
+</main>
+<script>
+(function(){
+var meta=document.querySelector('meta[name="accounts-api"]');
+var api=meta?meta.getAttribute("content").replace(/\/$/,""):"";
+var token=location.hash.slice(1);
+// Keep the token out of history and the address bar once read.
+try{history.replaceState(null,"",location.pathname)}catch(e){}
+var title=document.getElementById("title"),msg=document.getElementById("msg"),go=document.getElementById("go"),hint=document.getElementById("hint");
+function fail(t){title.textContent="This link does not work";msg.className="err";msg.textContent=t;go.style.display="none";hint.innerHTML='Join again from the <a class="link" href="/#pricing">pricing section</a>.'}
+if(!/^[A-Za-z0-9_-]{20,128}$/.test(token)){fail("The link is incomplete. Open it again from the email, or join again to get a new one.");return}
+go.addEventListener("click",function(){
+go.disabled=true;msg.textContent="Confirming…";
+fetch(api+"/v1/confirm",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({token:token})})
+.then(function(r){return r.json().catch(function(){return{}}).then(function(j){return{ok:r.ok,j:j}})})
+.then(function(x){
+if(x.ok){
+var plan=x.j.plan==="team"?"team":"individual";
+title.textContent="You are on the list";
+msg.className="";
+msg.textContent="Your address is confirmed for the "+plan+" waitlist. We will write to you when it opens.";
+go.style.display="none";
+hint.innerHTML='To leave the list, write to <a class="link" href="mailto:privacy@triageagent.dev">privacy@triageagent.dev</a>.';
+}else{fail((x.j&&x.j.error)||"Something went wrong. Try again.");}
+})
+.catch(function(){go.disabled=false;msg.className="err";msg.textContent="Could not reach the server. Try again in a minute."});
+});
+})();
+</script>
+</body>
+</html>

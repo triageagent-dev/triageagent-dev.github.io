@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+<script src="../fixtures.js"></script>
+<script src="../shim.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Triage Insights</title>
+  <meta name="description" content="AI-powered infrastructure triage agent">
+    <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" href="../triage-logo.svg">
+  <meta name="theme-color" content="#7c3aed">
+  <link rel="preload" href="../tui/vendor/fonts/jetbrains-mono-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../tui/vendor/fonts/jetbrains-mono-latin-500.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../tui/vendor/phosphor/Phosphor-Fill.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="../tui/vendor/phosphor/Phosphor.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="../tui/vendor/phosphor/regular.css">
+  <link rel="stylesheet" href="../tui/vendor/phosphor/fill.css">
+  <link rel="stylesheet" href="./styles.css">
+  <!-- Every module main.js reaches, so the import chain (six levels) fetches in
+       parallel instead of one round trip per level. model/preload.test.js keeps
+       this list equal to the real graph. -->
+  <link rel="modulepreload" href="./../tui/corona.js">
+  <link rel="modulepreload" href="./../tui/band.js">
+  <link rel="modulepreload" href="./../tui/rings.js">
+  <link rel="modulepreload" href="./App.js">
+  <link rel="modulepreload" href="./api/client.js">
+  <link rel="modulepreload" href="./api/push.js">
+  <link rel="modulepreload" href="./api/snapshot.js">
+  <link rel="modulepreload" href="./components/Icon.js">
+  <link rel="modulepreload" href="./components/TabBar.js">
+  <link rel="modulepreload" href="./components/ScopeSheet.js">
+  <link rel="modulepreload" href="./components/TenantSheet.js">
+  <link rel="modulepreload" href="./components/VoiceOverlay.js">
+  <link rel="modulepreload" href="./components/ui.js">
+  <link rel="modulepreload" href="./components/vitals.js">
+  <link rel="modulepreload" href="./lib/native.js">
+  <link rel="modulepreload" href="./lib/store.js">
+  <link rel="modulepreload" href="./lib/ui-version.js">
+  <link rel="modulepreload" href="./model/cost.js">
+  <link rel="modulepreload" href="./model/events.js">
+  <link rel="modulepreload" href="./model/format.js">
+  <link rel="modulepreload" href="./model/fractal.js">
+  <link rel="modulepreload" href="./model/graph.js">
+  <link rel="modulepreload" href="./model/health.js">
+  <link rel="modulepreload" href="./model/memory.js">
+  <link rel="modulepreload" href="./model/scope.js">
+  <link rel="modulepreload" href="./model/service.js">
+  <link rel="modulepreload" href="./model/tenancy.js">
+  <link rel="modulepreload" href="./model/trends.js">
+  <link rel="modulepreload" href="./model/vitals.js">
+  <link rel="modulepreload" href="./model/weeks.js">
+  <link rel="modulepreload" href="./screens/Apps.js">
+  <link rel="modulepreload" href="./screens/Cost.js">
+  <link rel="modulepreload" href="./screens/EventDetail.js">
+  <link rel="modulepreload" href="./screens/Events.js">
+  <link rel="modulepreload" href="./screens/Goals.js">
+  <link rel="modulepreload" href="./screens/Home.js">
+  <link rel="modulepreload" href="./screens/IssueDetail.js">
+  <link rel="modulepreload" href="./screens/Issues.js">
+  <link rel="modulepreload" href="./screens/Secure.js">
+  <link rel="modulepreload" href="./screens/ServiceDetail.js">
+  <link rel="modulepreload" href="./screens/Settings.js">
+  <link rel="modulepreload" href="./screens/SignIn.js">
+  <link rel="modulepreload" href="./screens/Trends.js">
+  <link rel="modulepreload" href="./screens/VitalDetail.js">
+  <link rel="modulepreload" href="./state/persist.js">
+  <link rel="modulepreload" href="./state/store.js">
+  <link rel="modulepreload" href="./vendor/preact-htm.js">
+  <link rel="modulepreload" href="./voice/voice.js">
+  <script type="module" src="./main.js"></script>
+</head>
+<body class="font-sans"></body>
+</html>
