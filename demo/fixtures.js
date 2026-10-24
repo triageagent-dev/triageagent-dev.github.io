@@ -58,11 +58,11 @@ function build(T) {
     const down = P.bad[n], ready = !down;
     nodes.push({name:n,domain:"platform",tier:i<8?0:1,team:"Platform",description:n+" service.",application:n,appReady:ready,appStatus:ready?"Ready":"Degraded",
       perCluster:{[CL[0]]:{ready,cluster:CL[0],namespace:ns,components:down||"3/3",version:"v1.4.2"}},calls,calledBy,blastRadius:i<3?0.3+rnd()*0.2:rnd()*0.28});
-    CL.forEach(c => apps.push({cluster:c,namespace:ns,serviceName:n,application:n,ready,componentsReady:down||"3/3",version:"v1.4.2",
+    CL.slice(0,1).forEach(c => apps.push({cluster:c,namespace:ns,serviceName:n,application:n,ready,componentsReady:down||"3/3",version:"v1.4.2",
       components:[{kind:"Deployment",name:n,status:ready?"Ready":"Degraded"}],replicas:3,readyReplicas:ready?3:2,
       golden:{memPct:ready?48:91,p99Ms:ready?120:840,errPct:ready?0.2:5.1,reqPerSec:140}}));
   });
-  for (let k=0;k<12;k++) apps.push({cluster:CL[0],namespace:ns,serviceName:"external-"+k,virtual:true,ready:true,componentsReady:"",components:[]});
+  for (let k=0;k<1;k++) apps.push({cluster:CL[0],namespace:ns,serviceName:"external-"+k,virtual:true,ready:true,componentsReady:"",components:[]});
   const edges=[]; nodes.forEach(n=>n.calls.forEach(t=>edges.push({source:n.name,target:t})));
   const graph = {tenant:T,noiseThreshold:0.1,incidentThreshold:0.25,nodes,edges};
 
@@ -185,6 +185,42 @@ function usage(hours) {
   return {from, to: now, buckets, daily: []};
 }
 
+// The messenger: one conversation per workspace, people and Tria writing to each other, as sample data.
+var ME = {id:"@demo:triage", name:"Demo"};
+var PEOPLE = {tria:{id:"@tria:triage",name:"Tria"}, maya:{id:"@maya:triage",name:"Maya"}, jon:{id:"@jon:triage",name:"Jon"}};
+function chatMsg(id, minAgo, who, body, o) {
+  var w = who === "me" ? ME : who === "spot-dev" ? {id:"@spot-dev:triage",name:"dev spot"} : PEOPLE[who];
+  return Object.assign({id:id, ts:now - minAgo*60000, type:"text", sender:w.id, name:w.name, mine:who==="me", tria:who==="tria", body:body}, o || {});
+}
+var ROOM_MSGS = {
+  "ws-stable": [
+    chatMsg("s1", 52, "tria", "shipping-api: request errors above baseline on POST /v2/labels", {kind:"issue_opened", severity:"warning"}),
+    chatMsg("s2", 49, "maya", "Looking. A deploy went out at 10:40."),
+    chatMsg("s3", 47, "me", "@tria is this related to the deploy?"),
+    chatMsg("s4", 46, "tria", "Probably. Errors on POST /v2/labels began 3 minutes after shipping-api 4.2.0 rolled out, and orders-api p99 rose in the same window. I would compare against 4.1.9 before rolling back."),
+    chatMsg("s5", 40, "maya", "Rolling back to 4.1.9."),
+    chatMsg("s6", 31, "tria", "orders-api: p99 latency 410ms vs baseline 180ms over 5m", {kind:"issue_opened", severity:"warning"}),
+    chatMsg("s7", 14, "tria", "shipping-api: request errors are back to baseline after the rollback to 4.1.9. I will keep watching it for the next hour.")
+  ],
+  "ws-dev": [
+    chatMsg("d1", 95, "tria", "users-api: latency p99 677.5ms vs baseline 30.1ms over 60s", {kind:"issue_opened", severity:"critical"}),
+    chatMsg("d2", 90, "jon", "Seeing it too. Pool exhaustion?"),
+    chatMsg("d3", 88, "spot-dev", "Checked users-api: the database pool is at 100% since 09:12 and p99 follows it. I raised the pool limit from 20 to 40 and will watch the next 10 minutes."),
+    chatMsg("d4", 70, "spot-dev", "p99 is back to 41ms. I am keeping the new limit and noted it on the issue."),
+    chatMsg("d5", 66, "jon", "Thanks. Leave the limit for now."),
+    chatMsg("d6", 8, "tria", "search-api: correlated, request latency 7125.0ms (step); caller gateway: request anomaly 5 in 10m", {kind:"issue_opened", severity:"critical"}),
+    chatMsg("d7", 6, "spot-dev", "On it. Looking at the search-indexer pods first.")
+  ]
+};
+var ROOMS = [
+  {id:"ws-stable", kind:"workspace", workspace:"stable", name:"stable", unread:0, spot:{name:"stable spot", state:"up"}},
+  {id:"ws-dev", kind:"workspace", workspace:"dev", name:"dev", unread:2, spot:{name:"dev spot", state:"up"}}
+].map(function (r) { r.last = ROOM_MSGS[r.id][ROOM_MSGS[r.id].length - 1]; return r; });
+var TRIA_PAST = [
+  {role:"user", text:"What is open on stable?"},
+  {role:"model", text:"Two issues: shipping-api request errors on POST /v2/labels (warning, 14 min) and orders-api p99 latency 410ms vs 180ms (warning, 31 min)."}
+];
+
 function tenantOf(u, fallback) { var t = u.searchParams.get("tenant"); return D[t] ? t : fallback; }
 var all = (k) => [].concat(...ORDER.map(t => D[t][k]));
 function get(url) {
@@ -194,7 +230,7 @@ function get(url) {
     case "/v2/auth/me": return {username:"demo",grants:"*:rwxivo",role:"admin",roles:{}};
     case "/v2/agent/tenants": return {tenants:ORDER.slice(),default:DEFAULT,details:ORDER.map(k=>({id:k,events:PROFILES[k].noise+PROFILES[k].signal+PROFILES[k].issue+PROFILES[k].unknown,incidents:PROFILES[k].open.length,issues:PROFILES[k].open.length,coveragePct:PROFILES[k].coverage}))};
     case "/v2/agent/status": return status;
-    case "/v2/agent/applications": return {applications: u.searchParams.get("tenant") ? d.apps : all("apps")};
+    case "/v2/agent/applications": return {applications: u.searchParams.get("tenant") ? d.apps : all("apps").slice(0, 25)};
     case "/v2/agent/graph": return d.graph;
     case "/v2/agent/analytics": return u.searchParams.get("tenant") ? d.analytics : {generatedAt:d.analytics.generatedAt,baselines:all("analytics").flatMap(a=>a.baselines),precursorMatches:all("analytics").flatMap(a=>a.precursorMatches)};
     case "/v2/agent/issues": case "/v2/agent/incidents": { var li = u.searchParams.get("tenant") ? d.issues : all("issues"); return {issues:li,incidents:li}; }
@@ -205,11 +241,35 @@ function get(url) {
     case "/v2/agents": return {agents:CL.map((c,i)=>({cluster:c,fingerprint:["3a7e:c1d9:0b52:88f4","51cd:e07a:92b6:14c3"][i],tenants:ORDER.slice(),approvedAt:iso(60*24*(20+i*9)),notAfter:iso(-60*24*300),approvedBy:"admin"}))};
     case "/v2/memory/summary": return memory;
     case "/v2/memory/metrics": return memMetrics;
+    case "/v2/landing": return {version:"v3.3.31"};
+    case "/v2/categories": return {categories:[]};
+    case "/v2/auth/providers": return {providers:[]};
   }
+  if (p === "/v2/messenger/rooms") return {me:ME.id, name:ME.name, tria:PEOPLE.tria.id, reactions:["ok","noted","working on it","fixed","blocked"], rooms:ROOMS};
+  if (p === "/v2/messenger/me") return {id:ME.id, name:ME.name, avatar:""};
+  if (p === "/v2/messenger/people") return {people:[PEOPLE.maya, PEOPLE.jon]};
+  if (p === "/v2/messenger/tria/history") return {turns:[], next:""};
+  var gm = p.match(/^\/v2\/agent\/issues\/([^/]+)\/graph$/);
+  if (gm) {
+    var gi = all("issues").find(function (i) { return i.id === decodeURIComponent(gm[1]); });
+    if (!gi) return null;
+    var gs = gi.source.split("/").pop();
+    var node = function (layer, nodeType, message) { return {layer:layer, nodeType:nodeType, message:message, severity:gi.severity}; };
+    return {service:gs, windowFrom:gi.firstSeen, windowTo:iso(0),
+      nodes:[node("blast_radius","affected","gateway"), node("blast_radius","affected","web-frontend"), node("blast_radius","affected","orders-api"),
+        node("app_status","status",gs+" ready 2/3"),
+        node("causal_chain","root","deploy rolled out"), node("causal_chain","symptom","error rate above baseline"), node("causal_chain","symptom","p99 latency above baseline"), node("causal_chain","recovery","pods restarted")],
+      historical:[{when:iso(60*24*9), summary:"similar episode, resolved by restart"}, {when:iso(60*24*21), summary:"similar episode, resolved by rollback"}],
+      appStatus:gs+" deployment ready 2/3 resources: 3 pods, 1 restarting",
+      blastGraph:"blast_radius_score: 0.42\nAffected downstream (3 services): gateway, web-frontend, orders-api",
+      similarIssues:"### past issue 1\nsimilarity: 0.82\n### past issue 2\nsimilarity: 0.71"};
+  }
+  var mm = p.match(/^\/v2\/messenger\/rooms\/([^/]+)\/messages$/);
+  if (mm) { var rid = decodeURIComponent(mm[1]); return ROOM_MSGS[rid] ? {me:ME.id, messages:ROOM_MSGS[rid], reactions:[], before:"", members:{}, avatars:{}, canWrite:true, receipts:{}, pinned:[]} : null; }
   var m = p.match(/^\/v2\/tenants\/([^/]+)\/(health|situation|ledger|goals)$/);
   if (m) { var tt = D[m[1]] ? m[1] : DEFAULT; return m[2]==="health" ? D[tt].health : m[2]==="goals" ? {tenant:tt} : m[2]==="situation" ? {tenant:tt,builtAt:iso(0),services:[]} : {rows:[]}; }
   return null;
 }
 const W = D[DEFAULT];
-window.TriageDemo = { get: get, tenant: DEFAULT, status: status, issues: W.issues, health: W.health, arms: PROFILES[DEFAULT].arms, names: NAMES };
+window.TriageDemo = { chatPast: TRIA_PAST, get: get, tenant: DEFAULT, status: status, issues: W.issues, health: W.health, arms: PROFILES[DEFAULT].arms, names: NAMES };
 })();

@@ -17,13 +17,19 @@
  * In the Android app (lib/native.js, the WebView message bridge on this
  * origin only) the session runs natively in a foreground service, so it goes
  * on with the screen off, and the page only mirrors it: it posts
- * {type: "voice.start", tenant} / {type: "voice.stop"} / {type: "hello"} and
+ * {type: "voice.start", tenant, into} / {type: "voice.stop"} / {type: "hello"} and
  * takes back {state: {conn, agent, live, error}} and the core's transcript
  * frames (never the audio). The native side owns the idle and total timers.
  */
 import { create } from "../lib/store.js"
 import { BASE_PATH } from "../lib/ui-version.js"
-import { inApp, onMessage as onAppMessage, send as toApp } from "../lib/native.js"
+import { call as callApp, inApp, onMessage as onAppMessage, send as toApp } from "../lib/native.js"
+import { voiceEvent as chatLog } from "../api/chat.js"
+
+// A session started from a workspace's shared chat speaks into that chat: the
+// core posts its turns to the room, so they stay out of the Tria chat's log.
+let intoRoom = false
+const log = (e) => { if (!intoRoom) chatLog(e) }
 
 // VoiceConn: "idle" | "connecting" | "open" | "error"
 // VoiceAgent: "idle" | "listening" | "thinking" | "speaking"
@@ -34,7 +40,8 @@ import { inApp, onMessage as onAppMessage, send as toApp } from "../lib/native.j
 // prime(): create/resume the audio contexts. Call from inside the pointer-down
 //   gesture: iOS only lets an AudioContext start there, and the long-press
 //   that calls press() fires from a timer.
-// start(tenant): start the session (the long-press on the centre button).
+// start(tenant, into): start the session (the long-press on the centre button);
+//   into "room" speaks into the workspace chat that is open.
 // close(): close the session and the card.
 
 const IDLE_MS = 120_000
@@ -113,19 +120,23 @@ export const useVoice = create((set, get) => {
     idleTimer = setTimeout(() => get().close(), IDLE_MS)
   }
 
-  const append = (role, text, merge) =>
+  // The core sends a turn's transcript in fragments: they join the line
+  // until the other side speaks, here and in the Tria chat's log.
+  const append = (role, text, merge) => {
+    log({ t: role === "user" ? "you" : role === "agent" ? "bot" : "tool", text })
     set(s => {
       const last = s.msgs[s.msgs.length - 1]
-      if (merge && last && last.role === role) return { msgs: [...s.msgs.slice(0, -1), { ...last, text }] }
+      if (merge && last && last.role === role) return { msgs: [...s.msgs.slice(0, -1), { ...last, text: last.text + text }] }
       return { msgs: [...s.msgs, { id: msgId++, role, text }].slice(-40) }
     })
+  }
 
   // The Android app's side of the session: its state, and the frames that carry text.
   const onNative = (m) => {
     if (m.state) {
       const st = m.state
       if (st.live) set({ open: true, live: true, conn: st.conn, agent: st.agent, error: st.error || "" })
-      else set({ open: !!st.error, live: false, conn: st.error ? "error" : "idle", agent: "idle", msgs: st.error ? get().msgs : [], error: st.error || "" })
+      else { set({ open: !!st.error, live: false, conn: st.error ? "error" : "idle", agent: "idle", msgs: st.error ? get().msgs : [], error: st.error || "" }); log({ t: "end" }) }
       return
     }
     if (typeof m.error === "string") set({ error: m.error })
@@ -167,7 +178,7 @@ export const useVoice = create((set, get) => {
     toNative({ type: "hello" }) // a page loaded while a session runs picks it up
   }
 
-  const connect = async (tenant) => {
+  const connect = async (tenant, into) => {
     set({ conn: "connecting", error: "" })
     try {
       stream = await navigator.mediaDevices.getUserMedia({
@@ -178,7 +189,9 @@ export const useVoice = create((set, get) => {
       })
       if (!micCtx) throw new Error("audio unavailable")
       await micCtx.audioWorklet.addModule(BASE_PATH + "/pcm-capture.js")
-      const q = tenant ? "?tenant=" + encodeURIComponent(tenant) : ""
+      const params = new URLSearchParams(tenant ? { tenant } : {})
+      if (into) params.set("into", into)
+      const q = params.toString() ? "?" + params : ""
       const proto = location.protocol === "https:" ? "wss" : "ws"
       const sock = new WebSocket(`${proto}://${location.host}/v2/agent/voice/session${q}`)
       ws = sock
@@ -188,7 +201,7 @@ export const useVoice = create((set, get) => {
         sock.onclose = () => reject(new Error("voice session closed before it opened"))
       })
       sock.onmessage = onMessage
-      sock.onclose = () => { if (ws === sock) { teardown(); set({ open: false, conn: "idle", agent: "idle", live: false }) } }
+      sock.onclose = () => { if (ws === sock) { teardown(); set({ open: false, conn: "idle", agent: "idle", live: false }); log({ t: "end" }) } }
       source = micCtx.createMediaStreamSource(stream)
       node = new AudioWorkletNode(micCtx, "pcm-capture")
       node.port.onmessage = (e) => {
@@ -223,10 +236,27 @@ export const useVoice = create((set, get) => {
         void micCtx.resume(); void playCtx.resume()
       } catch { /* no Web Audio: connect() reports it */ }
     },
-    start(tenant) {
+    /**
+     * Text typed into the open session, resolving true when it went in. The app owns its
+     * session's socket and takes the text over its bridge; an app build without that
+     * message never answers, so it resolves false and the text goes to the chat instead.
+     */
+    async sendText(text) {
+      if (native) {
+        if (get().conn !== "open") return false
+        try { return (await callApp("voice.text", { text }, 1500)).ok === true } catch { return false }
+      }
+      if (!ws || ws.readyState !== WebSocket.OPEN || get().conn !== "open") return false
+      ws.send(JSON.stringify({ text }))
+      touch()
+      return true
+    },
+    start(tenant, into) {
+      intoRoom = into === "room"
+      log({ t: "start" })
       if (native) {
         set({ open: true, live: true, conn: "connecting", agent: "listening", error: "" })
-        toNative({ type: "voice.start", tenant: tenant || "" })
+        toNative({ type: "voice.start", tenant: tenant || "", into: into || "" })
         return
       }
       get().prime()
@@ -235,11 +265,12 @@ export const useVoice = create((set, get) => {
       if (!ws && get().conn !== "connecting") {
         if (maxTimer) clearTimeout(maxTimer)
         maxTimer = setTimeout(() => get().close(), MAX_MS)
-        void connect(tenant)
+        void connect(tenant, into)
       }
       touch()
     },
     close() {
+      log({ t: "end" })
       if (native) {
         toNative({ type: "voice.stop" })
         set({ open: false, conn: "idle", agent: "idle", live: false, msgs: [], error: "" })

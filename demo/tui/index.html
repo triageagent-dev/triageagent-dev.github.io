@@ -12,11 +12,12 @@
 <title>Triage TUI</title>
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <link rel="stylesheet" href="./vendor/fonts/jetbrains-mono.css">
-<link rel="preload" href="./vendor/phosphor/Phosphor-Fill.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="./vendor/phosphor/Phosphor.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="./vendor/phosphor/regular.css">
-<link rel="stylesheet" href="./vendor/phosphor/fill.css">
+<link rel="preload" href="./vendor/phosphor/Phosphor-Fill.woff2?v=0b9389ed" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="./vendor/phosphor/Phosphor.woff2?v=8fc0ad2c" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="./vendor/phosphor/regular.css?v=e523c0c5">
+<link rel="stylesheet" href="./vendor/phosphor/fill.css?v=d0cccd26">
 <link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./themes/classic.css">
 <script type="module" src="./app.js"></script>
 </head>
 <body>
@@ -35,20 +36,15 @@
     </div>
     <div id="panel"></div>
   </main>
+  <div id="ask" class="ask">
+    <div id="askbox" class="askbox" hidden></div>
+    <label class="prompt askin">
+      <span class="prompt-k">tria &#8250;</span>
+      <input id="askq" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" enterkeyhint="send" aria-label="ask tria">
+      <span id="askcap" class="askcap" hidden></span>
+    </label>
+  </div>
   <footer id="keybar" class="keybar">
-    <div class="keyrow" id="keyrow">
-      <button type="button" class="kb" data-act="key" data-k="Escape">esc</button>
-      <button type="button" class="kb" data-act="shift" aria-label="shift: show shifted keys">&#8679;</button>
-      <button type="button" class="kb" data-act="key" data-k="Tab">tab</button>
-      <button type="button" class="kb" data-act="key" data-k="Enter">enter</button>
-      <button type="button" class="kb" data-act="key" data-k="/">/</button>
-      <button type="button" class="kb" data-act="key" data-k="ArrowLeft" aria-label="left">&#8592;</button>
-      <button type="button" class="kb" data-act="key" data-k="ArrowDown" aria-label="down">&#8595;</button>
-      <button type="button" class="kb" data-act="key" data-k="ArrowUp" aria-label="up">&#8593;</button>
-      <button type="button" class="kb" data-act="key" data-k="ArrowRight" aria-label="right">&#8594;</button>
-      <span class="kb-spacer"></span>
-
-    </div>
     <div class="legend" id="legend"></div>
     <input id="kbd" class="kbd-sink" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="keyboard input">
   </footer>

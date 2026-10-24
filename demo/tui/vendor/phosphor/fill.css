@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Phosphor-Fill";
-  src: url("./Phosphor-Fill.woff2") format("woff2");
+  src: url("./Phosphor-Fill.woff2?v=0b9389ed") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -438,4 +438,43 @@
 }
 .ph-fill.ph-x:before {
   content: "\e4f6";
+}
+.ph-fill.ph-chat-circle:before {
+  content: "\e168";
+}
+.ph-fill.ph-chat-circle-dots:before {
+  content: "\e16c";
+}
+.ph-fill.ph-paper-plane-right:before {
+  content: "\e396";
+}
+.ph-fill.ph-paperclip:before {
+  content: "\e39a";
+}
+.ph-fill.ph-trash:before {
+  content: "\e4a6";
+}
+.ph-fill.ph-push-pin:before {
+  content: "\e3e2";
+}
+.ph-fill.ph-arrow-bend-up-left:before {
+  content: "\e024";
+}
+.ph-fill.ph-arrow-down:before {
+  content: "\e03e";
+}
+.ph-fill.ph-camera:before {
+  content: "\e10e";
+}
+.ph-fill.ph-dots-three-vertical:before {
+  content: "\e208";
+}
+.ph-fill.ph-download-simple:before {
+  content: "\e20c";
+}
+.ph-fill.ph-thumbs-up:before {
+  content: "\e48e";
+}
+.ph-fill.ph-prohibit:before {
+  content: "\e3de";
 }

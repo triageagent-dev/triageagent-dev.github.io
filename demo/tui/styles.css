@@ -108,7 +108,9 @@ a:hover { color: var(--white); }
 }
 .tabbar .ti { font-size: 16px; color: var(--accent); }
 .tabbar .tname { color: var(--title-fg); overflow: hidden; text-overflow: ellipsis; min-width: 0; flex-shrink: 0; margin-right: 14px; }
-.tabbar .ver { color: var(--faint2); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.legend .ver { margin-left: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--faint2); font-size: 12px; white-space: nowrap; }
+.legend .ver a { color: var(--dim); display: inline-flex; }
+.legend .ver a:hover { color: var(--white); }
 .tabbar .who { display: inline-flex; align-items: center; gap: 6px; flex-shrink: 0; }
 .iconbtn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -117,10 +119,13 @@ a:hover { color: var(--white); }
 }
 .iconbtn:hover { background: var(--hover); color: var(--strong); }
 .iconbtn i { font-size: 15px; }
+.menubtn { display: none; margin-left: -8px; }   /* the classic theme's menu toggle */
 
 /* ── terminal body ─────────────────────────────────────────────── */
 .term {
   flex: 1; min-height: 0; overflow: auto; overflow-x: hidden;
+  /* the scrollbar's room is kept on both sides, so the margins stay even */
+  scrollbar-gutter: stable both-edges;
   background: var(--bg);
   padding: 14px 20px 18px;
   font-size: var(--fs); line-height: var(--lh); color: var(--text);
@@ -161,6 +166,22 @@ a:hover { color: var(--white); }
   color: var(--white); font: inherit; padding: 1px 6px; outline: none; border-radius: 0;
 }
 .prompt-hint { color: var(--faint2); font-size: 12px; }
+.prompt input:disabled { opacity: .5; }
+/* The ask line (chat.js): always at the foot of the screen; its drawer lies over the bottom third of the panel. */
+.ask { position: relative; flex: none; padding: 4px 20px; background: var(--bg); border-top: 1px solid var(--rule); }
+.ask[hidden] { display: none; }
+.askin { display: flex; width: 100%; }
+.askin input { border-bottom: 0; }
+.askcap { display: inline-flex; align-items: center; gap: 2px; align-self: center; }
+.askcap[hidden] { display: none; }
+.askcap > span { width: 8px; height: 8px; background: var(--rule); }
+.askbox {
+  position: absolute; left: 0; right: 0; bottom: 100%; z-index: 6;
+  max-height: 33vh; max-height: 33dvh; overflow: auto; overscroll-behavior: contain;
+  display: flex; flex-direction: column; gap: 10px; padding: 10px 20px;
+  background: var(--bg); border-top: 1px solid var(--rule2); box-shadow: 0 -6px 14px rgba(0, 0, 0, .25);
+}
+.askbox[hidden] { display: none; }
 
 /* ── panels ────────────────────────────────────────────────────── */
 .grid {
@@ -205,11 +226,13 @@ a:hover { color: var(--white); }
    height (never under 560px) and scrolls on its own. Absolute, so the list's
    own length never sets the row height. */
 .grid.fill { align-items: stretch; }
+@media (min-width: 900px) { .appgrid { grid-template-columns: var(--appcols); } }
 .rows-fill { position: relative; flex: 1; min-height: 560px; }
 .rows-fill > .rows.tall { position: absolute; inset: 0; max-height: none; }
 .c { flex-shrink: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .c.r { text-align: right; }
 .c.flex { flex: 1; min-width: 0; }
+.c.shr { flex-shrink: 1; min-width: 3em; }
 .mark { width: 1.23em; flex-shrink: 0; color: var(--magenta); }
 .rdot { width: 9px; height: 9px; border-radius: 99px; display: block; flex-shrink: 0; align-self: center; }
 .rdot.ring { background: transparent !important; box-shadow: inset 0 0 0 1.5px var(--faint); }
@@ -295,12 +318,6 @@ a:hover { color: var(--white); }
   padding-bottom: max(8px, env(safe-area-inset-bottom));
   position: relative;
 }
-.keyrow { display: flex; align-items: center; gap: 10px; padding: 10px 18px 0; overflow-x: auto; scrollbar-width: none; }
-.keyrow::-webkit-scrollbar { display: none; }
-.keybar.keys-hidden .keyrow { display: none; }
-.keys-toggle { margin-left: auto; }
-.keys-toggle i { font-size: 14px; margin-right: 4px; color: var(--dim); }
-.keys-toggle.on i { color: var(--magenta); }
 .kb {
   display: inline-flex; align-items: center; justify-content: center;
   min-width: 52px; height: 44px; padding: 0 14px; border-radius: 9px; border: 0;
@@ -335,8 +352,9 @@ a:hover { color: var(--white); }
   .rows-fill { min-height: 0; }
   .rows-fill > .rows.tall { position: static; max-height: 560px; }
   .term { padding: 12px 16px 16px; }
+  .ask { padding: 4px 16px; }
+  .askbox { padding: 10px 16px; }
   .tabbar { padding: 0 10px 0 16px; }
-  .keyrow { padding: 8px 16px 0; gap: 8px; }
   .legend { padding: 8px 16px 2px; }
 }
 @media (max-width: 640px) {
@@ -344,7 +362,6 @@ a:hover { color: var(--white); }
   .opt { display: none !important; }
   .kb { min-width: 44px; padding: 0 10px; }
   .hl > .lab { width: 4.46em; }
-  .tabbar .ver { display: none; }
   .prompt-hint { display: none; }
 }
 .kv > .s { flex-shrink: 100; }
@@ -510,13 +527,21 @@ a:hover { color: var(--white); }
 .mm-thumb { display: block; max-width: 100%; max-height: 180px; object-fit: cover; border: 1px solid var(--rule2); margin: 6px 0; }
 
 /* Panel 0, chat (chat.js): the conversation beside tokens and tools. */
-.chatgrid { grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr); }
+.chatgrid { grid-template-columns: minmax(0, 1fr) 22em; }
+.chatgrid.rooms { grid-template-columns: minmax(0, 1fr) 17em; }
+.chatgrid.fold { grid-template-columns: minmax(0, 1fr); }
+.chatgrid.fold .chatside { display: none; }
+.tbar .close { margin-left: 4px; }
 .chatmain { gap: 8px; }
-.chatlog { height: min(64vh, 680px); overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; padding: 4px 4px 4px 0; }
+.chatlog { height: min(64vh, 680px); overflow: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 10px; padding: 4px 16px 4px 0; }
 .chu, .chb, .chn { display: flex; gap: 10px; align-items: baseline; min-width: 0; }
 .chwho { width: 4.6em; flex-shrink: 0; text-align: right; }
 .chtext { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; }
+.chtext .para, .chtext .chli, .chn .para { text-align: justify; }
 .chn > .para { flex: 1; min-width: 0; }
+.chfiles { display: flex; flex-wrap: wrap; gap: 6px; align-items: flex-start; }
+.chimg { display: block; max-width: 240px; max-height: 180px; border: 1px solid var(--rule2); }
+.chfile { display: inline-flex; gap: 6px; align-items: baseline; color: var(--label); background: var(--chrome); padding: 0 6px; max-width: 100%; overflow-wrap: anywhere; text-decoration: none; }
 .chh { color: var(--strong); font-weight: 700; padding-top: 4px; }
 .chli { position: relative; line-height: var(--lh); overflow-wrap: anywhere; }
 .chli .chm { position: absolute; left: 0; color: var(--magenta); }
@@ -531,7 +556,30 @@ a:hover { color: var(--white); }
 .chtl .cha { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chtd { display: flex; flex-direction: column; gap: 2px; padding-left: 1.2em; }
 .chask { align-items: center; padding-left: 1.2em; }
-.chatin { display: flex; gap: 10px; align-items: stretch; }
+/* Conversations in panel 0 (rooms.js, core ADR-092). */
+.rm { padding: 1px 4px 1px 0; border-left: 2px solid transparent; flex-wrap: wrap; row-gap: 0; }
+.rm .rmwho { flex: 0 0 100%; box-sizing: border-box; padding-left: calc(4.6em - 3ch); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.rm.sel { border-left-color: var(--magenta); }
+.rmdots { margin-left: 8px; padding: 0 5px; background: none; border: 0; color: var(--faint); font: inherit; cursor: pointer; opacity: .55; }
+.rm:hover .rmdots, .rm.sel .rmdots { opacity: 1; color: var(--white); }
+.rmday { align-self: center; padding: 4px 0; }
+.rmq { color: var(--dim); border-left: 2px solid var(--accent); padding-left: 6px; cursor: pointer; overflow-wrap: anywhere; }
+.rmmeta { color: var(--faint); font-size: .85em; }
+.rmimg { display: block; max-width: min(100%, 420px); max-height: 260px; object-fit: contain; border: 1px solid var(--rule2); cursor: zoom-in; }
+.rmfile { color: var(--accent); }
+.rmreacts { display: flex; flex-wrap: wrap; gap: 6px; }
+.rmreact { display: inline-flex; align-items: center; gap: 4px; padding: 1px 7px; background: transparent; border: 0; color: var(--white); font: inherit; cursor: pointer; }
+.rmacts { margin-top: 4px; }
+.rmmode, .rmbanner, .rmpin, .rmmention { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--rule2); }
+.rmmode.col, .rmmention { flex-direction: column; align-items: stretch; gap: 0; }
+.rmpin { cursor: pointer; border-top: 0; border-bottom: 1px solid var(--rule2); }
+.rmemoji { display: flex; flex-wrap: wrap; gap: 6px 18px; padding: 6px 0; }
+.rmemoji > span { display: flex; flex-direction: column; align-items: center; min-width: 56px; }
+.rmemoji b { font-size: 26px; line-height: 1.2; font-weight: 400; }
+.rmtyping { display: flex; justify-content: space-between; gap: 10px; height: 1.3em; line-height: 1.3em; margin: -4px 0 -4px calc(4.6em - 3ch + 2px); white-space: nowrap; }
+.rmtypewho { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.rmcount { flex: none; }
+.chatin { display: flex; gap: 10px; align-items: stretch; margin-left: calc(4.6em - 3ch + 2px); } /* starts where "you" starts: the sender column less 3ch, past the row's 2px mark */
 .chatin textarea { flex: 1; min-width: 0; resize: none; margin: 0; box-sizing: border-box; background: var(--chrome); border: 1px solid var(--rule2); color: var(--white); font: inherit; padding: 6px 8px; outline: none; }
 .chatin textarea:focus { border-color: var(--magenta); }
 .chatin textarea::placeholder { color: var(--faint2); }
@@ -547,10 +595,12 @@ a:hover { color: var(--white); }
 .dsearch input { flex: 1; min-width: 0; background: transparent; border: 0; outline: none; color: var(--white); font: inherit; padding: 2px 0; }
 .dsearch input::placeholder { color: var(--faint2); }
 @media (max-width: 899px) {
-  .chatgrid { grid-template-columns: minmax(0, 1fr); }
+  .chatgrid, .chatgrid.rooms { grid-template-columns: minmax(0, 1fr); }
   .chatlog { height: 56vh; }
   .chatside { max-height: none; }
   .chwho { width: 3.6em; }
+  .chatin, .rmtyping { margin-left: calc(3.6em - 3ch + 2px); }
+  .rm .rmwho { padding-left: calc(3.6em - 3ch); }
   .cht { margin-left: 0; }
 }
 .glabel.ctx { opacity: .5; }

@@ -1,0 +1,151 @@
+/* Classic: the same panels as a conventional web page. A chalk-white palette, a
+   proportional face, the panel menu as a list down the left (no key hints), and
+   rows, boxes and buttons as plain cards. D cycles tui, dim, classic; the
+   choice is kept per browser.
+
+   A theme is only this: values for the tokens styles.css declares on :root,
+   scoped under :root[data-theme="<name>"], plus any rules that change layout.
+   Copy this file to start your own (see THEMING.md). */
+:root[data-theme="classic"] {
+  --bg: #ebe9e3;
+  --chrome: #f6f4ef;
+  --rule: #dedbd2;
+  --rule2: #cbc7bb;
+  --hover: #e6e3da;
+  --sel: #dfe3ee;
+  --title-fg: #2a2d3a;
+  --text: #3b3d46;
+  --strong: #23252e;
+  --white: #1a1c24;           /* the emphasis colour: darkest here, not white */
+  --dim: #646670;
+  --faint: #81838c;
+  --faint2: #a3a39f;
+  --label: #2b7a8c;
+  --accent: #4a4fb0;
+  --violet: #615aa8;
+  --magenta: #94356b;
+  --ok: #3f7d4f;
+  --warn: #a8641a;
+  --crit: #c0453c;
+  --info: #3a5fb0;
+  --key: #f6f4ef;
+  --key-line: #d6d2c6;
+  --key-hover: #e6e3da;
+  --key-down: #dde2ef;
+  --chip-on: #4a4fb0;
+  --chip-off: #9a9a96;
+  --mono: Menlo, "JetBrains Mono", monospace;
+  --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fs: 14px;
+  --lh: 1.5;
+}
+
+:root[data-theme="classic"], :root[data-theme="classic"] body { font-family: var(--sans); }
+/* Anything drawn in character cells keeps its monospace so the columns line up. */
+:root[data-theme="classic"] .uchart, :root[data-theme="classic"] .urow .ubar, :root[data-theme="classic"] .spark, :root[data-theme="classic"] .tree, :root[data-theme="classic"] .splash-art, :root[data-theme="classic"] .glabel, :root[data-theme="classic"] .gbub { font-family: var(--mono); }
+
+/* Colours that scripts paint straight into SVG and canvas are tuned for a dark
+   ground: darken them a little for a light one. */
+:root[data-theme="classic"] svg, :root[data-theme="classic"] canvas, :root[data-theme="classic"] .spark, :root[data-theme="classic"] .rdot { filter: saturate(.95) brightness(.86); }
+
+/* header on top, the menu down the left as a navigation list, the panel beside it */
+:root[data-theme="classic"] #app { display: grid; grid-template-columns: 188px minmax(0, 1fr); grid-template-rows: auto minmax(0, 1fr) auto; }
+:root[data-theme="classic"] .tabbar { grid-column: 1 / -1; grid-row: 1; background: var(--chrome); border-bottom: 1px solid var(--rule); font-size: 13px; }
+:root[data-theme="classic"] .tabbar .tname { font-weight: 600; }
+:root[data-theme="classic"] .keybar { grid-column: 1; grid-row: 2 / 4; border-top: 0; border-right: 1px solid var(--rule); padding: 10px 8px; overflow-y: auto; }
+:root[data-theme="classic"] .term { grid-column: 2; grid-row: 2; }
+:root[data-theme="classic"] .ask { grid-column: 2; grid-row: 3; }   /* the tria line sits under the panel, beside the menu */
+:root[data-theme="classic"] .legend { flex-direction: column; align-items: stretch; flex-wrap: nowrap; gap: 1px; padding: 0; }
+:root[data-theme="classic"] .keybar { display: flex; flex-direction: column; }
+:root[data-theme="classic"] .legend { flex: 1; }
+/* versions at the foot of the menu, one per line */
+:root[data-theme="classic"] .legend .ver { margin: auto 12px 0; padding-top: 14px; flex-direction: column; align-items: flex-start; gap: 2px; }
+:root[data-theme="classic"] .legend .ver .vsep { display: none; }
+:root[data-theme="classic"] .chip { padding: 7px 12px; border-radius: 7px; color: var(--dim); justify-content: flex-start; font-size: 14px; }
+:root[data-theme="classic"] .chip:hover { background: var(--hover); }
+:root[data-theme="classic"] .chip:hover .kl { color: var(--strong); }
+:root[data-theme="classic"] .chip .kk { background: transparent; color: var(--faint); box-shadow: inset 0 0 0 1px var(--rule2); border-radius: 4px; padding: 0 5px; font-size: 11px; }
+:root[data-theme="classic"] .chip .kk { display: none; }
+:root[data-theme="classic"] .chip:not(.pn) { display: none; }   /* only the panels; the other keys still work */
+:root[data-theme="classic"] .chip.on { background: var(--sel); box-shadow: inset 3px 0 0 var(--accent); }
+:root[data-theme="classic"] .chip.on .kk { background: var(--chip-on); color: #fff; box-shadow: none; }
+:root[data-theme="classic"] .chip.on .kl, :root[data-theme="classic"] .chip .kl.val { color: var(--title-fg); }
+:root[data-theme="classic"] .menubtn { display: inline-flex; }
+:root[data-theme="classic"][data-menu="hidden"] #app { grid-template-columns: minmax(0, 1fr); }
+:root[data-theme="classic"][data-menu="hidden"] .keybar { display: none; }
+:root[data-theme="classic"][data-menu="hidden"] .term, :root[data-theme="classic"][data-menu="hidden"] .ask { grid-column: 1; }
+@media (max-width: 899px) {
+  :root[data-theme="classic"] #app { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr) auto; }
+  :root[data-theme="classic"] .keybar { grid-column: 1; grid-row: 2; border-right: 0; border-bottom: 1px solid var(--rule); padding: 4px 8px; }
+  :root[data-theme="classic"] .term { grid-column: 1; grid-row: 3; }
+  :root[data-theme="classic"] .ask { grid-column: 1; grid-row: 4; }
+  :root[data-theme="classic"] .legend { flex-direction: row; flex-wrap: wrap; }
+  :root[data-theme="classic"] .legend .ver { margin: 0 0 0 auto; padding-top: 0; flex-direction: row; align-items: center; gap: 6px; }
+  :root[data-theme="classic"] .legend .ver .vsep { display: inline; }
+  :root[data-theme="classic"] .chip .kk { display: inline; }
+  :root[data-theme="classic"] .chip:not(.pn) { display: inline-flex; }
+}
+
+:root[data-theme="classic"] .term { padding: 18px 28px 24px; }
+
+/* panels: a title strip, then rows */
+:root[data-theme="classic"] .tbar { background: transparent; color: var(--title-fg); font-weight: 600; padding: 4px 2px 6px; border-bottom: 2px solid var(--accent); }
+:root[data-theme="classic"] .tbar.off { color: var(--dim); border-bottom-color: var(--rule2); padding-left: 2px; }
+:root[data-theme="classic"] .tbar .hint, :root[data-theme="classic"] .tbar.off .hint { color: var(--faint); font-weight: 400; }
+:root[data-theme="classic"] .tbar .close { color: var(--violet); }
+:root[data-theme="classic"] .sub::after { background: var(--rule); }
+:root[data-theme="classic"] .sub > span:first-child { color: var(--accent); font-weight: 600; }
+:root[data-theme="classic"] .th { padding: 6px 10px; color: var(--faint); font-weight: 600; }
+/* Table cells are sized in monospace ems; a proportional face needs a little less room. */
+:root[data-theme="classic"] .c { letter-spacing: -.015em; }
+:root[data-theme="classic"] .b { font-weight: 600; }
+:root[data-theme="classic"] .tr { padding: 6px 10px; border-bottom: 1px solid var(--rule); background: var(--chrome); }
+:root[data-theme="classic"] .tr:hover { background: var(--hover); }
+:root[data-theme="classic"] .tr.sel { background: var(--sel); color: var(--strong); }
+:root[data-theme="classic"] .tr.sel.blur { background: var(--hover); }
+:root[data-theme="classic"] .tr.open { background: #f1e8d3; }
+:root[data-theme="classic"] .rows { background: var(--chrome); border: 1px solid var(--rule); border-radius: 8px; }
+:root[data-theme="classic"] .mark { color: var(--accent); }
+:root[data-theme="classic"] .fchip { background: var(--sel); border-radius: 99px; padding: 1px 10px; }
+:root[data-theme="classic"] .filt.on { color: var(--accent); text-underline-offset: 4px; }
+:root[data-theme="classic"] .prompt input { background: var(--chrome); border-bottom-color: var(--accent); }
+
+/* boxes, dialogs and buttons */
+:root[data-theme="classic"] .gbox, :root[data-theme="classic"] .box { background: var(--chrome); border-color: var(--rule); border-radius: 10px; box-shadow: 0 1px 2px rgba(60, 50, 30, .06); }
+:root[data-theme="classic"] .gbox.gcrit { border-color: rgba(192, 69, 60, .45); }
+:root[data-theme="classic"] .ghead .gt, :root[data-theme="classic"] .ghead .gr { background: var(--chrome); }
+:root[data-theme="classic"] .ghead .gt { color: var(--accent); font-weight: 600; }
+:root[data-theme="classic"] .modal { background: var(--chrome); border-color: var(--rule); border-radius: 12px; box-shadow: 0 18px 48px rgba(60, 50, 30, .22); }
+:root[data-theme="classic"] .tp-in { background: var(--chrome); }
+:root[data-theme="classic"] .modal-back { background: rgba(60, 50, 30, .38); }
+:root[data-theme="classic"] .btn, :root[data-theme="classic"] .kb { border-radius: 7px; box-shadow: inset 0 0 0 1px var(--key-line); color: var(--strong); }
+:root[data-theme="classic"] .btn.primary { background: var(--accent); color: #fff; box-shadow: none; }
+:root[data-theme="classic"] .btn.primary:hover { background: #3b3f94; color: #fff; }
+:root[data-theme="classic"] .bar { background: var(--hover); }
+:root[data-theme="classic"] .confirm { border-radius: 8px; background: #f1e8d3; }
+
+/* literal colours in styles.css that suit a dark ground only */
+:root[data-theme="classic"] .fg-orange { color: #c2410c !important; }
+:root[data-theme="classic"] .fg-golden { color: #dc2626 !important; }
+:root[data-theme="classic"] .voicebtn { color: var(--violet); }
+:root[data-theme="classic"] .tml { color: #fff; }
+
+/* panel 5 memory map: its washes, lines and labels are tuned for a dark ground. */
+:root[data-theme="classic"] .memmap { filter: none; }
+:root[data-theme="classic"] .memmap .mm-ink { filter: saturate(1.2) brightness(.72); }
+:root[data-theme="classic"] .memmap .mm-cell { fill-opacity: .5; stroke: rgba(110, 100, 80, .22); stroke-width: 1; }
+:root[data-theme="classic"] .memmap .mm-cell[fill="#8a8ea3"], :root[data-theme="classic"] .memmap .mm-cell[fill="#c9ccdb"] { fill-opacity: .24; }   /* the grey kinds: unknown, note, mindmap */
+:root[data-theme="classic"] .memmap .mm-ink line { stroke-opacity: .22; stroke-width: 1; }
+/* a glow darkens a light ground: a live hit lifts the wash and thickens the line instead */
+:root[data-theme="classic"] .memmap .mm-cell:not(.hit):not(.region) { filter: none !important; }
+:root[data-theme="classic"] .memmap .mm-cell.hit { animation-name: mm-hit-light; }
+:root[data-theme="classic"] .memmap .mm-cell.region { animation-name: mm-region-light; }
+@keyframes mm-hit-light { from { fill-opacity: .75; stroke-width: 2.5; } to { fill-opacity: .5; stroke-width: 1; } }
+@keyframes mm-region-light { from { fill-opacity: .65; } to { fill-opacity: .5; } }
+:root[data-theme="classic"] .memmap .mm-cell:hover { fill-opacity: .7; stroke: rgba(110, 100, 80, .6); }
+:root[data-theme="classic"] .memmap .mm-cell.on { fill-opacity: .75; stroke: var(--strong); stroke-width: 2; }
+:root[data-theme="classic"] .memmap text[stroke] { fill-opacity: .1; stroke-opacity: .4; }
+:root[data-theme="classic"] .memmap circle { fill-opacity: .8; }
+:root[data-theme="classic"] .memmap circle[fill="#fff"] { fill: var(--strong); fill-opacity: .9; }
+:root[data-theme="classic"] .mm-hud { color: var(--dim); }
+:root[data-theme="classic"] .mm-hud .k { color: var(--faint); }

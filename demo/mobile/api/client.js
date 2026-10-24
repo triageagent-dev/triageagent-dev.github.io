@@ -65,14 +65,24 @@ export const SIGN_IN_URL = "/v2/auth/github"
  * redirects to /login. Fetching it with redirect:"manual" applies the
  * Set-Cookie without leaving the app. Returns whether the session is really
  * gone — /v2/auth/me answering 401 — so a failed logout on a shared phone is
- * never shown as signed out while the cookie still works.
+ * never shown as signed out while the cookie still works. POST, as the TUI
+ * does: a GET must not be able to log anyone out.
  */
 export async function signOut() {
   try {
-    await fetch("/v2/auth/logout", { credentials: "include", redirect: "manual" })
+    await fetch("/v2/auth/logout", { method: "POST", credentials: "include", redirect: "manual" })
     const me = await fetch("/v2/auth/me", { credentials: "include", cache: "no-store" })
     return me.status === 401
   } catch {
     return false
   }
+}
+
+/** The sign-out fallback: the same POST as a form navigation, so the browser follows the core's redirect to /login. */
+export function signOutPage() {
+  const f = document.createElement("form")
+  f.method = "POST"
+  f.action = "/v2/auth/logout"
+  document.body.appendChild(f)
+  f.submit()
 }

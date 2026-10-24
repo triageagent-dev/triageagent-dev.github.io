@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Phosphor";
-  src: url("./Phosphor.woff2") format("woff2");
+  src: url("./Phosphor.woff2?v=8fc0ad2c") format("woff2");
   font-weight: normal;
   font-style: normal;
   font-display: block;
@@ -438,4 +438,43 @@
 }
 .ph.ph-x:before {
   content: "\e4f6";
+}
+.ph.ph-chat-circle:before {
+  content: "\e168";
+}
+.ph.ph-chat-circle-dots:before {
+  content: "\e16c";
+}
+.ph.ph-paper-plane-right:before {
+  content: "\e396";
+}
+.ph.ph-paperclip:before {
+  content: "\e39a";
+}
+.ph.ph-trash:before {
+  content: "\e4a6";
+}
+.ph.ph-push-pin:before {
+  content: "\e3e2";
+}
+.ph.ph-arrow-bend-up-left:before {
+  content: "\e024";
+}
+.ph.ph-arrow-down:before {
+  content: "\e03e";
+}
+.ph.ph-camera:before {
+  content: "\e10e";
+}
+.ph.ph-dots-three-vertical:before {
+  content: "\e208";
+}
+.ph.ph-download-simple:before {
+  content: "\e20c";
+}
+.ph.ph-thumbs-up:before {
+  content: "\e48e";
+}
+.ph.ph-prohibit:before {
+  content: "\e3de";
 }

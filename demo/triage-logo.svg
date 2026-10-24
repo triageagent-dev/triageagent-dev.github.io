@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="240" viewBox="0 0 240 240" role="img" aria-label="Jucce logo">
+  <defs>
+    <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#6d28d9"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Edges -->
+  <line x1="120" y1="120" x2="68"  y2="72"  stroke="url(#g1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="120" y1="120" x2="178" y2="68"  stroke="url(#g1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="120" y1="120" x2="72"  y2="178" stroke="url(#g1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="120" y1="120" x2="176" y2="176" stroke="url(#g1)" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+  <line x1="68"  y1="72"  x2="178" y2="68"  stroke="url(#g1)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+  <line x1="176" y1="176" x2="72"  y2="178" stroke="url(#g1)" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
+
+  <!-- Satellite nodes -->
+  <circle cx="68"  cy="72"  r="16" fill="url(#g2)" opacity="0.85"/>
+  <circle cx="178" cy="68"  r="20" fill="url(#g2)" opacity="0.85"/>
+  <circle cx="72"  cy="178" r="14" fill="url(#g2)" opacity="0.85"/>
+  <circle cx="176" cy="176" r="18" fill="url(#g2)" opacity="0.85"/>
+
+  <!-- Center node -->
+  <circle cx="120" cy="120" r="28" fill="url(#g1)"/>
+</svg>

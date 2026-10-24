@@ -1,4 +1,4 @@
-// Panel 9 — LLM token usage: GET /v2/usage?hours=N (core ≥ 572decea), the
+// Usage section of the workspaces panel (?) — LLM token usage: GET /v2/usage?hours=N (core ≥ 572decea), the
 // fleet-wide hourly ring of every model call core made, one row per (hour,
 // tenant, kind, model). Drawn as a stacked per-hour bar chart (eighth-step
 // block tops) plus a breakdown table, grouped by kind, tenant or model.
@@ -40,6 +40,10 @@ export const PRICES = {
   "gemini-3.8-flash": { in: 0.75, out: 3.75, cache: 0.075 },
   "gemini-3-pro-preview": { in: 2, out: 12, cache: 0.2 },
   "gemini-3.1-pro-preview": { in: 2, out: 12, cache: 0.2 },
+  // Claude (platform.claude.com pricing): the workspace spot reports its turns under
+  // this id. Cache writes bill at 1.25x input but are counted in input, so a cost
+  // here is a floor.
+  "claude-sonnet-5-5": { in: 2, out: 10, cache: 0.2 },
   "gpt-4o": { in: 2.5, out: 10, cache: 1.25 },
   "gpt-4o-mini": { in: 0.15, out: 0.6, cache: 0.075 },
   "gemini-live-2.5-flash-native-audio": { in: 0.5, out: 2, ain: 3, aout: 12 },
@@ -107,7 +111,7 @@ export function usageFailures() {
 }
 export const usageSlot = (id) => U.byWin[id] || {};
 
-// The '?' panel's LLM call count: the same ring panel 9 draws, all tenants,
+// The '?' panel's LLM call count: the same ring the usage section draws, all tenants,
 // loaded on demand and at most once a minute. Null until it has answered.
 export function usageTotals(id) {
   const s = U.byWin[id];
@@ -144,9 +148,9 @@ export function limitsByKind(st) {
 // ── aggregation (pure) ─────────────────────────────────────────────────────
 const groupKey = (r, by) => String(r[by] || "") || "(none)";
 
-// usageModel(resp, { hours, group, scope, step }) → everything the panel draws.
-// step = hours per chart column.
-export function usageModel(resp, { hours = 24, group = "kind", scope = "", step = 1 } = {}) {
+// usageModel(resp, { hours, group, scope, step, only }) → everything the panel draws.
+// step = hours per chart column; only = one group's name, charted alone.
+export function usageModel(resp, { hours = 24, group = "kind", scope = "", step = 1, only = "" } = {}) {
   const d = resp || {};
   const from = num(d.from), to = num(d.to) || Date.now();
   const inScope = (r) => !scope || r.tenant === scope;
@@ -194,7 +198,8 @@ export function usageModel(resp, { hours = 24, group = "kind", scope = "", step 
   const folded = all.length > TOP_N;
   const colorOf = (name) => (name === BACKFILL ? BACKFILL_C : color.get(name) || OTHER_C);
   const seriesOf = (name) => (color.has(name) ? name : OTHER);
-  const series = kept.concat(folded && !color.has(OTHER) ? [OTHER] : []); // a real "other" kind absorbs the fold
+  const picked = only && (all.some((g) => g.name === only) || (only === BACKFILL && bfRow)) ? only : "";
+  const series = picked ? [picked] : kept.concat(folded && !color.has(OTHER) ? [OTHER] : []); // a real "other" kind absorbs the fold
 
   // chart columns
   const nCols = Math.max(1, Math.ceil(hours / step));
@@ -202,12 +207,13 @@ export function usageModel(resp, { hours = 24, group = "kind", scope = "", step 
   const colIx = (t) => Math.floor((t - from) / (step * HOUR));
   rows.forEach((r) => {
     if (isEmbed(r)) return;
+    if (picked && groupKey(r, group) !== picked) return;
     const c = cols[colIx(num(r.start))];
     if (!c) return;
-    const k = seriesOf(groupKey(r, group));
+    const k = picked || seriesOf(groupKey(r, group));
     c.segs.set(k, (c.segs.get(k) || 0) + num(r.inputTokens) + num(r.outputTokens));
   });
-  bfHours.forEach(({ t, v }) => { const c = cols[colIx(t)]; if (c) c.bf += v; });
+  if (!picked || picked === BACKFILL) bfHours.forEach(({ t, v }) => { const c = cols[colIx(t)]; if (c) c.bf += v; });
 
   const table = bfRow ? all.concat([{ ...bfRow, total: bfRow.input + bfRow.output }]).sort((a, b) => b.total - a.total) : all;
   const T = table.reduce((t, g) => {
@@ -230,7 +236,12 @@ export function usageModel(resp, { hours = 24, group = "kind", scope = "", step 
   });
   if (bfRow) { C.llm.calls += bfRow.calls; C.llm.input += bfRow.input; C.llm.output += bfRow.output; C.llm.unpriced += bfRow.unpriced; }
   Object.values(C).forEach((c) => { c.total = c.input + c.output; });
-  return { from, to, hours, step, group, scope, cols, series, colorOf, table, totals: T, cats: C, backfill: !!bfRow, embed: sep, empty: !rows.length && !bfRow };
+  return { from, to, hours, step, group, scope, picked, cols, series, colorOf, table, totals: T, cats: C, backfill: !!bfRow && (!picked || picked === BACKFILL), embed: sep, empty: !rows.length && !bfRow };
+}
+
+// The table's row names in display order, for moving a selection.
+export function usageRows(slot, { win = "24h", group = "kind", scope = "" } = {}) {
+  return slot && slot.data ? usageModel(slot.data, { hours: winOf(win).hours, group, scope }).table.map((g) => g.name) : [];
 }
 
 // ── chart (pure) ───────────────────────────────────────────────────────────
@@ -328,6 +339,7 @@ function shareBar(frac, w = 12) {
   return "█".repeat(full) + (part ? HBAR[part - 1] : "");
 }
 function tableHtml(m, lim) {
+  const sel = m.picked;
   const T = m.totals;
   // Name column fits the longest name ("■ " + name), at least the old 16ch,
   // capped so a runaway model id cannot push the numbers off screen.
@@ -338,7 +350,7 @@ function tableHtml(m, lim) {
     const c = g.name === BACKFILL ? BACKFILL_C : m.colorOf(g.name);
     const frac = T.total > 0 ? g.total / T.total : 0;
     const cost = g.backfill || (g.cost === 0 && g.unpriced > 0) ? DASH : fmtCost(g.cost) + (g.unpriced > 0 ? "+" : "");
-    return `<div class="tr urow">${nameCell("", `<span style="color:${c}">■</span> <span class="${g.backfill ? "fg-faint" : "fg-strong"}">${esc(g.name)}</span>`)}` +
+    return `<div class="tr urow${g.name === sel ? " sel" : ""}" data-act="usesel" data-name="${esc(g.name)}">${nameCell("", `<span style="color:${c}">■</span> <span class="${g.backfill ? "fg-faint" : "fg-strong"}">${esc(g.name)}</span>`)}` +
       cellW(56, "r fg-text", formatCount(Math.round(g.calls))) +
       cellW(64, "r fg-dim", formatCount(g.input)) +
       cellW(64, "r fg-dim", formatCount(g.output)) +
@@ -462,7 +474,7 @@ function limitCell(l) {
 
 // ── panel (pure given the slot) ────────────────────────────────────────────
 // slot = { data, error, status, missing, at }; widthCh = panel width in characters.
-export function usageView(slot, { win = "24h", group = "kind", scope = "", widthCh = 100, hasTenants = false, status = null } = {}) {
+export function usageView(slot, { win = "24h", group = "kind", scope = "", widthCh = 100, hasTenants = false, status = null, sel = "" } = {}) {
   const w = winOf(win);
   const toggle = (opts, cur) => opts.map((o) => (o === cur ? `<span class="fg-strong b">${esc(o)}</span>` : `<span class="fg-faint">${esc(o)}</span>`)).join(`<span class="fg-faint2"> · </span>`);
   const head = `<div class="tbar">${panelTitle("usage", scope)}<span class="fill"></span><span class="hint">${hasTenants ? "T to switch tenant · " : ""}w window · g group</span></div>
@@ -474,11 +486,11 @@ export function usageView(slot, { win = "24h", group = "kind", scope = "", width
     return wrap(`<div class="sigrow fg-faint">loading /v2/usage?hours=${w.hours}…</div>`);
   }
   const step = stepFor(w.hours, Math.max(24, widthCh - 10));
-  const m = usageModel(slot.data, { hours: w.hours, group, scope, step });
+  const m = usageModel(slot.data, { hours: w.hours, group, scope, step, only: sel });
   const stale = slot.error ? `<div class="sigrow fg-warn">refresh failed (${esc(slot.error)}) — showing the previous answer</div>` : "";
   const limits = limitsHtml(status, scope);
   if (m.empty) return wrap(stale + statsHtml(m) + limits + `<div class="sigrow fg-faint">no LLM calls in the last ${esc(w.id)}${scope ? " for " + esc(scope) : ""}</div>`);
-  const cap = `tokens per ${step === 1 ? "hour" : step + "h"} · stacked by ${group} · local time` + (m.embed ? " · embeddings apart" : "") + (m.backfill ? " · muted: daily backfill (tenant only)" : "");
+  const cap = `tokens per ${step === 1 ? "hour" : step + "h"} · ` + (m.picked ? `${m.picked} only` : `stacked by ${group}`) + ` · local time` + (m.embed ? " · embeddings apart" : "") + (m.backfill ? " · muted: daily backfill (tenant only)" : "");
   return wrap(stale + statsHtml(m) + limits +
     sub(cap) + chartHtml(m, widthCh) +
     sub(`by ${group}`) + tableHtml(m, group === "model" ? limitsFor(status, scope) : group === "kind" ? kindLimitsFor(status, scope) : null));

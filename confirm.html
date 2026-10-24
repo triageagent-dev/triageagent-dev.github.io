@@ -37,7 +37,7 @@ var token=location.hash.slice(1);
 // Keep the token out of history and the address bar once read.
 try{history.replaceState(null,"",location.pathname)}catch(e){}
 var title=document.getElementById("title"),msg=document.getElementById("msg"),go=document.getElementById("go"),hint=document.getElementById("hint");
-function fail(t){title.textContent="This link does not work";msg.className="err";msg.textContent=t;go.style.display="none";hint.innerHTML='Join again from the <a class="link" href="/#pricing">pricing section</a>.'}
+function fail(t){title.textContent="This link does not work";msg.className="err";msg.textContent=t;go.style.display="none";hint.innerHTML='Early access is by invitation: see <a class="link" href="/">triageagent.dev</a>.'}
 if(!/^[A-Za-z0-9_-]{20,128}$/.test(token)){fail("The link is incomplete. Open it again from the email, or join again to get a new one.");return}
 go.addEventListener("click",function(){
 go.disabled=true;msg.textContent="Confirming…";

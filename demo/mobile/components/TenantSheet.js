@@ -22,6 +22,7 @@ export function TenantSheet() {
   const readable = useStore(s => s.readable)
   const details = useStore(s => s.details)
   const snap = useStore(s => s.snap)
+  const labels = useStore(s => s.labels)
   const drag = useRef(null)
   if (!open) return null
   const close = () => set({ tsheet: false, tq: "" })
@@ -49,9 +50,9 @@ export function TenantSheet() {
     el.style.transition = "transform .15s ease"
     el.style.transform = ""
   }
-  const all = tenantRows({ readable, details, snap })
+  const all = tenantRows({ readable, details, snap, labels })
   const q = tq.trim().toLowerCase()
-  const shown = q ? all.filter(t => t.id.toLowerCase().includes(q)) : all
+  const shown = q ? all.filter(t => t.name.toLowerCase().includes(q) || t.id.toLowerCase().includes(q)) : all
   const fmt = (n) => n.toLocaleString("en-US")
 
   return html`
@@ -103,10 +104,10 @@ export function TenantSheet() {
                 style=${{ display: "flex", alignItems: "center", gap: 10, borderRadius: 12, padding: "9px 11px", background: on ? "#2b2547" : "var(--surface2)", minHeight: 48 }}
               >
                 <span style=${{ width: 30, height: 30, borderRadius: 999, background: on ? "#4d4482" : "#2f3345", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12.5, fontWeight: 500, color: "var(--text)", flexShrink: 0 }}>
-                  ${t.id.slice(0, 1).toUpperCase()}
+                  ${t.name.slice(0, 1).toUpperCase()}
                 </span>
                 <span class="grow col" style=${{ gap: 2 }}>
-                  <span class="ellip" style=${{ fontSize: 13.5, fontWeight: 500, color: on ? "#d2cefd" : "var(--text-body)" }}>${t.id}</span>
+                  <span class="ellip" style=${{ fontSize: 13.5, fontWeight: 500, color: on ? "#d2cefd" : "var(--text-body)" }}>${t.name}</span>
                   <span class="mono" style=${{ fontSize: 11, color: "var(--muted)" }}>
                     ${t.events == null ? "no figures reported" : t.events ? `${fmt(t.events)} events · ${t.issues == null ? "—" : fmt(t.issues)} issues` : "no events in window"}
                   </span>

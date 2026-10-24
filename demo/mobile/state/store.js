@@ -7,10 +7,10 @@
  * compute them per render from `snap` + `goals` via src/model.
  */
 import { create } from "../lib/store.js"
-import { ApiError, getJSON, signOut } from "../api/client.js"
+import { ApiError, getJSON, signOut, signOutPage } from "../api/client.js"
 import { fetchSnapshot } from "../api/snapshot.js"
 import { mapFractal } from "../model/fractal.js"
-import { chooseTenant, parseGrants, readableTenants } from "../model/tenancy.js"
+import { chooseTenant, parseGrants, readableTenants, tenantLabel } from "../model/tenancy.js"
 import { scopeSteps } from "../model/scope.js"
 import { useVoice } from "../voice/voice.js"
 import { loadCfg, loadOwnGoals, loadPro, saveCfg, saveOwnGoals, savePro } from "./persist.js"
@@ -132,7 +132,8 @@ export const useStore = create((set, get) => ({
       saveCfg(cfg)
       set({ cfg })
     }
-    set({ listed, readable, serverDefault: tr.default ?? "", details: tr.details ?? null, tenant, ...goalState(loadOwnGoals(tenant), null) })
+    const labels = { ...(me.tenantLabels ?? {}), ...(tr.labels ?? {}) }
+    set({ listed, readable, labels, serverDefault: tr.default ?? "", details: tr.details ?? null, tenant, ...goalState(loadOwnGoals(tenant), null) })
     if (!tenant) {
       set({ conn: "failed", connMsg: listed.length ? "You have no readable tenant on this server." : "The server listed no tenants." })
       return
@@ -276,7 +277,7 @@ export const useStore = create((set, get) => ({
       // The cookie may still be valid: say so and send the browser through
       // the core's own logout page rather than pretending it worked.
       set({ connMsg: "Sign-out did not complete — opening the server's sign-out page." })
-      window.location.href = "/v2/auth/logout"
+      signOutPage()
       return
     }
     // A shared phone must not keep the last user's tenant or grants.
@@ -301,7 +302,7 @@ useStore.subscribe((s, prev) => {
 })
 
 function sameView(a, b) {
-  return a.screen === b.screen && a.metric === b.metric && (a.zone ?? null) === (b.zone ?? null)
+  return a.screen === b.screen && a.metric === b.metric && (a.zone ?? null) === (b.zone ?? null) && (a.roomId ?? null) === (b.roomId ?? null)
     && a.evKey === b.evKey && a.incId === b.incId && a.svcName === b.svcName
 }
 
@@ -315,14 +316,19 @@ export function tenantRows(s) {
   const stats = s.snap?.status?.tenantStats?.tenants ?? {}
   return s.readable.filter(id => id !== "default").map(id => {
     const d = byId.get(id)
-    if (d) return { id, events: d.events ?? null, issues: d.issues ?? null, coverage: d.coveragePct ?? null }
+    const name = tenantLabel(s.labels, id)
+    if (d) return { id, name, events: d.events ?? null, issues: d.issues ?? null, coverage: d.coveragePct ?? null }
     const r = stats[id]
     const e = r?.events
     return {
       id,
+      name,
       events: e ? (e.noise ?? 0) + (e.unknown ?? 0) + (e.signal ?? 0) + (e.issue ?? 0) : null,
       issues: r?.issues?.opened ?? null,
       coverage: r?.coveragePct ?? null,
     }
   })
 }
+
+/** The display name of tenant id (core ADR-090), from the labels the core sent. */
+export const useTenantName = (id) => useStore(s => tenantLabel(s.labels, id))

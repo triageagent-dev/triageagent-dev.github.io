@@ -1,5 +1,6 @@
-import { html } from "../vendor/preact-htm.js"
+import { html, useEffect } from "../vendor/preact-htm.js"
 import { current, useStore } from "../state/store.js"
+import { useMessenger } from "../state/messenger.js"
 import { Icon } from "./Icon.js"
 
 /** Stop a tap inside a tappable card from also firing the card. */
@@ -29,6 +30,8 @@ export function useGo() {
 export function Avatar({ size = 26 }) {
   const username = useStore(s => s.username)
   const navigate = useStore(s => s.navigate)
+  const photo = useMessenger(s => s.myPhoto)
+  useEffect(() => { void useMessenger.getState().loadMe() }, [])
   const initial = (username || "?").slice(0, 1).toUpperCase()
   return html`
     <${Tap}
@@ -37,10 +40,10 @@ export function Avatar({ size = 26 }) {
       style=${{
         display: "flex", alignItems: "center", justifyContent: "center", width: size, height: size,
         borderRadius: 999, background: "var(--avatar-bg)", boxShadow: "0 0 0 1px var(--avatar-ring)",
-        fontSize: size > 40 ? 19 : 11, fontWeight: 500, color: "var(--accent-strong)", flexShrink: 0,
+        fontSize: size > 40 ? 19 : 11, fontWeight: 500, color: "var(--accent-strong)", flexShrink: 0, overflow: "hidden", padding: 0,
       }}
     >
-      ${initial}
+      ${photo ? html`<img src=${photo} alt="" style=${{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />` : initial}
     <//>
   `
 }

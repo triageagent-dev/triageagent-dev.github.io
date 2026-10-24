@@ -1,17 +1,34 @@
-import { html } from "../vendor/preact-htm.js"
+import { html, useEffect, useState } from "../vendor/preact-htm.js"
 import { SIGN_IN_URL } from "../api/client.js"
 import { useStore } from "../state/store.js"
 import { Icon } from "../components/Icon.js"
 
 /**
  * Not signed in: no sample data, no preview — just the way in. Sign-in is a
- * full navigation to the core's GitHub SSO, which returns to / (and on to
- * this UI) with the session cookie set on this origin.
+ * full navigation to one of the core's SSO providers (/v2/auth/providers:
+ * GitHub, and the accounts service over OIDC on a core with self-registered
+ * tenants, ADR-090), which returns to / with the session cookie set on this
+ * origin. Without the list, GitHub is offered, as before.
  */
+const OIDC_URL = "/v2/auth/oidc"
+
+function useProviders() {
+  const [p, setP] = useState({ github: true, oidc: false, oidcName: "" })
+  useEffect(() => {
+    fetch("/v2/auth/providers", { credentials: "same-origin" })
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (j && (j.github || j.oidc)) setP({ github: !!j.github, oidc: !!j.oidc, oidcName: j.oidcName || "Sign in" }) })
+      .catch(() => { /* keep GitHub */ })
+  }, [])
+  return p
+}
+
 export function SignIn() {
   const auth = useStore(s => s.auth)
   const err = useStore(s => s.authError)
   const boot = useStore(s => s.boot)
+  const providers = useProviders()
+  const btn = { display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 44, borderRadius: 8, background: "#e9e9ed", color: "#161826", fontSize: 14, fontWeight: 500, textDecoration: "none" }
   const C = [2 * Math.PI * 68, 2 * Math.PI * 53, 2 * Math.PI * 38]
   return html`
     <main class="screen" style=${{ justifyContent: "center", alignItems: "center", gap: 22, padding: "calc(env(safe-area-inset-top, 0px) + 24px) 28px calc(env(safe-area-inset-bottom, 0px) + 28px)" }}>
@@ -36,13 +53,14 @@ export function SignIn() {
 
       ${auth !== "loading" && html`
         <div class="col" style=${{ gap: 10, width: "100%", maxWidth: 340 }}>
-          <a
-            href=${SIGN_IN_URL}
-            class="tap"
-            style=${{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, height: 44, borderRadius: 8, background: "#e9e9ed", color: "#161826", fontSize: 14, fontWeight: 500, textDecoration: "none" }}
-          >
-            <${Icon} name="github-logo" size=${18} weight="fill" />Sign in with GitHub
-          </a>
+          ${providers.oidc && html`
+            <a href=${OIDC_URL} class="tap" style=${btn}>${providers.oidcName}</a>
+          `}
+          ${providers.github && html`
+            <a href=${SIGN_IN_URL} class="tap" style=${btn}>
+              <${Icon} name="github-logo" size=${18} weight="fill" />Sign in with GitHub
+            </a>
+          `}
           ${auth === "error" && html`
             <button type="button" class="tap" onClick=${() => void boot()}
               style=${{ display: "flex", alignItems: "center", justifyContent: "center", gap: 6, height: 38, borderRadius: 8, border: "1px solid var(--accent-line)", color: "var(--accent-strong)", fontSize: 12.5 }}>

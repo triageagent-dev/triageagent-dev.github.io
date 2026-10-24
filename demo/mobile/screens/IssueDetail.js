@@ -3,6 +3,7 @@ import { issueRow } from "../model/vitals.js"
 import { drawFractal, LAYER_NAMES, LAYER_TINTS } from "../model/fractal.js"
 import { fmtClock } from "../model/format.js"
 import { current, useStore } from "../state/store.js"
+import { useMessenger } from "../state/messenger.js"
 import { Header, Kicker, Tap } from "../components/ui.js"
 import { Icon } from "../components/Icon.js"
 
@@ -19,6 +20,12 @@ export function IssueDetail() {
   const fractal = fr && typeof fr === "object" && !("error" in fr) ? fr : null
   const drawing = useMemo(() => (fractal ? drawFractal(fractal) : null), [fractal])
   useEffect(() => { if (id && fr === undefined) void loadFractal(id) }, [id, fr, loadFractal])
+  // A tapped notification can name an issue that is gone; the workspace chat still has what Tria said.
+  const tenant = useStore(s => s.tenant)
+  const navigate = useStore(s => s.navigate)
+  const room = useMessenger(s => s.rooms.find(r => r.kind !== "dm" && r.workspace === tenant))
+  const gone = !!snap && (!inc || !row)
+  useEffect(() => { if (gone) useMessenger.getState().start() }, [gone])
 
   if (!inc || !row) {
     return html`
@@ -27,6 +34,11 @@ export function IssueDetail() {
         <span style=${{ fontSize: 12.5, color: "var(--muted)" }}>
           ${snap ? "This issue is no longer in the tenant's issue list." : "Loading…"}
         </span>
+        ${room && html`
+          <${Tap} bg onClick=${() => navigate({ screen: "chat", roomId: room.id, roomName: room.name })} style=${{ display: "flex", alignItems: "center", justifyContent: "center", background: "var(--surface2)", borderRadius: 8, padding: 12, fontSize: 13.5 }}>
+            Open the workspace chat
+          <//>
+        `}
       </main>
     `
   }

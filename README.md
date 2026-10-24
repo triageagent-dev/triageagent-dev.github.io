@@ -7,7 +7,7 @@ production outages, cost anomalies and security breaches. Built on an agentic
 memory substrate, Kahneman's dual-system thinking, the CoALA architecture and
 the USE, RED and SIG signal frameworks.
 
-Live at **<https://triageagent-dev.github.io>**
+Live at **<https://triageagent.dev>**
 
 ## Contents
 
@@ -18,13 +18,14 @@ Live at **<https://triageagent-dev.github.io>**
 | `agent.html` | The agent specification |
 | `demo/` | The live devices section: the real TUI and mobile app (copied from `../ui/public` by `sync-demo.sh`) running against sample data (`fixtures.js`, `shim.js`), plus the interactive watch and tracker faces (`devices.js`) |
 | `confirm.html` | Double opt-in landing page for the link in the confirmation email |
-| `privacy.html`, `terms.html`, `subprocessors.html` | Legal pages. **Drafts**: fill the `[bracketed]` values and have a lawyer review before publishing |
+| `404.html` | Served by GitHub Pages for unknown paths |
+| `og.png` | Social preview card (1200×630) referenced by the `og:image` tag |
+| `privacy.html`, `terms.html`, `subprocessors.html` | Legal pages. **Drafts**: the legal entity, address, governing law and jurisdiction are marked "soon"; have a lawyer review before publishing |
 
-The pricing section and its waitlist forms are removed for now; the accounts service (`../accounts`) is not wired to the page.
+There is no pricing section or waitlist form on the page; early access is by invitation, and the accounts service (`../accounts`) is not wired to the site.
 
-Run `./sync-demo.sh` after the TUI or the mobile app change. No build step. The landing page and the white paper are self-contained, with
-no external assets or fonts to fetch; the agent specification loads its fonts
-from Google Fonts and its code highlighting from a CDN.
+Run `./sync-demo.sh` after the TUI or the mobile app change. No build step. Every page is self-contained: system fonts, inline CSS and
+SVG, no external assets to fetch.
 
 ## Local preview
 

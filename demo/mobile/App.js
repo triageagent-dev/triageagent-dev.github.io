@@ -3,9 +3,11 @@ import { useStore, current } from "./state/store.js"
 import { TabBar, tabScreens } from "./components/TabBar.js"
 import { inApp, onMessage as onAppMessage, send as toApp } from "./lib/native.js"
 import { resyncDevicePush } from "./api/push.js"
+import { syncMessengerPush } from "./api/messenger.js"
 import { TenantSheet } from "./components/TenantSheet.js"
 import { ScopeSheet } from "./components/ScopeSheet.js"
 import { VoiceOverlay } from "./components/VoiceOverlay.js"
+import { VerifySheet } from "./components/VerifySheet.js"
 import { SignIn } from "./screens/SignIn.js"
 import { Home } from "./screens/Home.js"
 import { VitalDetail } from "./screens/VitalDetail.js"
@@ -20,6 +22,10 @@ import { ServiceDetail } from "./screens/ServiceDetail.js"
 import { Cost } from "./screens/Cost.js"
 import { Secure } from "./screens/Secure.js"
 import { Settings } from "./screens/Settings.js"
+import { Chats } from "./screens/Chats.js"
+import { Chat } from "./screens/Chat.js"
+import { useMessenger } from "./state/messenger.js"
+import { TriaChat } from "./screens/TriaChat.js"
 
 const SWIPE_MIN_DX = 56
 const SWIPE_MAX_MS = 900
@@ -47,12 +53,13 @@ export function App() {
   }, [])
 
   // In the Android app a tapped notification opens its issue (in its tenant, when the
-  // viewer can read it). "ready" asks the app for a tap that launched it before this ran.
+  // viewer can read it), or its messenger room. "ready" asks the app for a tap that launched it before this ran.
   useEffect(() => {
     if (!inApp) return
     const off = onAppMessage((m) => {
       if (m.type !== "open") return
       const s = useStore.getState()
+      if (m.room) { s.navigate({ screen: "chat", roomId: m.room }); return }
       if (m.tenant && m.tenant !== s.tenant && s.readable.includes(m.tenant)) s.setTenant(m.tenant)
       s.navigate(m.id ? { screen: "issue", incId: m.id } : { screen: "home" })
     })
@@ -60,10 +67,25 @@ export function App() {
     return off
   }, [])
 
+  // The app holds back a push for the room that is on screen: it is already being read.
+  const roomOpen = view.screen === "chat" ? view.roomId ?? "" : ""
+  useEffect(() => {
+    if (inApp) toApp({ type: "viewing", room: roomOpen })
+  }, [roomOpen])
+
   // Signed in, in the app, alerts on: the core hears about this install again.
   useEffect(() => {
-    if (auth === "signedIn") void resyncDevicePush().catch(() => {})
+    if (auth !== "signedIn") return
+    void resyncDevicePush().catch(() => {})
+    void syncMessengerPush().catch(() => {})
   }, [auth])
+
+  // On Pro the messenger's stream runs from sign-in (or from switching Pro
+  // on), so the Chats badge is live.
+  const pro = useStore(s => s.pro)
+  useEffect(() => {
+    if (auth === "signedIn" && pro) useMessenger.getState().start()
+  }, [auth, pro])
 
   // Refresh when the tab comes back to the foreground after a while.
   useEffect(() => {
@@ -161,10 +183,11 @@ export function App() {
 
   return html`
     <div class="shell" ref=${shellRef}>
-      <${Route} screen=${view.screen} key=${view.screen + (view.incId ?? "") + (view.svcName ?? "") + (view.evKey ?? "") + (view.metric ?? "")} />
+      <${Route} screen=${view.screen} key=${view.screen + (view.incId ?? "") + (view.svcName ?? "") + (view.evKey ?? "") + (view.metric ?? "") + (view.roomId ?? "")} />
       <${VoiceOverlay} />
       <${TabBar} />
       <${TenantSheet} />
+      <${VerifySheet} />
       <${ScopeSheet} />
     </div>
   `
@@ -184,6 +207,9 @@ function Route({ screen }) {
     case "cost": return html`<${Cost} />`
     case "secure": return html`<${Secure} />`
     case "settings": return html`<${Settings} />`
+    case "chats": return html`<${Chats} />`
+    case "chat": return html`<${Chat} />`
+    case "tria": return html`<${TriaChat} />`
     default: return html`<${Home} />`
   }
 }

@@ -1,4 +1,4 @@
-// Panel 6 — sources: the cluster agents (approvals.js) on top, then signals. A port of triagectl's ui/signals.go: collectors →
+// The src section of the workspaces panel (?) — sources: the cluster agents (approvals.js) on top, then signals. A port of triagectl's ui/signals.go: collectors →
 // sensors → (value scorecard ∥ signals sparklines) → top services, for the
 // scoped tenant (or an "all tenants" aggregate when nothing is scoped), read
 // off the /v2/agent/status blob the client already fetches.
@@ -357,7 +357,7 @@ function scorecardSection(entry, ok, drift) {
   return html + scorecardRows(entry, drift);
 }
 
-// The seven value-scorecard rows (valueScorecardLinesFor) — panel 6 and the
+// The seven value-scorecard rows (valueScorecardLinesFor) — the src section and the
 // tenant picker's pane render the same rows.
 export function scorecardRows(entry, drift = 0) {
   let html = "";

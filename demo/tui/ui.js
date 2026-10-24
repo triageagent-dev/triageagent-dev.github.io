@@ -1,11 +1,11 @@
 // Shared rendering helpers for the Triage TUI web client (app.js and the
 // panel modules signals.js / chat.js / approvals.js).
-import { DASH } from "./api.js";
+import { DASH, tenantName } from "./api.js";
 
 export const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 // The title of a panel's bar: its name, then the tenant in view in brackets,
 // the tenant in the label colour. `extra` follows the brackets.
-export const panelTitle = (name, tenant, extra = "") => `<span class="t">${name} [<span class="fg-label">${esc(tenant || "all")}</span>]${extra}</span>`;
+export const panelTitle = (name, tenant, extra = "") => `<span class="t">${name} [<span class="fg-label">${esc(tenantName(tenant) || "all")}</span>]${extra}</span>`;
 export const v = (x) => (x == null || x === "" ? DASH : x);
 export const sub = (t, attrs = "") => `<div class="sub"${attrs}><span>&#8212; ${esc(t)}</span></div>`;
 export const kv = (k, val, cls = "", s = "", w = "") => `<div class="kv ${w}"><span class="k">${esc(k)}</span><span class="v ${cls}">${esc(v(val))}</span>${s ? `<span class="s">${esc(s)}</span>` : ""}</div>`;

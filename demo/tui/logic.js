@@ -1,4 +1,4 @@
-// Panel 7 — logic: the triage pipeline and its loops as a ring, in the style
+// Panel 6 — logic: the triage pipeline and its loops as a ring, in the style
 // of the service graph (panel 2): memory in the centre, the components on
 // an oval ring, flows as chords, with the live counts and the windows the core
 // runs right now, read off the /v2/agent/status blob (loops,
@@ -290,8 +290,8 @@ export function logicPanel(D, raw, pathName = "all") {
     <text x="${CX}" y="${CY + 16}" text-anchor="middle" class="lg-line">facts ${v(n(mk.stable_fact))} patterns ${v(n(mk.operational_pattern))}</text></g>`;
 
   return `<div class="logic">
-    <div class="tbar">${panelTitle("proc", D.tenant, on ? ` · ${esc(pathName)}` : "")}</div>
-    <div class="lg-scroll"><svg class="lg" viewBox="${PAD_X} 0 ${W} ${H}" role="img" aria-label="triage proc diagram">
+    <div class="tbar">${panelTitle("mind", D.tenant, on ? ` · ${esc(pathName)}` : "")}</div>
+    <div class="lg-scroll"><svg class="lg" viewBox="${PAD_X} 0 ${W} ${H}" role="img" aria-label="triage mind diagram">
       <defs><marker id="lg-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="lg-head"/></marker></defs>
       ${edges}${memory}${comps.map((cp) => dot(P[cp.id], cp, dimmed(cp.id), pulsing.has(cp.id), rate[cp.id])).join("")}
     </svg></div>

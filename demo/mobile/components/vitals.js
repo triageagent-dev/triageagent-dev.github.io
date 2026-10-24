@@ -2,6 +2,7 @@ import { html, useRef } from "../vendor/preact-htm.js"
 import { ringDash } from "../model/vitals.js"
 import { pct } from "../model/format.js"
 import { useStore } from "../state/store.js"
+import { useMessenger } from "../state/messenger.js"
 import { Icon } from "./Icon.js"
 
 // SVG attributes are written kebab-case (stroke-width, …): Preact core sets
@@ -24,6 +25,9 @@ const SWIPE_MAX_MS = 900
 /** The vitals hero: signal corona, four goal rings, attainment disc. */
 export function VitalsHero({ m, onSwipe }) {
   const navigate = useStore(s => s.navigate)
+  // The centre disc opens the workspace's chat; with no chat (no messenger), the goals.
+  const tenant = useStore(s => s.tenant)
+  const room = useMessenger(s => s.rooms.find(r => r.kind !== "dm" && r.workspace === tenant))
   const open = (metric) =>
     navigate(metric === "inc" ? { screen: "issues" } : { screen: "detail", metric })
   const from = useRef(null)
@@ -70,8 +74,8 @@ export function VitalsHero({ m, onSwipe }) {
       <div style=${{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", pointerEvents: "none" }}>
         <button
           type="button"
-          onClick=${() => navigate({ screen: "goals" })}
-          aria-label=${"Attainment " + m.attainPct + " of goals"}
+          onClick=${() => navigate(room ? { screen: "chat", roomId: room.id, roomName: room.name } : { screen: "goals" })}
+          aria-label=${room ? "Open the workspace chat" : "Attainment " + m.attainPct + " of goals"}
           style=${{
             width: 82, height: 82, borderRadius: 999, pointerEvents: "auto",
             background: "radial-gradient(circle,#14161f 56%,rgba(20,22,31,0) 100%)",

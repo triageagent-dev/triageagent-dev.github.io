@@ -3,7 +3,8 @@ import { buildVitals } from "../model/vitals.js"
 import { fleetCounts } from "../model/service.js"
 import { scopeApps, scopeIssues } from "../model/scope.js"
 import { bubbleTone, rankedPredictions } from "../model/trends.js"
-import { useStore } from "../state/store.js"
+import { useStore, useTenantName } from "../state/store.js"
+import { useMessenger } from "../state/messenger.js"
 import { Avatar, ConnBanner, SourcePill, Tap } from "../components/ui.js"
 import { LiveIssueCard, VitalsHero, VitalTiles } from "../components/vitals.js"
 import { Icon } from "../components/Icon.js"
@@ -15,6 +16,7 @@ export function Home() {
   const set = useStore(s => s.set)
   const navigate = useStore(s => s.navigate)
   const tenant = useStore(s => s.tenant)
+  const tenantName = useTenantName(tenant)
   const cluster = useStore(s => s.cluster)
   const ns = useStore(s => s.ns)
   const scoped = useStore(s => s.scoped)
@@ -23,13 +25,18 @@ export function Home() {
   const health = scoped?.key === [tenant, cluster, ns].join("|") ? scoped.body : null
   const m = useMemo(() => buildVitals(snap, goals, now, { cluster, ns, health }), [snap, goals, now, cluster, ns, health])
   const zTotal = m.zones?.total
+  const pro = useStore(s => s.pro)
+  // The workspace's spot speaks here, in place of the generic tip,
+  // while it is up and has set a line.
+  const spot = useMessenger(s => s.rooms.find(r => r.kind === "workspace" && r.workspace === tenant)?.spot)
+  const line = spot?.state === "up" ? spot.line || "" : ""
 
   return html`
     <main class="screen">
       <div class="row" style=${{ gap: 8, minWidth: 0 }}>
         <!-- The tenant is named, not picked, here: a pull up from the bottom switches it. -->
         <${Tap} label="Cluster and namespace" onClick=${() => set({ ssheet: true })} style=${{ flexShrink: 1, minWidth: 0 }}>
-          <span class="kicker ellip">${[tenant, cluster, ns].filter(Boolean).join(" · ")}</span>
+          <span class="kicker ellip">${[tenantName, cluster, ns].filter(Boolean).join(" · ")}</span>
         <//>
         <span style=${{ flex: 1 }} />
         <div class="row" style=${{ gap: 7, flexShrink: 0 }}>
@@ -64,11 +71,11 @@ export function Home() {
 
       <${BreakRow} />
 
-      ${snap && !insightOff && html`
+      ${snap && insightOff !== (line || true) && html`
         <div class="note">
           <${Icon} name="lightbulb" size=${16} color="var(--accent)" style=${{ flexShrink: 0, marginTop: 2 }} />
-          <p class="grow pretty" style=${{ fontSize: 13.5, lineHeight: 1.45, color: "var(--text-body)" }}>${m.insight}</p>
-          <${Tap} label="Dismiss" onClick=${() => set({ insightOff: true })} style=${{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, flexShrink: 0, margin: "-2px -3px 0 0" }}>
+          <p class="grow pretty" style=${{ fontSize: 13.5, lineHeight: 1.45, color: "var(--text-body)" }}>${line ? html`<span style=${{ color: "var(--muted)" }}>${spot.name} · </span>` : ""}${line || m.insight}</p>
+          <${Tap} label="Dismiss" onClick=${() => set({ insightOff: line || true })} style=${{ display: "flex", alignItems: "center", justifyContent: "center", width: 22, height: 22, borderRadius: 999, flexShrink: 0, margin: "-2px -3px 0 0" }}>
             <${Icon} name="x" size=${13} color="var(--muted-b)" />
           <//>
         </div>
@@ -99,6 +106,14 @@ export function Home() {
                   : `${zTotal.toLocaleString("en-US")} events triaged and none of them needs you now.`}
             </span>
           </div>
+        </div>
+      `}
+
+      <!-- On Pro the Chats tab holds the last slot; Events and Secure open from here. -->
+      ${pro && html`
+        <div class="col" style=${{ gap: 8 }}>
+          <${MoreRow} icon="pulse" label="Events" onClick=${() => navigate({ screen: "stream" })} />
+          <${MoreRow} icon="shield-check" label="Secure" onClick=${() => navigate({ screen: "secure" })} />
         </div>
       `}
     </main>
@@ -176,6 +191,16 @@ function BreakRow() {
           `
         })}
       </span>
+    <//>
+  `
+}
+
+function MoreRow({ icon, label, onClick }) {
+  return html`
+    <${Tap} bg onClick=${onClick} style=${{ display: "flex", alignItems: "center", gap: 10, background: "var(--surface2)", borderRadius: 10, padding: "12px 13px" }}>
+      <${Icon} name=${icon} size=${16} color="var(--accent)" />
+      <span class="grow" style=${{ fontSize: 13.5, textAlign: "left" }}>${label}</span>
+      <${Icon} name="caret-right" size=${13} color="#595d6c" />
     <//>
   `
 }

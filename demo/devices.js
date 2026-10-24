@@ -50,7 +50,7 @@
     var pages = [].slice.call(root.querySelectorAll("[data-page]"));
     var dots = [].slice.call(root.querySelectorAll("[data-dot]"));
     var detail = root.querySelector("[data-detail]");
-    var idx = 0, open = false, startX = 0, startY = 0, wheelAt = 0;
+    var idx = +root.getAttribute("data-start") || 0, open = false, startX = 0, startY = 0, wheelAt = 0;
     function show() {
       pages.forEach(function (p, i) { p.classList.toggle("on", i === idx && !open); });
       if (detail) detail.classList.toggle("on", open);

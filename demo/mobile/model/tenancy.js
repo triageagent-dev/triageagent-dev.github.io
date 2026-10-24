@@ -54,3 +54,12 @@ export function chooseTenant(
   if (serverDefault && readable.includes(serverDefault)) return { tenant: serverDefault, forget }
   return { tenant: readable[0] ?? null, forget }
 }
+
+/**
+ * A tenant's display name (core ADR-090): a registry core keys tenants by an
+ * opaque ID and names them in /v2/agent/tenants `labels` and /v2/auth/me
+ * `tenantLabels`. A core keyed by names sends none and the ID is the name.
+ */
+export function tenantLabel(labels, id) {
+  return (id && labels && labels[id]) || id || ""
+}

@@ -1,7 +1,7 @@
 import { html } from "../vendor/preact-htm.js"
 import { buildCost } from "../model/cost.js"
 import { compact, count, DASH } from "../model/format.js"
-import { useStore } from "../state/store.js"
+import { useStore, useTenantName } from "../state/store.js"
 import { ConnBanner, Empty, Header, Kicker } from "../components/ui.js"
 
 /**
@@ -12,12 +12,13 @@ import { ConnBanner, Empty, Header, Kicker } from "../components/ui.js"
 export function Cost() {
   const snap = useStore(s => s.snap)
   const tenant = useStore(s => s.tenant)
+  const tenantName = useTenantName(tenant)
   const c = buildCost(snap)
   const usedPct = c?.tenantToday != null && c.tenantCap ? Math.min(100, (c.tenantToday / c.tenantCap) * 100) : null
 
   return html`
     <main class="screen">
-      <${Header} back=${false} title="Cost" right=${html`<span style=${{ fontSize: 12, color: "var(--muted)" }}>${tenant}</span>`} />
+      <${Header} back=${false} title="Cost" right=${html`<span style=${{ fontSize: 12, color: "var(--muted)" }}>${tenantName}</span>`} />
       <${ConnBanner} />
 
       <div style=${{ background: "var(--surface)", borderRadius: 12, padding: 15, display: "flex", flexDirection: "column", gap: 7, boxShadow: "inset 0 0 0 1px var(--line2)" }}>

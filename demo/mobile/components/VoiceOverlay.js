@@ -1,6 +1,7 @@
 import { html, useEffect, useRef } from "../vendor/preact-htm.js"
 import { useVoice } from "../voice/voice.js"
 import { Icon } from "./Icon.js"
+import { useStore, current } from "../state/store.js"
 
 /**
  * The voice card over the tab bar: state line, the running conversation
@@ -16,11 +17,37 @@ const STATE_LABEL = {
   idle: "Ready",
 }
 
+/**
+ * The Tria chat shows the conversation in its own log, so there the session
+ * is one slim row in the screen (state, level bars, end), not a card.
+ */
+export function VoiceBar() {
+  const v = useVoice()
+  if (!v.open) return null
+  const label = v.conn === "connecting" ? "Connecting" : v.conn === "error" ? "Voice unavailable" : STATE_LABEL[v.agent]
+  const animate = v.conn === "open" && (v.agent === "listening" || v.agent === "speaking")
+  return html`
+    <div role="status" aria-live="polite" class="row" style=${{ gap: 8, padding: "8px 12px", borderRadius: 10, background: "var(--surface2)", boxShadow: "0 0 0 1px #423a6a" }}>
+      <span style=${{ width: 8, height: 8, borderRadius: 99, background: v.conn === "error" ? "#f87171" : "#9184d9", display: "block", animation: animate ? "vlisten 1.4s ease-in-out infinite" : "none" }} />
+      <span style=${{ fontSize: 12, letterSpacing: ".1em", textTransform: "uppercase", color: v.conn === "error" ? "#f0b7b7" : "var(--accent)" }}>${label}</span>
+      ${animate && html`<span class="row" style=${{ gap: 3, height: 14, alignItems: "center" }}>
+        ${BARS.slice(0, 5).map((h, i) => html`<span key=${i} style=${{ width: 3, height: h + "%", borderRadius: 99, background: "#796cbf", display: "block", animation: `vlisten ${1.1 + (i % 4) * 0.15}s ease-in-out infinite` }} />`)}
+      </span>`}
+      <span style=${{ flex: 1 }} />
+      <span style=${{ fontSize: 11, color: "var(--muted)" }}>${v.error || "tap the triage icon to end"}</span>
+      <button type="button" class="tap" aria-label="End voice session" onClick=${v.close}
+        style=${{ width: 40, height: 40, margin: -10, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--muted)" }}>
+        <${Icon} name="x" size=${16} />
+      </button>
+    </div>`
+}
+
 export function VoiceOverlay() {
   const v = useVoice()
+  const onChat = useStore(s => current(s).screen === "tria")
   const listRef = useRef(null)
   useEffect(() => { listRef.current?.scrollTo({ top: listRef.current.scrollHeight }) }, [v.msgs])
-  if (!v.open) return null
+  if (!v.open || onChat) return null
 
   const label = v.conn === "connecting" ? "Connecting" : v.conn === "error" ? "Voice unavailable" : STATE_LABEL[v.agent]
   const animate = v.conn === "open" && (v.agent === "listening" || v.agent === "speaking")

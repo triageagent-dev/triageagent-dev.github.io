@@ -1,4 +1,4 @@
-// Panel 0 — goals. The web UI's Home dashboard (components/vitals/overview.tsx)
+// Panel 1 — goals (score). The web UI's Home dashboard (components/vitals/overview.tsx)
 // in terminal dress: the same figures, from a port of lib/vitals/model.ts and
 // lib/vitals/infra-model.ts over the payloads the TUI already fetches, drawn as
 // boxed sections with SVG rings, bars and bubbles in the TUI palette.
@@ -7,7 +7,7 @@
 // the scoped tenant (or none without a registry), and infra health comes from
 // status.tenantStats[t].health, the mirror of /v2/tenants/{t}/health without
 // its full `services` list (the TUI does not fetch that endpoint).
-import { DASH, arr, num, parseSourceKind } from "./api.js";
+import { DASH, arr, num, parseSourceKind, tenantName } from "./api.js";
 import { esc, panelTitle } from "./ui.js";
 import { CORONA_SPAN, coronaHand, coronaTicks, denseHistory } from "./corona.js";
 import { statusBand } from "./band.js";
@@ -305,11 +305,14 @@ export function buildGoals(D, raw, goals, now = Date.now(), cn = {}) {
   const shortest = RINGS.filter((g) => fills[g.k] != null).sort((a, b) => fills[a.k] - fills[b.k])[0] || null;
 
   const byType = (api) => rows.reduce((a, r) => a + num((r.signalsByType || {})[api]), 0);
-  const fleet = SIGNALS.map((s) => ({ ...s, v: byType(s.api) }));
   const histories = rows.map((r) => arr(r.signalsHistory)), apis = SIGNALS.map((s) => s.api);
   const win = SIGNAL_WINDOWS.find(([k]) => k === sigWin) || SIGNAL_WINDOWS[SIGNAL_WINDOWS.length - 1];
   const group = Math.ceil(win[2] / 300 / 72);
-  const hist = chunkHistory(denseHistory(histories, apis, now, win[2] / 300), apis, group);
+  const dense = denseHistory(histories, apis, now, win[2] / 300);
+  const hist = chunkHistory(dense, apis, group);
+  // The count beside each series is the window's: the sum of the buckets
+  // plotted. The core's running total only stands in while there is no history.
+  const fleet = SIGNALS.map((s) => ({ ...s, v: dense.length ? dense.reduce((a, b) => a + (b[s.api] || 0), 0) : byType(s.api) }));
   const clock = denseHistory(histories, apis, now, CORONA_SPAN);
 
   const byName = new Map(nodes.map((n) => [n.name, n]));
@@ -371,8 +374,8 @@ export function buildGoals(D, raw, goals, now = Date.now(), cn = {}) {
 // title: text, or { html } already escaped (the tenant name in its colour).
 const box = (title, right, body, cls = "", attrs = "") =>
   `<section class="gbox ${cls}"${attrs}><div class="ghead"><span class="gt">${typeof title === "object" ? title.html : esc(title)}</span><span class="fill"></span>${right ? `<span class="gr">${right}</span>` : ""}</div>${body}</section>`;
-// A box that opens the goals editor (panel 8) when clicked.
-const TO_GOALS = ` data-act="gopanel" data-v="gset" style="cursor:pointer"`;
+// A box that opens the goals editor (workspaces panel, goals section) when clicked.
+const TO_GOALS = ` data-act="wsec" data-v="goals" style="cursor:pointer"`;
 const loc = (n) => (n == null ? DASH : Number(n).toLocaleString());
 
 function ringsSvg(m) {
@@ -481,8 +484,10 @@ export function graphSvg(graph, focus) {
     return `<circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${r.toFixed(1)}" fill="${c}"><title>${esc(n.name)} · blast ${b.toFixed(3)}</title></circle>` +
       (sorted.length <= 40 ? `<text x="${lx.toFixed(1)}" y="${(ly + 2.5).toFixed(1)}" text-anchor="${anchor}" class="glabel${focus && !focus.has(n.name) ? " ctx" : ""}">${esc(n.name)}</text>` : "");
   }).join("");
-  return `<svg class="ggraph" viewBox="-30 0 360 220">${edges}${dots}</svg>
-    <div class="gl gsmall"><span class="fill"></span><span class="fg-crit">● issue ≥${inc}</span>&nbsp; <span class="fg-warn">● signal ≥${noise}</span>&nbsp; <span class="fg-faint">● noise</span></div>`;
+  // Names are drawn only up to 40 nodes; with none, the room they would take
+  // is trimmed (still centred on the ring) so the ring is a fifth larger.
+  return `<svg class="ggraph" viewBox="${sorted.length > 40 ? "0 0 300 220" : "-30 0 360 220"}">${edges}${dots}</svg>
+    <div class="gl gsmall"><span class="fill"></span><span class="fg-crit">● issue ≥${inc}</span>&nbsp; <span class="fg-warn">● signal ≥${noise}</span>&nbsp; <span class="fg-faint">● noise</span><span class="fill"></span></div>`;
 }
 
 function sparkSvg(series, color) {
@@ -516,7 +521,7 @@ function bubbles(m) {
   return `<div class="gbubs">${svgs}</div><p class="para fg-dim">${esc(top.svc)}${top.env ? " · " + esc(top.env) : ""} — ${esc(top.why)}</p>`;
 }
 
-// Panel 8, setting the goals — the mobile Goals screen's words: what the
+// The goals section of the workspaces panel (?), setting the goals — the mobile Goals screen's words: what the
 // frameworks mean, what each ring measures, a start from today's numbers,
 // then one row per goal with its value and whose it is. j/k pick a goal, h/l
 // change it (it becomes the viewer's own), a adopts today's numbers, r gives
@@ -591,7 +596,7 @@ export function goalsPanel(D, raw, gr, cn = {}) {
     ["unknown", C.unknown, "unknown", "var(--faint2)"], ["drift", C.drift, "drift", "var(--faint2)"], ["virtual", C.virtual, "virtual", "var(--accent)"]]
     .filter(([k, n]) => n != null && (n > 0 || k === "Apps" || k === "healthy" || k === "unhlth"));
   const fleet = `<div class="gl gfleet">${appStates.map(([k, n, v, c]) => `<span data-act="appfilt" data-v="${v}" style="cursor:pointer"><span style="color:${c}">●</span> ${k} <span class="fg-strong">${loc(n)}</span></span>`).join("")}</div>`;
-  const fleetBox = box({ html: (D.tenant ? `<span class="fg-label">${esc(D.tenant)}</span>` : "goals") + esc((m.scopeLabel ? " · " + m.scopeLabel : "") + " score") }, `<span class="fg-faint">${m.hist.length ? "last 12 h · 5 min ticks" : "no signal history yet"}</span>`,
+  const fleetBox = box({ html: (D.tenant ? `<span class="fg-label">${esc(tenantName(D.tenant))}</span>` : "goals") + esc((m.scopeLabel ? " · " + m.scopeLabel : "") + " score") }, `<span class="fg-faint">${m.hist.length ? "last 12 h · 5 min ticks" : "no signal history yet"}</span>`,
     ringsSvg(m) +
     `<div class="gband ${m.bandCls}">${m.hasData ? esc(m.band.toUpperCase()) : DASH}</div><div class="gmean fg-dim">${esc(m.hasData ? m.bandMeaning : "waiting for the core")}</div>` +
     fleet, "", TO_GOALS);

@@ -118,14 +118,31 @@ export async function fetchScopedHealth(tenant, cluster, ns) {
   try { return await createClient().get("/v2/tenants/" + encodeURIComponent(tenant) + "/health?" + q); } catch (_) { return null; }
 }
 
-// The memory feed alone (memory, memSummary), for a panel that keeps its
-// memory counts live between the full reloads. A failed endpoint is left out.
-export async function fetchMemory(tenant) {
-  const c = createClient(), out = {};
-  await Promise.all(["memory", "memSummary"].map(async (k) => {
-    try { out[k] = await c.get(SCOPED.has(k) ? withTenant(PATHS[k], tenant) : PATHS[k]); } catch (_) { /* keep the last */ }
+// What each topic in a live "changed" frame means to re-read. The frame names
+// the topic and nothing else, so every read still goes through the scoped,
+// grant-filtered REST path. "tenants" is not here: a changed workspace list or
+// set of grants can move the scope itself, so it takes a full load.
+const TOPIC_PATHS = {
+  apps: ["apps"], graph: ["graph"], analytics: ["analytics"], events: ["events"],
+  memory: ["memory", "memSummary", "memMetrics"],
+};
+export const TOPICS = new Set([...Object.keys(TOPIC_PATHS), "tenants", "goals", "ledger"]);
+
+// Re-read only the topics a live frame named, for the tenant in view. A failed
+// endpoint is left out so the caller keeps the last payload; a 401/403 is
+// reported so the caller can run a full load, which owns the sign-in state.
+export async function fetchTopics(topics, tenant) {
+  const c = createClient(), raw = {}, failed = [];
+  const jobs = [];
+  topics.forEach((t) => {
+    (TOPIC_PATHS[t] || []).forEach((k) => jobs.push([k, SCOPED.has(k) ? withTenant(PATHS[k], tenant) : PATHS[k]]));
+    if (tenant && t === "goals") jobs.push(["goals", "/v2/tenants/" + encodeURIComponent(tenant) + "/goals"]);
+    if (tenant && t === "ledger") jobs.push(["ledger", "/v2/tenants/" + encodeURIComponent(tenant) + "/ledger"]);
+  });
+  await Promise.all(jobs.map(async ([k, path]) => {
+    try { raw[k] = await c.get(path); } catch (e) { failed.push({ key: k, path, status: e && e.status, error: String((e && e.message) || e) }); }
   }));
-  return out;
+  return { raw, failed };
 }
 
 // Any-method JSON call (the agent-join admin routes). A non-2xx answer throws
@@ -223,9 +240,29 @@ export function eventGroupKey(e) {
   return trimmed + "::" + (e.type || "");
 }
 
+// Tenant display names (core ADR-090): a registry core keys tenants by an
+// opaque ID and names them in /v2/agent/tenants `labels` and /v2/auth/me
+// `tenantLabels`. Every place the TUI shows a tenant goes through
+// tenantName; a core keyed by names sends no labels and the ID is shown.
+let tenantLabels = {};
+export const tenantName = (id) => (id && tenantLabels[id]) || id || "";
+
+// The caller's role per workspace by name: the core's one-word `role` sums
+// every grant, so "admin" there can mean the admin of one workspace only.
+function roleLabel(me) {
+  const roles = (me && me.roles) || {};
+  if (roles["*"]) return roles["*"] + " of every workspace";
+  const each = Object.entries(roles).map(([t, r]) => r + " of " + tenantName(t));
+  return each.length ? each.join(", ") : (me && me.role) || null;
+}
+// The grants string with workspace names in place of IDs.
+const grantsLabel = (me) => (me && me.grants ? String(me.grants).replace(/([^\s,:]+):/g, (m, t) => (t === "*" ? "*" : tenantName(t)) + ":") : null);
+export const setTenantLabels = (...maps) => { tenantLabels = Object.assign({}, ...maps.map((m) => m || {})); };
+
 // ── top-level mapping ──────────────────────────────────────────────────────
 export function mapAll(raw, tenant, nowMs = Date.now()) {
   const st = raw.status || {};
+  setTenantLabels((raw.me || {}).tenantLabels, (raw.tenants || {}).labels);
   const registry = arr((raw.tenants || {}).tenants);
   const tsMap = (st.tenantStats || {}).tenants || {};
   const scope = registry.length ? tenant : "";
@@ -239,8 +276,8 @@ export function mapAll(raw, tenant, nowMs = Date.now()) {
     tenants: mapTenants(st, registry, (raw.tenants || {}).default || ""),
     coreVersion: (raw.version || {}).version || ((st.serverVersion || {}).version) || null,
     user: (raw.me || {}).username || null,
-    role: (raw.me || {}).role || null,
-    grants: (raw.me || {}).grants || null,
+    role: roleLabel(raw.me),
+    grants: grantsLabel(raw.me),
     running: st.running,
     namespace: st.namespace || null,
     statusText: statusText(raw.memory, st, scope),

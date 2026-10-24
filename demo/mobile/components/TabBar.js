@@ -2,17 +2,19 @@ import { html, useRef } from "../vendor/preact-htm.js"
 import { current, useStore } from "../state/store.js"
 import { useVoice } from "../voice/voice.js"
 import { Icon, TriageMark } from "./Icon.js"
+import { unreadTotal, useMessenger } from "../state/messenger.js"
 
 const LONG_PRESS_MS = 450
 
 /** The main panels, left to right as the tab bar draws them. They carry no
  *  back arrow; a horizontal swipe on one moves to its neighbour. */
 export const tabScreens = (pro) =>
-  ["predict", "graph", "home", pro ? "cost" : "issues", pro ? "secure" : "stream"]
+  ["predict", "graph", "home", pro ? "cost" : "issues", pro ? "chats" : "stream"]
 
 /**
- * Five slots: Trends, Apps, Vitals (centre), then Issues/Events on the free
- * tier or Cost/Secure with Pro. Holding the centre 450 ms starts a hands-free
+ * Five slots: Trends, Apps, Vitals (centre), then Issues and Events on the
+ * free tier, or Cost and Chats (with its unread count) on Pro, where Events
+ * and Secure open from Home. Holding the centre 450 ms starts a hands-free
  * voice session (voice/voice.js); tapping it while one is live ends it,
  * otherwise a tap returns home.
  */
@@ -28,15 +30,23 @@ export function TabBar() {
   const slot4 = pro
     ? { label: "Cost", icon: "currency-dollar", screen: "cost", active: on("cost") }
     : { label: "Issues", icon: "warning", screen: "issues", active: on("issues", "issue") }
+  const unread = useMessenger(unreadTotal)
   const slot5 = pro
-    ? { label: "Secure", icon: "shield-check", screen: "secure", active: on("secure") }
+    ? { label: "Chats", icon: "chat-circle", screen: "chats", active: on("chats", "chat", "tria"), badge: unread }
     : { label: "Events", icon: "pulse", screen: "stream", active: on("stream", "event") }
 
   const down = () => {
     lp.current.fired = false
     if (lp.current.t) clearTimeout(lp.current.t)
     useVoice.getState().prime()
-    lp.current.t = setTimeout(() => { lp.current.fired = true; useVoice.getState().start(tenant) }, LONG_PRESS_MS)
+    lp.current.t = setTimeout(() => {
+      lp.current.fired = true
+      // Opened from a workspace's shared chat, the session speaks into that chat. A direct chat never is one: it is encrypted.
+      const v = current(useStore.getState())
+      const room = v.screen === "chat" ? useMessenger.getState().rooms.find(r => r.id === v.roomId) : null
+      if (room?.kind === "workspace" && room.workspace) useVoice.getState().start(room.workspace, "room")
+      else useVoice.getState().start(tenant)
+    }, LONG_PRESS_MS)
   }
   const up = () => {
     if (lp.current.t) clearTimeout(lp.current.t)
@@ -77,12 +87,12 @@ export function TabBar() {
         </span>
       </button>
       <${Slot} label=${slot4.label} active=${slot4.active} onClick=${() => navigate({ screen: slot4.screen })} icon=${html`<${Icon} name=${slot4.icon} size=${22} />`} />
-      <${Slot} label=${slot5.label} active=${slot5.active} onClick=${() => navigate({ screen: slot5.screen })} icon=${html`<${Icon} name=${slot5.icon} size=${22} />`} />
+      <${Slot} label=${slot5.label} active=${slot5.active} onClick=${() => navigate({ screen: slot5.screen })} badge=${slot5.badge} icon=${html`<${Icon} name=${slot5.icon} size=${22} />`} />
     </nav>
   `
 }
 
-/** Props: label, active, onClick, icon. */
+/** Props: label, active, onClick, icon, badge (a count; 0 shows none). */
 function Slot(props) {
   return html`
     <button
@@ -95,7 +105,10 @@ function Slot(props) {
         color: props.active ? "#b5abfc" : "#a3a7bd", minHeight: 40,
       }}
     >
-      ${props.icon}
+      <span style=${{ position: "relative", display: "block" }}>
+        ${props.icon}
+        ${props.badge > 0 && html`<span class="cs-badge" style=${{ position: "absolute", top: -6, left: 14, height: 16, minWidth: 16, fontSize: 10, padding: "0 4px" }}>${props.badge > 99 ? "99+" : props.badge}</span>`}
+      </span>
       <span style=${{ fontSize: 11.5 }}>${props.label}</span>
     </button>
   `

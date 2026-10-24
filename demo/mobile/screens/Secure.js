@@ -1,6 +1,6 @@
 import { html } from "../vendor/preact-htm.js"
 import { DASH } from "../model/format.js"
-import { useStore } from "../state/store.js"
+import { useStore, useTenantName } from "../state/store.js"
 import { Header } from "../components/ui.js"
 import { Icon } from "../components/Icon.js"
 
@@ -10,10 +10,11 @@ import { Icon } from "../components/Icon.js"
  */
 export function Secure() {
   const tenant = useStore(s => s.tenant)
+  const tenantName = useTenantName(tenant)
   const tiles = [["open", DASH], ["blocked", DASH], ["posture", DASH]]
   return html`
     <main class="screen">
-      <${Header} back=${false} title="Secure" right=${html`<span style=${{ fontSize: 12, color: "var(--muted)" }}>${tenant}</span>`} />
+      <${Header} back=${false} title="Secure" right=${html`<span style=${{ fontSize: 12, color: "var(--muted)" }}>${tenantName}</span>`} />
       <div style=${{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 6 }}>
         ${tiles.map(([k, v]) => html`
           <div key=${k} style=${{ background: "var(--surface)", borderRadius: 10, padding: "12px 11px", display: "flex", flexDirection: "column", gap: 4, boxShadow: "inset 0 0 0 1px var(--line2)" }}>
