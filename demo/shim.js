@@ -70,7 +70,7 @@
   }
   document.addEventListener("DOMContentLoaded", function () {
     var st = document.createElement("style");
-    st.textContent = '[aria-label="Attach"],[aria-label="Save"],[aria-label="Stop"],[data-act="chat-attach"],[data-act="chat-new"]{display:none!important}';
+    st.textContent = '[aria-label="Attach"],[aria-label="Save"],[aria-label="Stop"],[aria-label="Search"],[data-act="chat-attach"],[data-act="chat-new"]{display:none!important}';
     document.head.appendChild(st);
     new MutationObserver(markComposers).observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["placeholder"] });
     markComposers();

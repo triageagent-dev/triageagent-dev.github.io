@@ -68,7 +68,7 @@ p.auth a:hover{text-decoration:underline}
 .wscr .wtxt{width:54.198cqw;text-align:center;font-size:3.817cqw;line-height:1.35;color:#c2c6d8;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;overflow:hidden}
 .wscr .wa{background:radial-gradient(circle at 50% 45%,#1a2285 0%,#0d1344 55%,#080a26 100%)}
 .wscr .tria{display:flex;flex-direction:column;align-items:center;gap:1.1cqw;cursor:pointer}
-.wscr .tria svg{width:30.5cqw;height:30.5cqw;filter:drop-shadow(0 0 2.2cqw rgba(42,98,255,.7))}
+.wscr .tria svg,.prod .wscr .tria svg{width:30.5cqw;height:30.5cqw;filter:drop-shadow(0 0 2.2cqw rgba(42,98,255,.7))}
 .wscr .tria .ta{font-size:4.6cqw;font-weight:500;color:#fff;margin-top:2.2cqw}
 .wscr .tria .tb{font-size:3.8cqw;color:#9aa3d6}
 .wscr .tria.live svg{animation:triapulse 1.1s ease-in-out infinite}
@@ -141,7 +141,13 @@ main{width:auto;min-width:0}
 .prod .logo{display:flex;align-items:center;justify-content:center}
 .prod .logo svg{width:min(100%,260px);height:auto}
 .prod.flip .logo{order:-1}
-.tria-phone{width:min(100%,270px);margin:0}
+.prod .logo.tria-devs{gap:12%}
+.prod .logo.tria-devs{align-items:center;justify-content:flex-end;position:relative;top:36px}
+@media (min-width:1280px){.prod .logo.tria-devs{left:min(4vw,56px)}}
+.tria-devs figcaption b{color:#e6edf3}
+.tria-devs figcaption span{color:#8b949e}
+.tria-phone{flex:0 0 calc(min(100vw - 4rem,1360px)*.177);margin:0}
+.tria-watch{flex:0 0 calc(min(100vw - 4rem,1360px)*.125);margin:0}
 #ego,#xray{background:#eeeef2;border-top:0}
 #ego h2,#ego h3,#xray h2,#xray h3{color:#191b28}
 #ego .kicker,#xray .kicker{color:#0b7569}
@@ -173,6 +179,9 @@ main{width:auto;min-width:0}
 #spot::before{display:none}
 #spot .wrap{left:0;gap:2rem}
 #spot .logo>svg:not(.harness){width:150px}
+.prod .logo.tria-devs{justify-content:center;top:0;left:0}
+.tria-phone{flex-basis:calc((100vw - 4rem)*.4)}
+.tria-watch{flex-basis:calc((100vw - 4rem)*.31)}
 #spot .harness{width:760px;opacity:.2}
 }
 </style>
@@ -331,14 +340,40 @@ main{width:auto;min-width:0}
 <h3>Ask · speak</h3>
 <p>Talk to Tria in chat or by voice when you want more. Mention @tria in a workspace chat and the whole room sees the answer. Tria asks before any change.</p>
 </div>
-<div class="logo"><figure class="dev tria-phone"><div class="shell"><div style="position:relative;width:100.000cqw;height:212.150cqw;border-radius:10.748cqw;padding:1.869cqw;box-sizing:border-box;background:conic-gradient(from 202deg at 50% 50%,#5d6172 0%,#2b2d38 14%,#1a1c23 30%,#4e5261 48%,#1f2129 64%,#434655 82%,#5d6172 100%);box-shadow:0 13.084cqw 22.430cqw -7.009cqw rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.5)">
+<div class="logo tria-devs"><figure class="dev tria-phone"><div class="shell"><div style="position:relative;width:100.000cqw;height:212.150cqw;border-radius:10.748cqw;padding:1.869cqw;box-sizing:border-box;background:conic-gradient(from 202deg at 50% 50%,#5d6172 0%,#2b2d38 14%,#1a1c23 30%,#4e5261 48%,#1f2129 64%,#434655 82%,#5d6172 100%);box-shadow:0 13.084cqw 22.430cqw -7.009cqw rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.5)">
 <div style="position:absolute;right:-0.701cqw;top:50.000cqw;width:0.935cqw;height:13.084cqw;border-radius:2px;background:linear-gradient(180deg,#5b5f6e,#2a2c36 60%,#1c1e26);box-shadow:1px 0 2px rgba(0,0,0,.6)"></div>
 <div style="position:absolute;right:-0.701cqw;top:67.757cqw;width:0.935cqw;height:24.766cqw;border-radius:2px;background:linear-gradient(180deg,#5b5f6e,#2a2c36 60%,#1c1e26);box-shadow:1px 0 2px rgba(0,0,0,.6)"></div>
 <div style="position:relative;width:96.262cqw;height:208.411cqw;border-radius:9.112cqw;overflow:hidden;background:#05060a;box-shadow:inset 0 1px 1px rgba(255,255,255,.08)"><div data-live data-w="412" data-h="892" style="position:relative;width:100%;overflow:hidden"><iframe id="triaphone" data-src="/demo/mobile/" title="Tria in the messenger, live demo" loading="lazy" sandbox="allow-scripts allow-same-origin" style="position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:#161826"></iframe></div>
 <div style="position:absolute;top:3.037cqw;left:50%;margin-left:-1.986cqw;width:3.972cqw;height:3.972cqw;border-radius:23.131cqw;background:#05060a;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08);pointer-events:none"></div>
 <div style="position:absolute;bottom:2.103cqw;left:50%;margin-left:-13.084cqw;width:26.168cqw;height:0.935cqw;border-radius:23.131cqw;background:rgba(233,233,237,.45);pointer-events:none"></div></div>
 <div style="position:absolute;inset:1.869cqw;border-radius:9.112cqw;pointer-events:none;background:linear-gradient(138deg,rgba(255,255,255,.10) 0%,rgba(255,255,255,.03) 20%,rgba(255,255,255,0) 42%,rgba(255,255,255,0) 80%,rgba(255,255,255,.04) 100%)"></div>
-</div></div></figure></div>
+</div></div><figcaption><b>Workspaces</b><span>Encrypted messenger</span></figcaption></figure><figure class="dev tria-watch"><div class="shell"><div style="display:flex;flex-direction:column;align-items:center">
+<div style="position:relative;width:51.145cqw;height:64.122cqw;margin-bottom:-18.321cqw;z-index:1;border-radius:18.321cqw 18.321cqw 3.817cqw 3.817cqw;background:linear-gradient(90deg,#020306 0%,#101219 9%,#22242c 26%,#2e3038 44%,#282a32 58%,#181a21 78%,#07080b 93%,#020305 100%);box-shadow:inset 0 -9.924cqw 12.977cqw -6.107cqw rgba(0,0,0,.92)">
+<div style="position:absolute;inset:0;border-radius:18.321cqw 18.321cqw 3.817cqw 3.817cqw;background:linear-gradient(180deg,rgba(255,255,255,.06) 0%,rgba(255,255,255,.012) 14%,rgba(0,0,0,0) 44%,rgba(0,0,0,.36) 100%)"></div>
+<div style="position:absolute;left:8.397cqw;top:5.344cqw;width:12.977cqw;height:45.802cqw;border-radius:15.267cqw;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.11) 45%,rgba(255,255,255,0));filter:blur(2.672cqw)"></div>
+<div style="position:absolute;right:6.107cqw;top:13.740cqw;width:4.580cqw;height:36.641cqw;border-radius:15.267cqw;background:linear-gradient(260deg,rgba(255,255,255,0),rgba(255,255,255,.06),rgba(255,255,255,0));filter:blur(1.908cqw)"></div>
+</div>
+<div style="position:relative;width:100.000cqw;height:100.000cqw;border-radius:50%;padding:2.672cqw;box-sizing:border-box;background:conic-gradient(from 202deg at 50% 50%,#33353d 0%,#15171c 12%,#0a0b0f 28%,#2a2c33 46%,#101116 62%,#23252b 80%,#33353d 100%);box-shadow:0 16.794cqw 27.481cqw -9.924cqw rgba(0,0,0,.92), 0 0 0 1px rgba(0,0,0,.6);z-index:2">
+<div data-side="triawatch" title="Side button: back" style="cursor:pointer;position:absolute;right:-1.908cqw;top:28.244cqw;width:2.672cqw;height:7.634cqw;border-radius:1.145cqw;background:linear-gradient(180deg,#6a6e7d,#2b2d35 65%,#191b22);box-shadow:1px 0 2px rgba(0,0,0,.65);z-index:3"></div>
+<div data-crown="triawatch" title="Crown: next" style="cursor:pointer;position:absolute;right:-3.435cqw;top:41.221cqw;width:4.962cqw;height:16.794cqw;border-radius:1.527cqw;background:repeating-linear-gradient(180deg,#9397a6 0 1px,#4a4d58 1px 2px,#2b2d35 2px 1.298cqw);box-shadow:1px 0 1.145cqw rgba(0,0,0,.7), inset -2px 0 1.145cqw rgba(0,0,0,.55), inset 2px 0 2px rgba(255,255,255,.12);z-index:3"></div>
+<div style="position:relative;width:100%;height:100%;border-radius:50%;background:#05060a;padding:5.344cqw;box-sizing:border-box;box-shadow:inset 0 1px 1px rgba(255,255,255,.1)">
+<div class="wscr" id="triawatch" data-pager data-start="1" role="group" aria-label="Interactive watch: tap, swipe, crown or side button to change page">
+<div class="wp" data-page><svg viewBox="0 0 200 200" data-watch-face aria-hidden="true" style="width:100%;height:100%"></svg></div>
+<div class="wp wa" data-page><div data-tria class="tria"><svg viewBox="0 0 100 100" aria-hidden="true"><circle cx="50" cy="50" r="47" fill="#101a6a" fill-opacity=".55" stroke="#2a62ff" stroke-width="3.2"/><path d="M47 26C49 42 54 47 70 50 54 53 49 58 47 74 45 58 40 53 24 50 40 47 45 42 47 26Z" fill="#3a5fe0" stroke="#6f93ff" stroke-width="1.4" stroke-linejoin="round"/><path d="M69 22C69.6 27 71 28.4 76 29 71 29.6 69.6 31 69 36 68.4 31 67 29.6 62 29 67 28.4 68.4 27 69 22Z" fill="#6f93ff"/></svg><div class="ta">Tap to talk to Tria</div><div class="tb">triage</div></div></div>
+<div class="wp" data-page><div class="wt">Goals</div><div data-goals></div></div>
+<div class="wp" data-page><div class="wt"><b data-open></b> open</div><div data-issues="3"></div></div>
+<div class="wp" data-detail><div class="wsvc" data-d-svc></div><div class="wsev" data-d-sev></div><div class="wtxt" data-d-txt></div></div>
+<div class="wdots"><span data-dot></span><span data-dot></span><span data-dot></span><span data-dot></span></div>
+</div>
+<div style="position:absolute;inset:2.672cqw;border-radius:50%;pointer-events:none;background:radial-gradient(120% 120% at 22% 12%,rgba(255,255,255,.18) 0%,rgba(255,255,255,.06) 16%,rgba(255,255,255,0) 40%),linear-gradient(150deg,rgba(255,255,255,0) 62%,rgba(255,255,255,.05) 100%)"></div>
+</div></div>
+<div style="position:relative;width:51.145cqw;height:70.992cqw;margin-top:-18.321cqw;z-index:1;border-radius:3.817cqw 3.817cqw 18.321cqw 18.321cqw;background:linear-gradient(90deg,#020306 0%,#101219 9%,#22242c 26%,#2e3038 44%,#282a32 58%,#181a21 78%,#07080b 93%,#020305 100%);box-shadow:inset 0 9.924cqw 12.977cqw -6.107cqw rgba(0,0,0,.92)">
+<div style="position:absolute;inset:0;border-radius:3.817cqw 3.817cqw 18.321cqw 18.321cqw;background:linear-gradient(0deg,rgba(255,255,255,.05) 0%,rgba(255,255,255,.01) 12%,rgba(0,0,0,0) 44%,rgba(0,0,0,.34) 100%)"></div>
+<div style="position:absolute;left:8.397cqw;top:11.450cqw;width:12.977cqw;height:49.618cqw;border-radius:15.267cqw;background:linear-gradient(80deg,rgba(255,255,255,0),rgba(255,255,255,.1) 45%,rgba(255,255,255,0));filter:blur(2.672cqw)"></div>
+<div style="position:absolute;right:6.107cqw;top:16.794cqw;width:4.580cqw;height:39.695cqw;border-radius:15.267cqw;background:linear-gradient(280deg,rgba(255,255,255,0),rgba(255,255,255,.055),rgba(255,255,255,0));filter:blur(1.908cqw)"></div>
+</div>
+<div style="width:74.809cqw;height:7.634cqw;margin-top:5.344cqw;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.62),rgba(0,0,0,0) 70%);filter:blur(2.290cqw)"></div>
+</div></div><figcaption><b>Tria Spot</b><span>Always-on Agent</span></figcaption></figure></div>
 </div>
 </section>
 <section id="xray" class="prod flip">
@@ -393,7 +428,7 @@ main{width:auto;min-width:0}
 </div>
 </section>
 <footer>
-<span>&copy; 2026 triageagent labs &middot; <a href="https://github.com/triageagent-dev/triageagent-dev.github.io/commits/main" rel="noopener" target="_blank" title="What changed">v2026.10.24.5</a></span>
+<span>&copy; 2026 triageagent labs &middot; <a href="https://github.com/triageagent-dev/triageagent-dev.github.io/commits/main" rel="noopener" target="_blank" title="What changed">v2026.10.24.8</a></span>
 <nav class="social" aria-label="Contacts">
 <a href="https://github.com/triageagent-dev" aria-label="GitHub" title="GitHub" rel="me noopener" target="_blank"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg></a>
 <a href="https://www.linkedin.com/in/denys-vasyliev/" aria-label="LinkedIn" title="LinkedIn" rel="me noopener" target="_blank"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></a>
