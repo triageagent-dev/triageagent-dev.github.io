@@ -24,6 +24,8 @@ Live at **<https://triageagent.dev>**
 
 There is no pricing section or waitlist form on the page; early access is by invitation, and the accounts service (`../accounts`) is not wired to the site.
 
+The footer of `index.html` shows the landing version (`vYYYY.MM.DD.N`), linked to the commit history; bump it with every push so the live page can be told apart from a cached one.
+
 Run `./sync-demo.sh` after the TUI or the mobile app change. No build step. Every page is self-contained: system fonts, inline CSS and
 SVG, no external assets to fetch.
 
