@@ -18,6 +18,7 @@ Live at **<https://triageagent.dev>**
 | `agent.html` | The agent specification |
 | `demo/` | The live devices section: the real TUI and mobile app (copied from `../ui/public` by `sync-demo.sh`) running against sample data (`fixtures.js`, `shim.js`), plus the interactive watch and tracker faces (`devices.js`) |
 | `confirm.html` | Double opt-in landing page for the link in the confirmation email |
+| `ego/spec.html` | The public ego specification, copied from `../ego/docs/spec.html` (without its web-font link); copy it again when the spec changes |
 | `404.html` | Served by GitHub Pages for unknown paths |
 | `og.png` | Social preview card (1200×630) referenced by the `og:image` tag |
 | `privacy.html`, `terms.html`, `subprocessors.html` | Legal pages. **Drafts**: the legal entity, address, governing law and jurisdiction are marked "soon"; have a lawyer review before publishing |
