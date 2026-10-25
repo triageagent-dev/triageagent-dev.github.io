@@ -37,6 +37,18 @@ sub("demo/mobile/state/e2ee-app.js",
     '    throw new Error("The demo has no encryption")\n')
 sub("demo/mobile/state/e2ee-app.js", "export { deviceName }\n",
     "export { deviceName }\nif (window.TriageDemo) e2ee.start = async () => {}\n")
+# Voice in the demo plays Tria's sound (shim.js) instead of opening a session: a hold on the mobile Tria button, a click on the TUI voice button.
+sub("demo/mobile/voice/voice.js", "    prime() {\n      if (native) return\n",
+    "    prime() {\n      if (window.TriageDemo) { window.TriageDemo.prepareSound(); return }\n      if (native) return\n")
+sub("demo/mobile/voice/voice.js", "    start(tenant, into) {\n      intoRoom = into === \"room\"\n",
+    "    start(tenant, into) {\n      if (window.TriageDemo) { window.TriageDemo.playSound(); return }\n      intoRoom = into === \"room\"\n")
+sub("demo/tui/voice.js", "export function start(tenant) {\n  if (active()) return;\n",
+    "export function start(tenant) {\n  if (window.TriageDemo) { window.TriageDemo.playSound(); return; }\n  if (active()) return;\n")
+# A second tap or click stops the sound.
+sub("demo/mobile/components/TabBar.js", "    if (useVoice.getState().open) { useVoice.getState().close(); return }\n",
+    "    if (window.TriageDemo && window.TriageDemo.stopSound()) return\n    if (useVoice.getState().open) { useVoice.getState().close(); return }\n")
+sub("demo/tui/voice.js", "export function toggle(tenant) {\n",
+    "export function toggle(tenant) {\n  if (window.TriageDemo && window.TriageDemo.stopSound()) return;\n")
 PY
 rm -rf demo/mobile/vendor/matrix-crypto
 echo "demo synced"

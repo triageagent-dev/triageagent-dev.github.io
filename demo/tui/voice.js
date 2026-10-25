@@ -160,6 +160,7 @@ export const active = () => V.conn === "connecting" || V.conn === "open";
 
 // Start inside the click: browsers only let an AudioContext start from a gesture.
 export function start(tenant) {
+  if (window.TriageDemo) { window.TriageDemo.playSound(); return; }
   if (active()) return;
   try {
     micCtx = new AudioContext({ sampleRate: IN_RATE });
@@ -186,5 +187,6 @@ export function sendText(text) {
 }
 
 export function toggle(tenant) {
+  if (window.TriageDemo && window.TriageDemo.stopSound()) return;
   if (active()) stop(); else start(tenant);
 }

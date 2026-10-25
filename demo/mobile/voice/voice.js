@@ -229,6 +229,7 @@ export const useVoice = create((set, get) => {
     msgs: [],
     error: "",
     prime() {
+      if (window.TriageDemo) { window.TriageDemo.prepareSound(); return }
       if (native) return
       try {
         micCtx ??= new AudioContext({ sampleRate: IN_RATE })
@@ -252,6 +253,7 @@ export const useVoice = create((set, get) => {
       return true
     },
     start(tenant, into) {
+      if (window.TriageDemo) { window.TriageDemo.playSound(); return }
       intoRoom = into === "room"
       log({ t: "start" })
       if (native) {

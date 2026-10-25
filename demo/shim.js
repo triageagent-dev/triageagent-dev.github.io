@@ -57,6 +57,31 @@
     if (navigator.mediaDevices) navigator.mediaDevices.getUserMedia = function () { return Promise.reject(new DOMException("The demo has no microphone or camera", "NotAllowedError")); };
     if (window.Notification) window.Notification.requestPermission = function () { return Promise.resolve("denied"); };
   } catch (e) { /* the browser keeps its own */ }
+  // The one sound the demo plays is Tria's: the mobile app's Tria button (held) and the TUI's voice
+  // button (clicked) play it where a live voice session would open. prepareSound() runs on pointer-down,
+  // inside the gesture, so the held button may play it 450 ms later.
+  var sound = null, unlocking = false, wanted = false;
+  function audio() { return sound || (sound = new Audio("/demo/tria.mp3")); }
+  D.prepareSound = function () {
+    if (sound) return;
+    var a = audio(); a.muted = true; unlocking = true;
+    var done = function () { unlocking = false; a.muted = false; if (wanted) { wanted = false; a.currentTime = 0; a.play().catch(function () {}); } };
+    var p = a.play();
+    if (p && p.then) p.then(function () { a.pause(); a.currentTime = 0; done(); }, done); else done();
+  };
+  // A second tap stops it; true when there was a sound to stop.
+  D.stopSound = function () {
+    if (wanted) { wanted = false; return true; }
+    if (!sound || sound.paused || sound.ended) return false;
+    sound.pause(); sound.currentTime = 0;
+    return true;
+  };
+  D.playSound = function () {
+    var a = audio();
+    if (unlocking) { wanted = true; return; }
+    a.muted = false; a.currentTime = 0;
+    var p = a.play(); if (p && p.catch) p.catch(function () {});
+  };
   function markComposers() {
     document.querySelectorAll('input[placeholder="Ask Tria"]').forEach(function (el) {
       if (!el.readOnly) { el.readOnly = true; el.placeholder = "Read-only demo"; }

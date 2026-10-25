@@ -51,6 +51,7 @@ export function TabBar() {
   const up = () => {
     if (lp.current.t) clearTimeout(lp.current.t)
     if (lp.current.fired) { lp.current.fired = false; return }
+    if (window.TriageDemo && window.TriageDemo.stopSound()) return
     if (useVoice.getState().open) { useVoice.getState().close(); return }
     navigate({ screen: "home" })
   }
