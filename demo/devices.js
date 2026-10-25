@@ -46,6 +46,7 @@
 
   // Pages inside a device screen: tap or crown for next, side button for back,
   // swipe and wheel too. `detail` is an optional page opened from a list row.
+  var triaSound = null;
   function pager(root) {
     var pages = [].slice.call(root.querySelectorAll("[data-page]"));
     var dots = [].slice.call(root.querySelectorAll("[data-dot]"));
@@ -66,8 +67,18 @@
       if (Math.abs(dy) > 28) return go(dy < 0 ? 1 : -1);
       var tria = e.target.closest && e.target.closest("[data-tria]");
       if (tria) {
-        var on = tria.classList.toggle("live");
-        tria.querySelector(".ta").textContent = on ? "Listening\u2026" : "Tap to talk to Tria";
+        var on = tria.classList.toggle("live"), label = tria.querySelector(".ta");
+        label.textContent = on ? "Listening\u2026" : "Tap to talk to Tria";
+        // The sound is the only thing the demo plays: fetched on the first tap, stopped by the next one.
+        if (!triaSound) {
+          triaSound = new Audio("/demo/tria.mp3");
+          triaSound.addEventListener("ended", function () {
+            tria.classList.remove("live");
+            label.textContent = "Tap to talk to Tria";
+          });
+        }
+        if (on) { triaSound.currentTime = 0; var p = triaSound.play(); if (p && p.catch) p.catch(function () {}); }
+        else triaSound.pause();
         return;
       }
       var row = e.target.closest && e.target.closest("[data-issue]");
