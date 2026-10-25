@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23F0EEE6'/%3E%3Cpath d='M18 18L46 46M46 18L18 46' stroke='%239C4A26' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+<title>X-Ray Specification</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper:      #F0EEE6;
+  --surface:    #FFFFFF;
+  --surface-2:  #E4E0D4;
+  --ink:        #191919;
+  --ink-2:      #3D3B36;
+  --muted:      #736F65;
+  --rule:       #D9D5C8;
+  --rule-strong:#B3AE9E;
+  --accent:     #9C4A26;
+  --accent-soft:#EBDBBC;
+  --alt:        #3F6478;
+  --alt-soft:   #D3DEE3;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --sans:  'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono:  'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); scroll-behavior: smooth; font-size: 17px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.62 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); }
+code { font: 400 .8em var(--mono); background: var(--surface-2); padding: .08em .35em; border-radius: 3px; hyphens: none; -webkit-hyphens: none; white-space: nowrap; }
+
+.shell { display: grid; grid-template-columns: 17rem minmax(0,1fr); max-width: 78rem; margin: 0 auto; align-items: start; }
+.sidebar { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
+.sidebar h2 { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 .7rem .6rem; }
+.sidebar h2.group { margin-top: 1.6rem; }
+.sidebar nav { display: flex; flex-direction: column; }
+.sidebar a { display: flex; align-items: baseline; gap: .7rem; padding: .45rem .6rem; border-radius: 6px; text-decoration: none; color: var(--ink); font: 500 .9rem var(--sans); }
+.sidebar a:hover, .sidebar a.on { background: var(--surface); }
+.sidebar a.on .n { color: var(--accent); }
+.sidebar .n { font: 400 .74rem var(--mono); color: var(--muted); width: 1.1rem; flex: none; }
+.sidebar .chev { margin-left: auto; color: var(--rule-strong); align-self: center; flex: none; }
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: none; overflow: visible; border-right: 0; border-bottom: 1px solid var(--rule); padding: 1.5rem 1.25rem; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+  .sidebar .chev { display: none; }
+}
+
+main { padding: 3.5rem 3.5rem 6rem; min-width: 0; }
+@media (max-width: 900px) { main { padding: 2rem 16px 4rem; } }
+.eyebrow { font: 500 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1.2rem; }
+h1 { font: 700 clamp(2.1rem, 4.4vw, 3rem)/1.12 var(--serif); letter-spacing: -.018em; text-wrap: balance; margin: 0 0 1.2rem; }
+.standfirst strong { font-weight: 500; color: var(--ink); }
+.standfirst { font: 400 1.06rem/1.62 var(--sans); color: var(--ink-2); margin: 0 0 1.4rem; }
+.meta { font: 400 .95rem var(--sans); color: var(--ink-2); margin: 0 0 1rem; }
+
+.roles { display: grid; gap: 10px; margin: 2.2rem 0 0; }
+.role { display: grid; grid-template-columns: 9rem 1fr auto; gap: 1rem; align-items: baseline; padding: .9rem 1.1rem; border: 1px solid var(--rule); border-radius: 8px; }
+.role .tag { font: 500 .7rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.role .what { font: 400 .92rem/1.5 var(--sans); color: var(--ink-2); }
+.role .what b { color: var(--ink); font-weight: 600; }
+.role .where { font: 400 .72rem var(--mono); color: var(--muted); white-space: nowrap; }
+@media (max-width: 700px) { .role { grid-template-columns: 1fr; gap: .2rem; } .role .where { white-space: normal; } }
+
+section { margin-top: 4.5rem; scroll-margin-top: 1.5rem; }
+.sechead { display: grid; grid-template-columns: 3rem 1fr; align-items: baseline; border-bottom: 1px solid var(--rule-strong); padding-bottom: .6rem; margin-bottom: 1.6rem; }
+.ord { font: 400 .85rem var(--mono); color: var(--accent); }
+.sechead h2 { font: 600 1.65rem/1.25 var(--serif); letter-spacing: -.012em; margin: 0; }
+.owner { grid-column: 2; font: 400 .74rem var(--mono); color: var(--muted); margin-top: .35rem; }
+.faq { border-bottom: 1px solid var(--rule); }
+.faq summary { font: 600 1.02rem/1.4 var(--sans); padding: .9rem 0; cursor: pointer; list-style-position: outside; }
+.faq[open] summary { padding-bottom: .5rem; }
+h3 { font: 600 1.02rem/1.4 var(--sans); margin: 2.2rem 0 .6rem; }
+p { margin: 0 0 1.1rem; }
+ul { margin: 0 0 1.1rem; padding-left: 1.3em; }
+li { margin-bottom: .45rem; }
+p, li, figcaption, .standfirst { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+@media (max-width: 640px) { p, li, figcaption, .standfirst { text-align: left; } }
+.src { font: 400 .7rem var(--mono); color: var(--muted); white-space: nowrap; margin-left: .25em; }
+
+figure { margin: 2rem 0 2.2rem; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font: 400 .85rem/1.55 var(--sans); color: var(--muted); margin-top: .8rem; }
+.figscroll { overflow-x: auto; }
+.figscroll svg { min-width: 640px; }
+
+.tablewrap { overflow-x: auto; margin: 1.4rem 0 2rem; }
+table { border-collapse: collapse; width: 100%; font: 400 .85rem/1.5 var(--sans); color: var(--ink-2); }
+th { font: 500 .66rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--rule-strong); vertical-align: bottom; }
+td { padding: .6rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; text-align: left; }
+tr:hover td { background: var(--surface); }
+td code { white-space: normal; }
+td.k { font: 400 .78rem var(--mono); color: var(--ink); }
+.pill { font: 500 .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: .15em .5em; border-radius: 4px; white-space: nowrap; }
+.pill.hi { background: var(--accent); color: #fff; }
+.pill.md { background: var(--accent-soft); color: var(--accent); }
+.pill.lo { background: var(--alt-soft); color: var(--alt); }
+.pill.ok { background: var(--surface-2); color: var(--ink-2); }
+
+pre { background: #191919; border: 1px solid #191919; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; margin: 1rem 0 1.6rem; }
+pre code { background: none; padding: 0; font: 400 .8rem/1.6 var(--mono); white-space: pre; color: #F0EEE6; }
+pre .token.keyword, pre .token.builtin { color: #E39A72; font-weight: 500; }
+pre .token.property { color: #9EC3D6; }
+pre .token.string { color: #C9D08F; }
+pre .token.number, pre .token.boolean { color: #E39A72; }
+pre .token.class-name { color: #FFFFFF; font-weight: 500; }
+pre .token.punctuation, pre .token.operator { color: #A8A398; }
+pre .token.comment { color: #8C877C; font-style: italic; }
+.sources { font: 400 .8rem/1.6 var(--mono); color: var(--ink-2); columns: 2; column-gap: 2.5rem; padding: 0; list-style: none; }
+.sources li { break-inside: avoid; text-align: left; margin: 0 0 .3rem; }
+@media (max-width: 700px) { .sources { columns: 1; } }
+
+/* svg vocabulary */
+.box   { fill: var(--surface); stroke: var(--rule-strong); stroke-width: 1; }
+.box.hot { stroke: var(--accent); stroke-width: 1.6; }
+.box.cool { stroke: var(--alt); stroke-width: 1.4; }
+.box.ghost { fill: none; stroke: var(--rule-strong); stroke-dasharray: 4 4; }
+.box.warn { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+.zone  { fill: none; stroke: var(--rule); stroke-width: 1; }
+.well  { fill: var(--surface-2); stroke: none; }
+.bound { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+.e     { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.e.a   { stroke: var(--accent); stroke-width: 1.8; }
+.e.b   { stroke: var(--alt); stroke-width: 1.6; }
+.e.d   { stroke-dasharray: 5 4; }
+.t     { font: 600 13px var(--sans); fill: var(--ink); }
+.ts    { font: 400 11.5px var(--sans); fill: var(--muted); }
+.tl    { font: 400 11.5px var(--sans); fill: var(--ink-2); }
+.m     { font: 500 10.5px var(--mono); letter-spacing: .1em; fill: var(--muted); }
+.mb    { font: 500 10.5px var(--mono); letter-spacing: .1em; fill: var(--alt); }
+.ma    { font: 500 10.5px var(--mono); letter-spacing: .06em; fill: var(--accent); }
+.mi    { font: 400 11.5px var(--mono); fill: var(--ink); }
+.gn    { fill: #D9A441; stroke: var(--paper); stroke-width: 2; }
+.gxn   { fill: var(--rule-strong); stroke: var(--paper); stroke-width: 2; }
+.ge    { stroke: var(--rule-strong); stroke-width: 1.1; }
+.gx    { stroke: var(--rule-strong); stroke-width: 1.1; stroke-dasharray: 3 3; }
+.gd    { stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.gl    { font: 500 12px var(--sans); fill: var(--ink-2); text-anchor: middle; }
+.gl.gm { font: 400 10.5px var(--mono); fill: var(--muted); }
+.c     { text-anchor: middle; }
+.r     { text-anchor: end; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sidebar">
+  <h2>Specification</h2>
+  <nav>
+    <a href="#s1"><span class="n">01</span>Architecture<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s2"><span class="n">02</span>Memory model<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s3"><span class="n">03</span>Storage and restart<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s4"><span class="n">04</span>Recall<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s5"><span class="n">05</span>Interfaces<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s6"><span class="n">06</span>Access<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s7"><span class="n">07</span>Voice<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s8"><span class="n">08</span>Web UI<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s9"><span class="n">09</span>Code graph<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s10"><span class="n">10</span>Retention<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s11"><span class="n">11</span>Replicas<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s12"><span class="n">12</span>Configuration<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+  </nav>
+  <h2 class="group">Notes</h2>
+  <nav>
+    <a href="#s13"><span class="n">13</span>FAQ<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+  </nav>
+</aside>
+
+<main>
+<header>
+  <p class="eyebrow">Specification</p>
+  <h1>X-Ray</h1>
+  <p class="standfirst">An <strong>agentic memory substrate</strong> for local and <strong>Kubernetes-native</strong> use. It holds two kinds of memory behind one <strong>MCP</strong> endpoint: authored memory, typed items that agents and people write and that live as <code>MemoryCell</code> custom resources, and derived memory, a graph of code, documentation and manifests built from files that already exist. Both are searched by keyword and by meaning, and served over MCP, <strong>REST</strong> and <strong>Gemini Live voice</strong>. One Go binary. It runs no model-driven background work: consolidating memory is the job of the agent that uses it.</p>
+</header>
+  <figure class="figscroll">
+    <svg viewBox="0 -96 880 480" role="img" aria-label="X-Ray architecture: REST and UI, voice and MCP clients reach the HTTP and MCP servers; the memory store reads cells from the cell cache, which watches MemoryCell objects in the Kubernetes API; embeddings and voice call out to model providers.">
+      <defs>
+        <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+        <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3F6478"/></marker>
+        <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#736F65"/></marker>
+      </defs>
+      <text class="m" x="32" y="24">CLIENTS</text>
+      <text class="m" x="258" y="24">SERVER</text>
+      <text class="m" x="512" y="24">MEMORY</text>
+      <text class="mb" x="742" y="24">CLUSTER</text>
+      <rect x="226" y="6" width="472" height="372" rx="12" fill="none" stroke="#736F65" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+      <rect x="714" y="6" width="162" height="372" rx="12" fill="none" stroke="#3F6478" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+
+      <rect class="box" x="16" y="52" width="190" height="64" rx="8"/><text class="t" x="32" y="78">REST and UI</text><text class="ts" x="32" y="96">session cookie or bearer token</text>
+      <rect class="box" x="16" y="152" width="190" height="64" rx="8"/><text class="t" x="32" y="178">Voice</text><text class="ts" x="32" y="196">browser audio over WebSocket</text>
+      <rect class="box" x="16" y="252" width="190" height="64" rx="8"/><text class="t" x="32" y="278">MCP agents</text><text class="ts" x="32" y="296">bearer secret or OAuth token</text>
+
+      <rect class="box" x="242" y="52" width="214" height="164" rx="8"/><text class="t" x="258" y="78">HTTP server</text>
+      <text class="tl" x="258" y="102">REST /v1 and server-sent events</text>
+      <text class="tl" x="258" y="122">/v1/voice WebSocket</text>
+      <text class="tl" x="258" y="142">GitHub and Entra sign-in</text>
+      <text class="tl" x="258" y="162">OAuth server for MCP clients</text>
+      <text class="tl" x="258" y="182">live hit and change events</text>
+      <rect class="box" x="242" y="252" width="214" height="64" rx="8"/><text class="t" x="258" y="278">MCP server</text><text class="ts" x="258" y="296">memory tools and graph tools</text>
+
+      <rect class="box" x="496" y="52" width="190" height="100" rx="8"/><text class="t" x="512" y="78">Memory store</text>
+      <text class="ts" x="512" y="98">keyword and trigram index</text>
+      <text class="ts" x="512" y="114">HNSW index, optional</text>
+      <text class="ts" x="512" y="130">public and private scope</text>
+      <rect class="box hot" x="496" y="188" width="190" height="64" rx="8"/><text class="t" x="512" y="214">Cell cache</text><text class="ts" x="512" y="232">informer on MemoryCell</text>
+      <rect class="box" x="496" y="276" width="190" height="64" rx="8"/><text class="t" x="512" y="302">Maps</text><text class="ts" x="512" y="320">gob snapshots, read only</text>
+
+      <rect class="box cool" x="726" y="188" width="140" height="64" rx="8"/><text class="t" x="742" y="214">Kubernetes API</text><text class="ts" x="742" y="232">MemoryCell · Secrets</text>
+
+      <rect class="box ghost" x="242" y="-88" width="214" height="56" rx="8"/><text class="t" x="258" y="-64">Gemini Live</text><text class="ts" x="258" y="-46">voice model</text>
+      <rect class="box ghost" x="496" y="-88" width="190" height="56" rx="8"/><text class="t" x="512" y="-64">Embedding endpoint</text><text class="ts" x="512" y="-46">Vertex AI or a gateway</text>
+
+      <g>
+        <path class="e" d="M206 84H238" marker-end="url(#am)"/>
+        <path class="e" d="M206 184H238" marker-end="url(#am)"/>
+        <path class="e" d="M206 284H238" marker-end="url(#am)"/>
+        <path class="e a" d="M456 100H492" marker-end="url(#aa)"/>
+        <path class="e a" d="M456 270H476V132H492" marker-end="url(#aa)"/>
+        <path class="e a" d="M590 152V184" marker-end="url(#aa)"/>
+        <path class="e a" d="M686 220H722" marker-end="url(#aa)"/>
+        <path class="e a" d="M686 120H796V184" marker-end="url(#aa)"/>
+        <path class="e b" d="M496 308H460" marker-end="url(#ab)"/>
+        <path class="e" d="M349 52V-28" marker-end="url(#am)"/>
+        <path class="e" d="M590 52V-28" marker-end="url(#am)"/>
+      </g>
+
+      <line x1="16" y1="-66" x2="40" y2="-66" class="e a"/><text class="tl" x="48" y="-62">Memory path</text>
+      <line x1="16" y1="-38" x2="40" y2="-38" class="e b"/><text class="tl" x="48" y="-34">Graph tools</text>
+      <line x1="136" y1="-66" x2="160" y2="-66" class="e"/><text class="tl" x="168" y="-62">Requests</text>
+      <rect x="136" y="-46" width="24" height="16" rx="4" class="box ghost"/><text class="tl" x="168" y="-34">Provider</text>
+    </svg>
+    <figcaption>Figure 1. Components and boundaries. Reads come from the cell cache; writes go to the Kubernetes API and return through the cache.</figcaption>
+  </figure>
+
+<!-- 01 -->
+<section id="s1">
+  <div class="sechead"><span class="ord">01</span><h2>Architecture</h2></div>
+  <p>X-Ray is one binary that holds two kinds of memory. The <strong>memory server</strong> holds authored memory: items that agents and people write, kept as <code>MemoryCell</code> objects. <code>xray graph</code> holds derived memory: a graph of code, documentation and Kubernetes manifests, rebuilt from sources that already exist. The server reads the same snapshots, so one endpoint answers <code>search_memory</code> and <code>search_graph</code> (<a href="#s9">section 09</a>). Either half runs without the other, on a laptop or in a cluster.</p>
+  <p>Data crosses three boundaries: from clients into the HTTP and MCP servers, from the server to the Kubernetes API through a controller-runtime cache, and from the server to model providers for embeddings and voice. With a cluster, the <code>MemoryCell</code> objects are the store. Without one, the server runs on process memory alone and warns at start.</p>
+  <h3>Listeners</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Address</th><th>Flag</th><th>Serves</th></tr>
+    <tr><td class="k">:8080</td><td><code>--http-address</code></td><td>REST, server-sent events, the voice WebSocket, sign-in, and the OAuth server and <code>/mcp</code> when <code>--mcp-oauth</code> is on</td></tr>
+    <tr><td class="k">:8083</td><td><code>--mcp-address</code></td><td>MCP with the shared bearer secret; empty disables it. The chart empties it and serves MCP on the main port</td></tr>
+    <tr><td class="k">:9090</td><td><code>--metrics-address</code></td><td>Prometheus <code>/metrics</code>; empty disables it</td></tr>
+  </table></div>
+  <h3>Base components</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Component</th><th>Role</th></tr>
+    <tr><td class="k">HNSW</td><td>Nearest-neighbour search over embeddings. The memory store keeps one index per subject over its cells, rebuilt from the cells on restart without calling the embedder. Each map carries its own index inside its snapshot. Without an embedding endpoint both fall back to keyword search</td></tr>
+    <tr><td class="k">Tree-sitter</td><td>The parser behind the code graph: Go with resolved call, import and inherit edges, ten more languages through a generic extractor. The grammars are C and link into the CGO build, which is why only that build parses (<a href="#s9">section 09</a>)</td></tr>
+    <tr><td class="k">Kubernetes</td><td><code>MemoryCell</code> custom resources are the store: etcd persists, replicates and audits them</td></tr>
+    <tr><td class="k">MCP</td><td>The agent interface to both kinds of memory, over streamable HTTP with OAuth 2.1 or a shared secret</td></tr>
+  </table></div>
+  <h3>Out of scope</h3>
+  <ul>
+    <li>Model-driven background work. The server makes no model call except to embed text and to hold a voice session. Consolidation, summarising and generalising belong to the agent, which writes the result back with <code>upsert_memory</code>.</li>
+    <li>Anything beyond the API and the web UI it serves: sign-in providers other than GitHub and Microsoft Entra, and tenant switching (<a href="#s8">section 08</a>).</li>
+  </ul>
+</section>
+
+<!-- 02 -->
+<section id="s2">
+  <div class="sechead"><span class="ord">02</span><h2>Memory model</h2></div>
+  <p>A memory item is a <code>MemoryCell</code> in the group <code>xray.ai</code>, version <code>v1</code>, short name <code>mcell</code>. Its <code>spec</code> carries the item.</p>
+<pre><code class="language-yaml">apiVersion: xray.ai/v1
+kind: MemoryCell
+metadata:
+  name: checkout-retries-3f2a9c1e
+  namespace: xray
+spec:
+  id: checkout-retries
+  kind: operational_pattern
+  scope: public
+  subject: checkout
+  title: Checkout retries on 503
+  content: |
+    The payment client retries a 503 three times with jitter.
+  confidence: high
+  status: active
+  tags: [payments]
+  createdAt: "2026-10-24T09:00:00Z"
+  updatedAt: "2026-10-24T09:00:00Z"</code></pre>
+  <div class="tablewrap"><table>
+    <tr><th>Field</th><th>Meaning</th></tr>
+    <tr><td class="k">id</td><td>Stable identifier. An upsert with an existing <code>id</code> updates the item; without one the server generates an <code>id</code></td></tr>
+    <tr><td class="k">kind</td><td>The type of the item, from the table below</td></tr>
+    <tr><td class="k">scope</td><td><code>public</code> (the default) or <code>private</code></td></tr>
+    <tr><td class="k">subject</td><td>The topic of a public item, or the owner of a private one</td></tr>
+    <tr><td class="k">title, content</td><td>Short title and a Markdown body</td></tr>
+    <tr><td class="k">confidence, status</td><td><code>high</code>, <code>medium</code> or <code>low</code>; and a status, <code>active</code> on creation</td></tr>
+    <tr><td class="k">tags</td><td>Free labels. A tag selects a UI category when a deployment defines one</td></tr>
+    <tr><td class="k">eventDate</td><td>When the item happened, RFC 3339 or a bare date</td></tr>
+    <tr><td class="k">staleAfter</td><td>Deadline after which the retention sweep deletes the item (<a href="#s10">section 10</a>)</td></tr>
+    <tr><td class="k">origin</td><td>Who wrote it: <code>human</code>, <code>observed</code>, <code>verified</code> or <code>derived</code> (<a href="#provenance">below</a>)</td></tr>
+    <tr><td class="k">supersedes, evidenceRefs</td><td>Ids of the items this one absorbed, and the ids of the cells or events it was drawn from</td></tr>
+    <tr><td class="k">links</td><td>Typed edges to other cells: <code>toId</code>, <code>relation</code>, <code>weight</code>, <code>evidenceRefs</code></td></tr>
+    <tr><td class="k">data</td><td>Named blobs. An <code>image</code> entry holds a thumbnail, downscaled to 512 by 512 JPEG on upsert</td></tr>
+    <tr><td class="k">embedding</td><td>Base64 little-endian float32 vector. Written by the reconciler, never by callers</td></tr>
+  </table></div>
+  <h3>Kinds</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Kind</th><th>Holds</th><th>Default expiry</th></tr>
+    <tr><td class="k">stable_fact</td><td>Durable facts</td><td>none</td></tr>
+    <tr><td class="k">system_identity</td><td>What exists: services, repositories, people</td><td>none</td></tr>
+    <tr><td class="k">operational_pattern</td><td>Recurring behaviour worth remembering</td><td>none</td></tr>
+    <tr><td class="k">active_concern</td><td>Open problems being tracked</td><td>none</td></tr>
+    <tr><td class="k">watch_item</td><td>Things to keep an eye on</td><td>none</td></tr>
+    <tr><td class="k">hypothesis</td><td>Unconfirmed explanations</td><td>none</td></tr>
+    <tr><td class="k">unknown</td><td>Known gaps</td><td>none</td></tr>
+    <tr><td class="k">event</td><td>Something that happened at a time; carries <code>eventDate</code></td><td>30 days</td></tr>
+    <tr><td class="k">recent_change</td><td>Releases and changes</td><td>90 days</td></tr>
+    <tr><td class="k">note</td><td>Free notes</td><td>90 days</td></tr>
+    <tr><td class="k">episodic</td><td>Per-user session memory written by voice</td><td><code>--episodic-ttl</code>, 7 days</td></tr>
+    <tr><td class="k">system_configuration</td><td>Deployment settings: voice behaviour and UI categories; always private and left out of search</td><td>none</td></tr>
+    <tr><td class="k">mental_map</td><td>The record of a mounted or carried map (<a href="#s3">section 03</a>)</td><td>none</td></tr>
+  </table></div>
+  <p>The first ten rows are the kinds <code>upsert_memory</code> lists. The last three are written by the server and the chart.</p>
+  <h3>Scope</h3>
+  <p>Privacy is a <code>scope</code>, separate from <code>kind</code>. A <code>private</code> item is isolated to its <code>subject</code>: reading, fetching or deleting it needs the caller to present that subject, and its live events go only to the owner. A <code>public</code> item is shared knowledge, visible on the graph and in search. One predicate, private when <code>scope</code> is <code>private</code> or the kind is <code>system_configuration</code>, guards every read path. Callers that set a scope are trusted for it: the subject is a tenant key, not an authenticated identity. Voice writes are always private, with the subject set to a hash of the signed-in user.</p>
+  <h3 id="provenance">Provenance</h3>
+  <p>Every cell carries an <code>origin</code>. A write is <code>human</code> when its credential names a person: an MCP token issued through sign-in, or a voice session of a signed-in user. It is <code>derived</code> when it does not: the shared MCP secret names nobody. The caller cannot choose; the server sets it. <code>observed</code> (written by code from facts) and <code>verified</code> (derived, then checked) are for cells that code writes or a cluster admin applies. A cell stored without an origin reads as derived.</p>
+  <p>A derived write cannot replace a human cell; the upsert returns an error. A person can replace a derived one. <code>upsert_memory</code> takes <code>evidence_refs</code>, the ids a cell was drawn from, and <code>refute_memory</code> follows them: it retires a cell that is wrong (status <code>stale</code>), records the reason and evidence under <code>data.refuted</code>, and retires every active derived cell that cites it by evidence ref or link, one hop. Human, observed and verified cells are never retired by the cascade.</p>
+  <h3>Writing rules</h3>
+  <p>A write through MCP or a voice session needs a <code>kind</code> from the table above (the server-written kinds are not writable), and a <code>stable_fact</code> needs <code>confidence</code> <code>high</code>: a fact that is stable is one the writer is sure of. A kind filter on search or list must name a searchable kind, so a mistyped one is an error and not an empty result. A cell can be replaced (<code>supersede_memory</code> writes the new cell, lists the old id in <code>supersedes</code> and retires the old one as <code>superseded</code>), expired when it is out of date (<code>expire_memory</code>, status <code>stale</code>) or refuted when it is wrong.</p>
+  <h3>Duplicates</h3>
+  <p>An upsert that restates a <code>stable_fact</code>, <code>operational_pattern</code>, <code>watch_item</code> or <code>hypothesis</code> lands on the cell it repeats (status <code>merged</code>, tags unioned) instead of creating a second one. The cells must share kind, scope and subject, and a derived restatement is never merged into a human cell. Similarity is the overlap of title and content tokens: 0.3 Jaccard, or 0.9 of the smaller text contained in the larger. Texts under eight tokens need 0.8. A short token counts when it has a digit, so "Q3 plan" and "Q4 plan" stay two cells. <code>--memory-write-dedup=false</code> turns this off. <code>consolidate_memory</code> finds the same clusters among cells already stored and, with <code>apply</code>, retires the restatements as <code>superseded</code>, listing them on the keeper.</p>
+</section>
+
+<!-- 03 -->
+<section id="s3">
+  <div class="sechead"><span class="ord">03</span><h2>Storage and restart</h2></div>
+  <p>Kubernetes holds authored memory. The in-memory indexes are a cache of it and are rebuilt at start. Derived memory ships as gob snapshots.</p>
+  <div class="tablewrap"><table>
+    <tr><th>What</th><th>Where it lives</th><th>After a restart</th></tr>
+    <tr><td class="k">Authored items</td><td>A <code>MemoryCell</code> per item, written by the server when it has a cluster client</td><td>Read back from the cache. Nothing is lost</td></tr>
+    <tr><td class="k">Embeddings</td><td>The cell's <code>spec.embedding</code></td><td>Reused. The index is rebuilt without calling the embedding endpoint again</td></tr>
+    <tr><td class="k">Keyword, trigram and HNSW indexes</td><td>Process memory</td><td>Rebuilt from the cells at start</td></tr>
+    <tr><td class="k">Items written with no cluster client</td><td>Process memory</td><td>Lost</td></tr>
+    <tr><td class="k">Sign-in sessions</td><td>Cells, with token hashes keyed by a secret shared across replicas</td><td>Survive</td></tr>
+    <tr><td class="k">MCP OAuth clients</td><td>Cells</td><td>Survive</td></tr>
+    <tr><td class="k">MCP access tokens</td><td>Signed with an Ed25519 key derived from the OAuth client secrets</td><td>Stay valid, on any replica. With no client secret the key is random per process and tokens end at a restart</td></tr>
+    <tr><td class="k">Deployment settings</td><td>The <code>system_configuration</code> cell, watched live</td><td>Survive; edits apply without a restart</td></tr>
+    <tr><td class="k">Maps</td><td>A gob snapshot, mounted or carried in a cell</td><td>Reloaded from the snapshot</td></tr>
+  </table></div>
+  <h3>Gob snapshots</h3>
+  <p>A map is a pre-built graph saved as <code>&lt;name&gt;.graph.gob.gz</code> with its HNSW index. Loading a map embeds nothing in the pod. A snapshot reaches the server by one of two routes:</p>
+  <ul>
+    <li><strong>A file.</strong> A snapshot in the directory named by <code>--mental-maps-dir</code>. The server walks it and loads every snapshot it finds, and watches it for new files. The <code>xray-graph</code> chart mounts snapshot images there as image volumes; the memory chart mounts none.</li>
+    <li><strong>Carried in a cell.</strong> A cell holds the gob in <code>data.graph</code>. The cell syncer decodes it and registers the map, and skips the work when the bytes are unchanged.</li>
+  </ul>
+  <p>Snapshots must match the server's embedding fingerprint: the model, <code>--embedding-dims</code> and <code>--embedding-max-input-chars</code>.</p>
+</section>
+
+<!-- 04 -->
+<section id="s4">
+  <div class="sechead"><span class="ord">04</span><h2>Recall</h2></div>
+  <p>Search ranks every candidate lexically. When an embedding endpoint is configured it also ranks by meaning, and fuses the two lists by rank. Without an endpoint, search is lexical only.</p>
+  <figure class="figscroll">
+    <svg viewBox="0 0 880 232" role="img" aria-label="Search pipeline: the query is ranked lexically and, when an embedder is present, semantically; the two lists are fused by reciprocal rank, shaped by collapsing near-duplicates and re-ranking, and returned up to the limit.">
+      <defs>
+        <marker id="ra" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+      </defs>
+      <rect class="box" x="16" y="88" width="124" height="56" rx="8"/><text class="t" x="30" y="112">Query</text><text class="ts" x="30" y="130">text · kind</text>
+      <rect class="box" x="170" y="36" width="196" height="64" rx="8"/><text class="t" x="184" y="62">Lexical rank</text><text class="ts" x="184" y="82">phrase · tokens · trigrams</text>
+      <rect class="box" x="170" y="132" width="196" height="64" rx="8"/><text class="t" x="184" y="158">Semantic rank</text><text class="ts" x="184" y="178">embed query · HNSW cosine</text>
+      <rect class="box hot" x="396" y="84" width="132" height="64" rx="8"/><text class="t" x="410" y="110">Rank fusion</text><text class="ts" x="410" y="130">reciprocal rank</text>
+      <rect class="box" x="558" y="84" width="148" height="64" rx="8"/><text class="t" x="572" y="110">Shaping</text><text class="ts" x="572" y="130">collapse · re-rank</text>
+      <rect class="box" x="736" y="84" width="128" height="64" rx="8"/><text class="t" x="750" y="110">Results</text><text class="ts" x="750" y="130">capped per tool</text>
+      <path class="e" d="M140 108H155V68H166" marker-end="url(#ra)"/>
+      <path class="e d" d="M140 124H155V164H166" marker-end="url(#ra)"/>
+      <path class="e a" d="M366 68H381V108H392" marker-end="url(#ra)"/>
+      <path class="e a d" d="M366 164H381V124H392" marker-end="url(#ra)"/>
+      <path class="e a" d="M528 116H554" marker-end="url(#ra)"/>
+      <path class="e a" d="M706 116H732" marker-end="url(#ra)"/>
+      <text class="ts" x="170" y="216">Dashed: only when an embedding endpoint is configured.</text>
+    </svg>
+    <figcaption>Figure 2. The search path.</figcaption>
+  </figure>
+  <h3>Lexical rank</h3>
+  <p>A candidate is admitted when it matches enough of the query: every token of a one- or two-token query, all but one of three or more. A token matches as a substring or within one edit of a word (none for tokens of one or two characters), so a misheard word still finds the item. An item's id is part of what it matches, and a query that is exactly an id returns that item first.</p>
+  <p>The score is a bonus for the whole query in the title, a graded match per token (title above content, exact above fuzzy), a small trigram overlap, and a penalty for each token missed. Tokens are weighted by how distinctive they are among the candidates, as a smoothed inverse document frequency: a word nearly every item contains counts for little, matched or missed, and a word few contain dominates both. For a query of three or more tokens an item that fails the coverage rule is still admitted when the tokens it did match carry 35% of the query's weight, so "what is wrong with the bigquery export" finds the item that names BigQuery.</p>
+  <h3>Semantic rank</h3>
+  <p>The query is embedded and compared to the HNSW index by cosine similarity. The default model is <code>gemini-embedding-001</code> at 128 dimensions, from Vertex AI (<code>--gcp-project</code>) or any OpenAI-compatible endpoint (<code>--embedding-endpoint</code>). Input is cut to 8000 characters unless <code>--embedding-max-input-chars</code> says otherwise. <code>--semantic-score-gap</code> drops results more than a given cosine gap below the top hit.</p>
+  <p>A cell is embedded as its kind, scope, subject, title and content joined by spaces, cut to 1800 bytes on a character boundary (the batch limit of a local embedder is 2048 tokens, and a longer input is rejected outright). The store knows its embedding dimension and refuses a vector or a query of another length. If a search's whole top window is rejected on lookup, because every hit is a cell deleted or retired on another replica and still indexed here, the search ranks every cell exactly instead, so the cells that qualify are not starved. The embedding and index phases of each semantic search are reported separately as <code>xray.memory.search.phase.duration</code>.</p>
+  <h3>Fusion</h3>
+  <p>The two lists are combined by reciprocal rank, <code>1/(60+rank)</code> summed over the lists an item appears in. Ranks are used because cosine similarity and lexical scores are on different scales. An item in one list contributes one term. By default every query fuses both lists. <code>--search-lexical-shortcircuit</code> restores the older behaviour of skipping the embedding call when a keyword hit already covers the query.</p>
+  <h3>Shaping</h3>
+  <p>The fused pool, over-fetched to four times the limit (at most 60), is shaped before it is cut. Near-duplicate facts of the four kinds above collapse to the best-ranked one, which reports how many it absorbed in <code>collapsed</code>. The pool is then re-ranked: each item scores its rank times a boost of 1.7 for an active watch item that has not expired, times a mild recency factor that falls from 1 to 0.85 with a seven-day half-life. It reorders close results; it does not override relevance. <code>--search-recall-shaping=false</code> returns the fused order. When a cross-encoder is installed it orders the pool in place of the re-rank.</p>
+  <p>Kind-filtered semantic search scans the items of that kind exactly instead of asking the graph for nearest neighbours and dropping the wrong kinds, which returned nothing for a kind that is a small share of the store. Query embeddings are cached in a bounded LRU, so a repeated search does not call the embedder again.</p>
+  <p>Searches scope to a subject and also return public items with no subject. The store also has opt-in hooks for one-hop link expansion, source collapse and a cross-encoder rerank; they are Go calls for programs that embed the package, with no flag or chart value.</p>
+  <h3>Result limits</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Tool</th><th>Ceiling</th><th>Flag</th></tr>
+    <tr><td class="k">search_memory</td><td>10</td><td><code>--mcp-search-memory-max-limit</code></td></tr>
+    <tr><td class="k">list_memory</td><td>20</td><td><code>--mcp-list-memory-max-limit</code></td></tr>
+    <tr><td class="k">recent_memory</td><td>20</td><td><code>--mcp-recent-memory-max-limit</code></td></tr>
+  </table></div>
+  <p>Each ceiling holds whatever limit the caller asks for. <code>--headroom-content-limit</code> bounds the characters of each result's content, to control the cost of voice context.</p>
+</section>
+
+<!-- 05 -->
+<section id="s5">
+  <div class="sechead"><span class="ord">05</span><h2>Interfaces</h2></div>
+  <h3>MCP tools</h3>
+  <p>Read tools need the scope <code>xray:memory.read</code>; <code>upsert_memory</code>, <code>delete_memory</code>, <code>refute_memory</code>, <code>consolidate_memory</code>, <code>expire_memory</code> and <code>supersede_memory</code> need <code>xray:memory.write</code>. The shared bearer secret carries both.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Tool</th><th>Arguments</th><th>Does</th></tr>
+    <tr><td class="k">get_memory</td><td>none</td><td>Counts of items by kind</td></tr>
+    <tr><td class="k">list_memory</td><td><code>kind</code>, <code>subject</code>, <code>limit</code></td><td>Browse items of a kind</td></tr>
+    <tr><td class="k">search_memory</td><td><code>query</code>, <code>subject</code>, <code>kind</code>, <code>limit</code></td><td>Ranked search (<a href="#s4">section 04</a>)</td></tr>
+    <tr><td class="k">fetch_memory</td><td><code>ids</code>, <code>subject</code></td><td>Exact retrieval of items, in the order asked</td></tr>
+    <tr><td class="k">recent_memory</td><td><code>subject</code>, <code>limit</code></td><td>The newest episodic memories of a subject</td></tr>
+    <tr><td class="k">upsert_memory</td><td><code>id</code>, <code>kind</code>, <code>scope</code>, <code>title</code>, <code>content</code>, <code>subject</code>, <code>confidence</code>, <code>event_date</code>, <code>tags</code>, <code>evidence_refs</code>, <code>image_data</code>, <code>image_mime</code></td><td>Create an item, or update the one with that <code>id</code>; a restated fact comes back <code>merged</code> with the id it landed on</td></tr>
+    <tr><td class="k">delete_memory</td><td><code>id</code>, <code>subject</code></td><td>Delete an item; a private item needs its own subject</td></tr>
+    <tr><td class="k">refute_memory</td><td><code>id</code>, <code>reason</code>, <code>evidence</code>, <code>subject</code></td><td>Retire a wrong item and the derived items that cite it (<a href="#provenance">provenance</a>)</td></tr>
+    <tr><td class="k">expire_memory</td><td><code>id</code>, <code>subject</code></td><td>Retire an out-of-date item (status <code>stale</code>); it leaves search and lists</td></tr>
+    <tr><td class="k">supersede_memory</td><td><code>old_id</code>, <code>new_id</code>, <code>kind</code>, <code>scope</code>, <code>title</code>, <code>content</code>, <code>subject</code>, <code>confidence</code>, <code>tags</code>, <code>evidence_refs</code></td><td>Write a replacement that lists <code>old_id</code> in <code>supersedes</code> and retire the old item. A derived replacement cannot supersede a human item</td></tr>
+    <tr><td class="k">get_memory_context</td><td><code>anchor</code>, <code>max_depth</code></td><td>The cells an anchor (an id, a subject or part of a title) reaches over links, by spreading activation: 0.6 per hop times the link weight, up to 3 hops by default and 8 at most. Shared cells only</td></tr>
+    <tr><td class="k">consolidate_memory</td><td><code>subject</code>, <code>apply</code></td><td>Report near-duplicate facts; with <code>apply</code>, retire the restatements</td></tr>
+  </table></div>
+  <p>When a map is loaded, the same endpoint also serves the graph tools, all read scope (<a href="#s9">section 09</a>).</p>
+<pre><code class="language-json">{
+  "jsonrpc": "2.0",
+  "id": 1,
+  "method": "tools/call",
+  "params": {
+    "name": "upsert_memory",
+    "arguments": {
+      "kind": "operational_pattern",
+      "title": "Checkout retries on 503",
+      "content": "The payment client retries a 503 three times with jitter.",
+      "subject": "checkout",
+      "confidence": "high",
+      "tags": ["payments"]
+    }
+  }
+}</code></pre>
+  <h3>Go packages</h3>
+  <p>X-Ray is also a Go library, importable as <code>github.com/triageagent-dev/x-ray/v2</code>. Three packages cover the two ways an agent uses it, and they share one interface per kind of memory, so an agent written against the interface runs on either.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Package</th><th>What it is</th><th>Implements</th></tr>
+    <tr><td class="k">memory</td><td>The memory store, run inside the program. Typed items, keyword and trigram index, an HNSW index when given an embedding endpoint, merging of restated facts, recall shaping and provenance. <code>WithFile</code> keeps it across restarts, <code>WithOrigin</code> says who the program's writes count as</td><td><code>Memory</code></td></tr>
+    <tr><td class="k">codegraph</td><td>The code graph, run inside the program. <code>Build</code> parses and embeds repositories, <code>UpdateGraph</code> re-indexes edited files, <code>Save</code> and <code>Load</code> use the snapshot format the server reads, and <code>Handler</code> offers the graph over MCP. Parsing needs the cgo build; loading and searching a snapshot do not</td><td><code>CodeGraph</code></td></tr>
+    <tr><td class="k">xray</td><td>A client for a running X-Ray over MCP, with typed calls for both kinds of memory. <code>Connect</code> takes a URL and an optional bearer token; <code>Call</code> reaches any tool by name</td><td><code>Memory</code>, <code>CodeGraph</code></td></tr>
+  </table></div>
+  <div class="tablewrap"><table>
+    <tr><th>Interface</th><th>Methods</th></tr>
+    <tr><td class="k">Memory</td><td><code>Search</code>, <code>List</code>, <code>Fetch</code>, <code>Get</code>, <code>Summary</code>, <code>Recent</code>, <code>Upsert</code>, <code>Delete</code>, <code>Refute</code>, <code>Expire</code>, <code>Supersede</code>, <code>Consolidate</code>, <code>Context</code></td></tr>
+    <tr><td class="k">CodeGraph</td><td><code>SearchGraph</code>, <code>SearchGraphDocs</code>, <code>Node</code>, <code>Impact</code>, <code>Risk</code>, <code>GraphStats</code>, <code>UpdateGraph</code></td></tr>
+  </table></div>
+  <p>A refusal, such as an unknown kind or a missing item, is a <code>ToolError</code> in all three, and <code>IsNotFound</code> tests for the missing item. The embedded store applies the same rules the server does at its boundary: a kind from the vocabulary, high confidence on a stable fact, a subject on a private item. The credential decides how a write is classed. Over MCP an OAuth token that names a person records <code>human</code> and the shared secret <code>derived</code>; in process, the program chooses with <code>WithOrigin</code>.</p>
+  <p>To make X-Ray the memory of an agent, it is used in three places: a search before the agent answers, memory tools while it answers, and a write afterwards that cites the items it drew on, so that refuting one retires the rest. A separate adapter module implements the Google ADK memory service on either an embedded store or a client, so X-Ray plugs into the ADK runner and its <code>load_memory</code> and <code>preload_memory</code> tools. Each user's conversations are stored as private notes under the pair of app and user, and shared memory is added to every search.</p>
+  <h3>REST</h3>
+  <p>The memory routes are read-only. Writes arrive by MCP, by voice, or as objects applied with <code>kubectl</code>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Route</th><th>Auth</th><th>Returns</th></tr>
+    <tr><td class="k">GET /v1/memory</td><td>session</td><td>Items, filtered by query, kind and subject</td></tr>
+    <tr><td class="k">GET /v1/memory/summary</td><td>session</td><td>A light index: id, title, kind and tags, no content</td></tr>
+    <tr><td class="k">GET /v1/memory/{id}</td><td>session</td><td>One item</td></tr>
+    <tr><td class="k">GET /v1/memory/item</td><td>session</td><td>One item by <code>id</code> query parameter, for ids that contain a slash</td></tr>
+    <tr><td class="k">GET /v1/memory/neighbors</td><td>session</td><td>The nearest items to <code>id</code> by embedding, up to <code>top</code> (default 20, at most 50), and the links among them that mark sub-clusters. A pair is linked only when the two are closer to each other than to the centre, so no similarity threshold applies. Shared, active items only</td></tr>
+    <tr><td class="k">GET /v1/memory/events</td><td>session</td><td>Server-sent events (below)</td></tr>
+    <tr><td class="k">GET /v1/user/notes</td><td>session</td><td>The signed-in user's private notes</td></tr>
+    <tr><td class="k">GET /v1/categories</td><td>none</td><td>UI categories from the configuration cell</td></tr>
+    <tr><td class="k">GET /v1/auth/providers, /me, /logout</td><td>none, session</td><td>Sign-in state</td></tr>
+    <tr><td class="k">GET /v1/version, /healthz</td><td>none</td><td>Build version and liveness</td></tr>
+    <tr><td class="k">GET /v1/voice</td><td>session</td><td>WebSocket upgrade for a voice session</td></tr>
+  </table></div>
+  <h3>Live events</h3>
+  <p><code>GET /v1/memory/events</code> carries two event types: a <em>hit</em> (the item ids, query and kinds of a recall that just ran) and a <em>change</em> (an upsert or delete). A recall publishes a hit when it is made by <code>search_memory</code> or <code>get_memory_context</code> over MCP, or by the voice search and list tools. Private items are never named: a hit lists the shared items a search returned, and a private change goes only to its owner. A client connected to one replica sees the events of that replica (<a href="#s11">section 11</a>).</p>
+  <h3>How a recall shows up</h3>
+  <figure><img src="img/recall.svg" alt="The memory map, lit by recalls: cells glow and fade back, a blue fibre lights the recalled region, the recalled cells fire with spike rings, and a pulse of light runs along their links." style="max-width:100%;height:auto"><figcaption>Figure 3. The memory map, one kind of region lit after another by recalls, looping.</figcaption></figure>
+  <p>The web UI turns a hit into light, the way optogenetics does: a neuron made to carry a light-gated channel fires when blue light reaches it. The kinds in the event name the region, so a blue fibre lights it even when the recalled cell is not one of the nodes drawn. The cells in the region wash blue in the order the light reaches them, nearest the fibre first. The recalled cells fire hardest, with a double flare, three spike rings and an afterglow of a few seconds. A pulse of light then runs from each recalled cell along its links to the memories it connects to. It is laid over the category-coloured flash the graph already draws, and a repeat hit fires again. The region treatment is one fast attack and a smooth decay, about two pulses a second at most, because flicker over a large area is a photosensitivity risk; reduced motion gets one slow wash. The embedded web UI listens to this stream; a Triage deployment carries the same events over a WebSocket.</p>
+</section>
+
+<!-- 06 -->
+<section id="s6">
+  <div class="sechead"><span class="ord">06</span><h2>Access</h2></div>
+  <p>Every route under <code>/v1</code> needs a session except the sign-in routes, <code>/v1/version</code>, <code>/v1/categories</code>, <code>/healthz</code>, <code>/manifest.json</code> and <code>/sw.js</code>. <code>--dev</code> turns authentication off and is for local use only.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Path</th><th>How</th></tr>
+    <tr><td class="k">GitHub sign-in</td><td><code>--github-client-id</code>, <code>--github-client-secret</code>; <code>--github-org</code> restricts access to an organisation and <code>--github-team</code> to a team</td></tr>
+    <tr><td class="k">Microsoft Entra sign-in</td><td><code>--azure-client-id</code>, <code>--azure-client-secret</code>, <code>--azure-tenant-id</code></td></tr>
+    <tr><td class="k">Session</td><td>A 24-hour <code>xray_session</code> cookie. The same token is accepted as <code>Authorization: Bearer</code>, and on a WebSocket upgrade as a subprotocol, because a browser cannot set headers on that handshake</td></tr>
+    <tr><td class="k">Session to another origin</td><td>A login may hand its token to a UI on a different host through <code>?ui=&lt;origin&gt;</code>, only for origins in <code>--ui-callback-origins</code>. Empty by default</td></tr>
+    <tr><td class="k">MCP, shared secret</td><td>A Secret named by <code>--mcp-token-secret</code>, key <code>token</code>. Full scope</td></tr>
+    <tr><td class="k">MCP, OAuth 2.1</td><td><code>--mcp-oauth</code>. The server is its own authorization server: discovery under <code>/.well-known</code>, <code>/register</code>, <code>/authorize</code>, <code>/token</code>, with PKCE. Tokens are audience-bound JWTs with the read and write scopes; <code>--mcp-token-ttl</code> sets their lifetime. The user must be signed in to the web app first</td></tr>
+    <tr><td class="k">Write access</td><td><code>writeAllowedUsers</code> in the configuration cell limits who may hold the write scope</td></tr>
+  </table></div>
+  <p><code>--public-url</code> is the externally reachable base URL. It scopes CORS, the OAuth callbacks and the origin check on the voice WebSocket. <code>--trusted-proxy-hops</code> says how many proxies in front of the server append the client address, which decides how <code>X-Forwarded-For</code> is read for rate limiting. <code>--max-request-bytes</code> caps request bodies.</p>
+</section>
+
+<!-- 07 -->
+<section id="s7">
+  <div class="sechead"><span class="ord">07</span><h2>Voice</h2></div>
+  <p>A browser upgrades <code>GET /v1/voice</code> to a WebSocket and the server opens a Gemini Live session on its behalf. Two goroutines per session relay audio each way, and tool calls from the model run in parallel and return as tool responses. The server rejects a WebSocket whose <code>Origin</code> is not <code>--public-url</code>.</p>
+  <p>Each session reads the <code>system_configuration</code> cell at its start, so edits apply to the next session without a restart.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Setting</th><th>Meaning</th></tr>
+    <tr><td class="k">systemPrompt, greeting</td><td>What the model is told and how it opens</td></tr>
+    <tr><td class="k">voiceName, voiceModel</td><td>Override the <code>--voice-name</code> (default <code>Kore</code>) and <code>--voice-model</code> (default <code>google/gemini-live-2.5-flash-native-audio</code>) flags</td></tr>
+    <tr><td class="k">enabledTools</td><td>The allowlist of tools the model may call</td></tr>
+    <tr><td class="k">writeAllowedUsers</td><td>Users whose sessions may write memory</td></tr>
+    <tr><td class="k">maxUserDailyAudioTokens</td><td>Per-user audio token cap per UTC day; overrides the flag when non-zero</td></tr>
+    <tr><td class="k">maxItemContentChars</td><td>Bound on each memory item's content in tool results</td></tr>
+    <tr><td class="k">affectiveDialog, proactiveAudio</td><td>Gemini Live options, native-audio models only</td></tr>
+  </table></div>
+  <p>The voice tools are <code>search_memory</code>, <code>list_memory</code>, <code>get_memory</code>, <code>fetch_memory</code>, <code>recent_memory</code>, <code>upsert_memory</code>, <code>save_memory</code>, <code>delete_memory</code> and <code>end_session</code>. Voice writes are private to the user. When a map is loaded the graph tools are available to the model too.</p>
+  <h3>Limits</h3>
+  <ul>
+    <li><code>--user-daily-audio-token-limit</code>: audio tokens, in and out, a user may spend per UTC day. 0 is unlimited. The remaining amount is pushed to the browser after each turn.</li>
+    <li><code>--max-concurrent-voice</code>: simultaneous sessions across all users.</li>
+    <li><code>--voice-max-output-tokens</code>: output cap per turn, 8192 by default, so a runaway turn fails fast.</li>
+  </ul>
+  <p>Voice needs Gemini credentials: <code>--gcp-project</code> for Vertex AI, or <code>--gemini-api-key</code> for the Google AI API. Without either, the voice route is off.</p>
+</section>
+
+<!-- 08 -->
+<section id="s8">
+  <div class="sechead"><span class="ord">08</span><h2>Web UI</h2></div>
+  <p>The web UI is part of the binary. It is a client of the API above, built as a static export and embedded, and the server serves it at <code>/</code> on the same origin as the API. API paths, <code>/healthz</code>, the PWA files, <code>/mcp</code> and the OAuth endpoints go to the server; everything else is the UI. It runs the same locally and in a cluster: <code>make run</code> opens it on port 8080 with sign-in off, and the chart serves it through the same Service. <code>--ui=false</code> serves the API alone, and a binary built with <code>UI=0</code> has no UI at all.</p>
+  <p>One origin is required. The voice WebSocket URL is built in the browser from its own host, the session cookie has no <code>Domain</code>, and the server checks the WebSocket's <code>Origin</code> against <code>--public-url</code>. Embedding gives it, so <code>--public-url</code> is simply the address users reach, and it is also the OAuth callback base.</p>
+  <p>Each document is served with a <code>script-src</code> that names the hashes of its own inline scripts, so no script runs without one; <code>'unsafe-inline'</code> is allowed for styles only. Hashed bundles are cached for a year, and HTML is revalidated so an upgrade is seen at once.</p>
+  <p>The UI speaks this server's own API, <code>/v1</code>: voice at <code>/v1/voice</code>, live events as server-sent events, per-user notes, no tenants. The same sources build for a Triage deployment, which serves the same surface under <code>/v2</code> with a WebSocket event stream and tenants. The code graph has a smaller page of its own at <code>/ui</code> on <code>xray graph serve</code>.</p>
+  <h3>Categories</h3>
+  <p>The UI groups items into categories. With none configured it shows the native taxonomy: Concerns (<code>active_concern</code>), Patterns (<code>operational_pattern</code>), Facts (<code>stable_fact</code>), Identity (<code>system_identity</code>), Events (<code>event</code>) and Notes (<code>note</code>). A deployment overrides this by setting <code>ui.categories</code> in the configuration cell. The server returns them from <code>/v1/categories</code> before sign-in.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Field</th><th>Meaning</th></tr>
+    <tr><td class="k">kind</td><td>The kind the category shows</td></tr>
+    <tr><td class="k">tag</td><td>Narrows the kind to items with this tag. Tagging is strict: an item without a matching tag falls under "Other"</td></tr>
+    <tr><td class="k">label, id, icon, color</td><td>How the category is named and drawn</td></tr>
+    <tr><td class="k">tier, angle</td><td>Position on the memory graph: radial distance and direction</td></tr>
+    <tr><td class="k">scope</td><td>Limits the category to public or private items</td></tr>
+  </table></div>
+</section>
+
+<!-- 09 -->
+<section id="s9">
+  <div class="sechead"><span class="ord">09</span><h2>Code graph</h2></div>
+  <p><code>xray graph</code> builds derived memory: a graph of source code, documentation and Kubernetes manifests, embedded for search and saved as a snapshot. Nothing in it is authored, so it can be thrown away and rebuilt. It answers the structural questions that text search cannot: who calls this symbol, what a change reaches, where a decision was written down. It needs no cluster and no database, and it sends nothing off the host except text to the embedding endpoint you point it at.</p>
+  <h3>Two builds</h3>
+  <p>Only the Tree-sitter parser needs a C toolchain, so the build tag marks the boundary. The static build is the one deployed to a cluster. Asked to parse, it exits with a message pointing at the CGO build. The container image with the parser is published as a tag of the same repository, <code>&lt;version&gt;-parser</code>.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Sub-command</th><th>Does</th><th>Build</th></tr>
+    <tr><td class="k">serve</td><td>Parse repositories on start, hold the graph in memory, re-index on edit, serve MCP with a small UI</td><td>CGO</td></tr>
+    <tr><td class="k">snapshot</td><td>Write a snapshot of one or more repositories</td><td>CGO</td></tr>
+    <tr><td class="k">dump</td><td>Print what the parser extracts from a directory, or read a snapshot</td><td>CGO for a directory</td></tr>
+    <tr><td class="k">serve-snapshots</td><td>Serve pre-built snapshots</td><td>static or CGO</td></tr>
+    <tr><td class="k">servicemap</td><td>Load a service catalogue as a map</td><td>static or CGO</td></tr>
+    <tr><td class="k">services</td><td>Derive a service catalogue from a code map</td><td>static or CGO</td></tr>
+    <tr><td class="k">search, impact</td><td>Search or compute a blast radius straight over snapshots, with no server</td><td>static or CGO</td></tr>
+    <tr><td class="k">update, status, build</td><td>Re-index changed files, report, rebuild, against a running server</td><td>static or CGO</td></tr>
+    <tr><td class="k">install</td><td>Write Claude Code skills and a post-edit hook into a repository and print the MCP snippet</td><td>static or CGO</td></tr>
+    <tr><td class="k">keygen</td><td>Make an age identity for encrypted snapshots</td><td>static or CGO</td></tr>
+  </table></div>
+  <h3>What it indexes</h3>
+  <ul>
+    <li><strong>Code.</strong> Go with resolved call, import and inherit edges; TypeScript, TSX, JavaScript, Python, Java, Rust, Ruby, C, C++, PHP and C# through a generic tags extractor that stores symbol bodies and call edges.</li>
+    <li><strong>Documentation.</strong> Markdown: a node per file and a node per second-level heading.</li>
+    <li><strong>Manifests.</strong> YAML, Helm templates included: a node per document, with reference edges to images, Secrets and ConfigMaps. It reads files and never contacts a cluster.</li>
+    <li><strong>Infrastructure.</strong> Compose files, Dockerfiles, application config and SQL DDL, which feed the service catalogue that <code>services</code> derives.</li>
+  </ul>
+  <p>Node names are qualified by repository, <code>repo//path::Symbol</code>, so many repositories share one endpoint without collisions.</p>
+
+  <figure class="figscroll">
+    <svg viewBox="0 -80 880 252" role="img" aria-label="Code graph pipeline: sources are parsed, embedded and written to a snapshot; the server loads the snapshot, routes a query to a map and retrieves. The embedding endpoint is called for every node at build time and once for the query at serve time.">
+      <defs>
+        <marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+        <marker id="cm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#736F65"/></marker>
+      </defs>
+      <text class="m" x="16" y="24">BUILD</text>
+      <text class="m" x="716" y="24">SERVE</text>
+      <rect x="6" y="6" width="530" height="152" rx="12" fill="none" stroke="#736F65" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+      <rect x="706" y="6" width="168" height="152" rx="12" fill="none" stroke="#3F6478" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+
+      <rect class="box" x="16" y="52" width="150" height="76" rx="8"/><text class="t" x="32" y="78">Sources</text><text class="ts" x="32" y="98">code, docs, manifests</text>
+      <rect class="box" x="196" y="52" width="150" height="76" rx="8"/><text class="t" x="212" y="78">Parse</text><text class="ts" x="212" y="98">nodes and edges</text>
+      <rect class="box" x="376" y="52" width="150" height="76" rx="8"/><text class="t" x="392" y="78">Embed</text><text class="ts" x="392" y="98">cached by node text</text>
+      <rect class="box hot" x="546" y="52" width="150" height="76" rx="8"/><text class="t" x="562" y="78">Snapshot</text><text class="ts" x="562" y="98">graph, vectors, HNSW</text>
+      <rect class="box cool" x="716" y="52" width="150" height="76" rx="8"/><text class="t" x="732" y="78">Registry</text><text class="ts" x="732" y="98">route, retrieve, fuse</text>
+
+      <rect class="box ghost" x="446" y="-68" width="270" height="48" rx="8"/><text class="t" x="462" y="-46">Embedding endpoint</text><text class="ts" x="462" y="-30">OpenAI-compatible, run by you</text>
+
+      <g>
+        <path class="e" d="M166 90H192" marker-end="url(#cm)"/>
+        <path class="e" d="M346 90H372" marker-end="url(#cm)"/>
+        <path class="e a" d="M526 90H542" marker-end="url(#ca)"/>
+        <path class="e a" d="M696 90H712" marker-end="url(#ca)"/>
+        <path class="e" d="M500 -20V12H451V48" marker-end="url(#cm)"/>
+        <path class="e" d="M660 -20V12H791V48" marker-end="url(#cm)"/>
+      </g>
+      <text class="tl" x="510" y="-4">every node</text>
+      <text class="tl" x="670" y="-4">the query</text>
+    </svg>
+    <figcaption>Figure 4. The embedder is called twice in the life of a map: over every node when it is built, and over the query string when it is searched. The snapshot between them carries the vectors and the built index, so loading a map is neither a parse nor an embed pass.</figcaption>
+  </figure>
+
+  <h3>Parse</h3>
+  <p>The walk skips ignored directories and does not descend into symlinked ones unless asked. Call resolution rests on declared evidence only: a bare call in the caller's own package, a <code>pkg.Func()</code> in the package the import names, a typed receiver in the package its type came from, a chained receiver followed through declared field and result types. There is no repository-wide name matching, and an ambiguous call yields no edge.</p>
+  <h3>Embed</h3>
+  <p>A node is not embedded as its source. Documentation nodes embed their prose; a file node becomes a one-line description; a code node leads with its signature and path, then folds in the first 600 characters of its body. The signature keeps exact-name queries strong and the body slice lets a paraphrase reach the function. Vectors are cached by that text, not by node identity, because every rebuild constructs fresh nodes; misses go out in one batch. The defaults are 256 dimensions with Matryoshka truncation and an input cap of 8192 characters, so an oversized node is truncated and not rejected.</p>
+  <h3>Snapshot</h3>
+  <p>A snapshot is a gzip stream holding two gob values, a header and a body, so a server can register many maps by decoding only the headers.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Part</th><th>Holds</th><th>Loaded</th></tr>
+    <tr><td class="k">Header</td><td>Version, label, source path, build time, embedding fingerprint (model, dimensions, input cap), node and edge counts, routing summary and its source, routing vector</td><td>at start, always resident</td></tr>
+    <tr><td class="k">Body</td><td>Parsed nodes and edges, every vector verbatim, the built HNSW index, opaque per-node attributes that are round-tripped and never read</td><td>on the first hit</td></tr>
+  </table></div>
+  <p>A mismatch in dimensions between the snapshot and the server is a hard rejection, because those vectors are not comparable with a query embedding. A difference in the model name only warns, since an embedding server answers with whatever model it has loaded. When the stored index is absent the loader rebuilds it; when present it is deserialised, which skips the insert loop that dominates a cold load. A snapshot built with <code>-no-embed</code> carries no vectors and is searched lexically only.</p>
+  <h3>Encrypted snapshots</h3>
+  <p>Strings in a gob are plain bytes, so an unencrypted snapshot is a readable dump of every node, and maps travel as OCI images. A snapshot can be written through age instead. The file keeps its name and layout and starts with the age header in place of the gzip magic; readers sniff for either, so one directory can hold both.</p>
+  <p>The key reads and the recipient writes. A builder needs only the public recipient (<code>-snapshot-recipient</code>), so a CI job never holds a secret. A server holds the identity (<code>-snapshot-key</code>, or <code>--mental-maps-snapshot-key</code> on the memory server). A map read encrypted is re-encrypted to the identity's own public key on every flush, and the flush refuses rather than write plaintext. The identity encrypts nothing else, so a plaintext map and the notes map stay plaintext unless a recipient is also given. An encrypted map found with no matching key is skipped with a warning that names the flag, and the other maps still serve. This protects the file at rest. The running server holds every map in memory and answers in the clear, so access to the server stays the boundary for the data itself.</p>
+  <h3>Route</h3>
+  <p>There is no merged graph. Each map keeps its own graph and index, with its own HNSW and embedding cache, so ranking never crosses projects. An exact <code>map</code> label is a fast path that needs no embedding. Otherwise the map hint and the query are embedded together and cosine-ranked against the summary vector of every resident map; an explicit hint reduces the fan-out to one, and <code>--mental-maps-route-fanout</code> sets it otherwise. An idle map is evicted after <code>--mental-maps-ttl-min</code> minutes; its small routing vector stays, so it is still reachable and reloads from disk on the next hit. The summary comes from an operator-written description, a README, or the symbol names, in that order, and the header records which.</p>
+  <h3>Retrieve</h3>
+  <p>Each search makes one query embedding, the only embedder call on the serve path, and then runs two channels.</p>
+  <ul>
+    <li><strong>Semantic.</strong> HNSW, fetched at three times the limit and at least 20, so fusion has depth. A kind or repository filter applies after the index returns, so the fetch widens to compensate.</li>
+    <li><strong>Lexical.</strong> Per-word trigram matching behind a coverage gate: a query of one or two tokens must match all of them, a longer one two thirds, rounded up. Trigrams point at the words that contain them and words point at the nodes that use them, so a token is matched once per distinct word and only matching words are expanded to nodes. In code, trigrams discriminate poorly across declarations (every declaration contains <code>func</code>) and well across the vocabulary, which is why the index is built over words.</li>
+  </ul>
+  <p>The channels are combined by reciprocal rank fusion with k = 60. Rank is used and not score, because cosine similarity sits in a narrow band while the keyword score is an unbounded integer. Replies are lean: 5 pointers by default and 20 at most (up to 100 when a kind, attribute or ordering selects a set), and <code>get_graph_node</code> returns a full body with its relations in both directions.</p>
+  <h3>Update</h3>
+  <p>The serving process holds the live graph, and <code>update</code> is a thin HTTP client onto it, so it works in the static build too. Changed files are re-parsed, and because the cache is keyed by node text only nodes that changed reach the embedder. A static build indexes Markdown and YAML in a batch and reports code files as skipped. A path that resolves to no served repository, through <code>../</code> or a symlinked directory the build did not follow, comes back as <code>unowned</code> and is never read.</p>
+  <h3>Graph tools</h3>
+  <p>These are served by <code>xray graph serve</code> and <code>serve-snapshots</code>, and by the memory server when it loads maps (<code>--mental-maps-dir</code>), on the same endpoint as the memory tools. A cell that carries a graph in <code>data.graph</code> registers as a map without a restart. Every read tool is annotated read-only, non-destructive and idempotent.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Tool</th><th>Arguments</th><th>Does</th></tr>
+    <tr><td class="k">search_graph</td><td><code>query</code>, <code>limit</code>, <code>map</code></td><td>Find code and manifests by meaning</td></tr>
+    <tr><td class="k">search_graph_docs</td><td><code>query</code>, <code>limit</code>, <code>map</code></td><td>Find documentation prose by meaning</td></tr>
+    <tr><td class="k">get_graph_node</td><td><code>qn</code></td><td>The full body of one node and its relations both ways: <code>calls</code>, <code>called_by</code>, <code>imports</code></td></tr>
+    <tr><td class="k">get_graph_impact</td><td><code>seeds</code>, <code>depth</code>, <code>max_nodes</code></td><td>The blast radius of changing symbols</td></tr>
+    <tr><td class="k">get_graph_risk</td><td><code>qn</code>, <code>depth</code>, <code>max_nodes</code></td><td>LOW, MEDIUM or HIGH change risk for one symbol</td></tr>
+    <tr><td class="k">get_graph_stats</td><td><code>map</code></td><td>Node and edge counts, languages, embedded count, router summary</td></tr>
+    <tr><td class="k">list_skills, get_skill</td><td>none, <code>name</code></td><td>Operating procedures carried as document nodes in a map</td></tr>
+    <tr><td class="k">update_code_graph</td><td><code>paths</code></td><td>Re-index changed files. Refused when the snapshot directory is read-only</td></tr>
+  </table></div>
+  <h3>Agent notes</h3>
+  <p>Three more tools keep short notes of what was asked, answered and decided, so a later session can read them back. They need a server started with <code>-writable</code>. Notes go to one map named by <code>-memory-map</code> (default <code>session</code>), created on first use and never mixed into a code or catalogue map.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Tool</th><th>Arguments</th><th>Does</th></tr>
+    <tr><td class="k">remember</td><td><code>text</code>, <code>title</code>, <code>attrs</code>, <code>ttl</code></td><td>Write one note, embedded and persisted at once. It expires after <code>-memory-ttl</code> (7 days) unless <code>ttl</code> says otherwise (<code>30d</code>, <code>24h</code>, <code>never</code>). A note about a record a map holds carries <code>about=&lt;title or handle&gt;</code></td></tr>
+    <tr><td class="k">recall</td><td><code>query</code>, <code>limit</code></td><td>Read notes back, newest first or ranked by <code>query</code>. A single-word query returns notes tagged <code>about</code> that word first. Each reply says that notes are what people said and not the record</td></tr>
+    <tr><td class="k">forget</td><td><code>qn</code></td><td>Remove one note. Refuses anything that is not a note in the notes map</td></tr>
+  </table></div>
+  <p>Expired notes are swept on read and hourly. These notes are separate from <code>MemoryCell</code> memory (<a href="#s2">section 02</a>): they are not typed, scoped or shared through the cluster, and they live in a snapshot file.</p>
+  <h3>Access</h3>
+  <p>Both graph servers listen on loopback unless told otherwise (<code>127.0.0.1:8084</code> for <code>serve</code>, <code>127.0.0.1:8085</code> for <code>serve-snapshots</code>). Every request except <code>/healthz</code> passes three checks.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Check</th><th>Rule</th></tr>
+    <tr><td class="k">Host</td><td>On a loopback address only <code>localhost</code>, <code>127.0.0.1</code> and <code>::1</code> are accepted; <code>-allowed-hosts</code> adds names. This stops a web page from rebinding its own hostname to the loopback address and driving the server from a browser</td></tr>
+    <tr><td class="k">Origin</td><td>A browser request from another origin is refused unless <code>-allowed-origins</code> lists it. MCP clients, curl and the hook send no Origin and pass</td></tr>
+    <tr><td class="k">Token</td><td><code>-auth-token-file</code> (or <code>$XRAY_AUTH_TOKEN_FILE</code>) requires <code>Authorization: Bearer</code>. Without it nobody is asked for a credential, and a server given a wider <code>-addr</code> logs a warning. The browser UI takes the token once as <code>/ui?token=</code>, keeps it in an HttpOnly cookie and drops it from the address bar</td></tr>
+  </table></div>
+  <p>The memory server's own access rules (<a href="#s6">section 06</a>) apply when it serves maps.</p>
+  <h3>In a cluster</h3>
+  <p>Two ways to run maps. The memory server takes them as cells that carry a graph, or as files in <code>--mental-maps-dir</code>. The separate <code>xray-graph</code> chart runs <code>serve-snapshots</code> as its own deployment, with maps from image volumes (Kubernetes 1.33 or later) or a volume seeded from a maps image, bearer-token authentication, an age identity, an HPA and an ingress. A maps image is a scratch image holding the snapshots under <code>/maps</code>; the build target never pushes it.</p>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <div class="sechead"><span class="ord">10</span><h2>Retention</h2></div>
+  <p>Memory decays by deadline. The only background work in the server is the deletion of expired items, and it makes no model call.</p>
+  <ul>
+    <li><strong>Default deadlines.</strong> A newly created <code>event</code> gets 30 days, a <code>recent_change</code> or <code>note</code> 90 days, a <code>hypothesis</code> one day and an <code>unknown</code> seven, unless the caller sets <code>staleAfter</code>. Other kinds never expire by default. The defaults are fixed in code. Restating a hypothesis or unknown (the write merges into the existing cell) renews its deadline.</li>
+    <li><strong>Retention sweep.</strong> Every <code>--retention-sweep-interval</code> (one hour; 0 disables) the server hard-deletes items past <code>staleAfter</code>. Durable and configuration kinds are skipped.</li>
+    <li><strong>Episodic memory.</strong> Older than <code>--episodic-ttl</code> (7 days) it is dropped from <code>recent_memory</code> at read time, and a reaper deletes the cell.</li>
+  </ul>
+  <p>A delete of a cell that another replica already removed counts as done, so the sweep is safe on several replicas.</p>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <div class="sechead"><span class="ord">11</span><h2>Replicas</h2></div>
+  <p>The chart runs one replica, and one is the supported setting. Cells, sessions and tokens are shared through the cluster. The remaining state is held by the pod.</p>
+  <div class="tablewrap"><table>
+    <tr><th>State</th><th>Across replicas</th></tr>
+    <tr><td class="k">Cells</td><td>Shared. Every replica reads the same cache</td></tr>
+    <tr><td class="k">Sign-in sessions, OAuth clients</td><td>Shared, through cells and a common HMAC key</td></tr>
+    <tr><td class="k">MCP access tokens</td><td>Shared when an OAuth client secret is set: every replica derives the same signing key from it</td></tr>
+    <tr><td class="k">Search indexes</td><td>Each pod builds its own from the cells and follows the cluster watch: a cell another replica writes, retires or deletes is indexed or dropped here</td></tr>
+    <tr><td class="k">Live change events</td><td>Every pod announces each change it sees through the watch, so a browser sees changes made on any replica</td></tr>
+    <tr><td class="k">Live search-hit events</td><td>Per pod. A browser sees the search pulses of the replica it is connected to</td></tr>
+    <tr><td class="k">Items written without a cluster client</td><td>Per pod</td></tr>
+    <tr><td class="k">Voice sessions</td><td>Bound to the connection, so to one pod</td></tr>
+    <tr><td class="k">Voice quota counters</td><td>Held per pod and mirrored to the configuration cell's status, so several replicas do not add up</td></tr>
+    <tr><td class="k">Retention sweep</td><td>Runs on every replica; deletes are idempotent</td></tr>
+  </table></div>
+  <p>There is no leader election, because the server has no work that must run once. Search-hit events have publish hooks (<code>SetHitPublishHook</code>) and an apply call for remote events, but no transport is wired to them, so those pulses stay on the pod that served the search.</p>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <div class="sechead"><span class="ord">12</span><h2>Configuration</h2></div>
+  <p>Flags set the baseline. The configuration cell and the chart's <code>values.yaml</code> override or supply them as noted. <code>xray -help</code> lists every flag.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Group</th><th>Flags</th></tr>
+    <tr><td class="k">Listeners</td><td><code>--http-address</code> :8080, <code>--mcp-address</code> :8083, <code>--metrics-address</code> :9090, <code>--namespace</code> xray, <code>--log-level</code> info</td></tr>
+    <tr><td class="k">Embeddings</td><td><code>--embedding-endpoint</code>, <code>--embedding-model</code> gemini-embedding-001, <code>--embedding-dims</code> 128, <code>--embedding-max-input-chars</code>, <code>--gcp-project</code>, <code>--gcp-location</code> europe-west4, <code>--semantic-score-gap</code></td></tr>
+    <tr><td class="k">Search</td><td><code>--search-lexical-shortcircuit</code>, <code>--search-recall-shaping</code> true, <code>--memory-write-dedup</code> true, <code>--headroom-content-limit</code>, <code>--mcp-search-memory-max-limit</code>, <code>--mcp-list-memory-max-limit</code>, <code>--mcp-recent-memory-max-limit</code></td></tr>
+    <tr><td class="k">Maps</td><td><code>--mental-maps-dir</code>, <code>--mental-maps-snapshot-key</code>, <code>--mental-maps-route-fanout</code> 1, <code>--mental-maps-ttl-min</code> 0</td></tr>
+    <tr><td class="k">Graph server</td><td><code>xray graph serve-snapshots</code>: <code>-snapshot-dir</code>, <code>-addr</code> 127.0.0.1:8085, <code>-writable</code>, <code>-memory-map</code> session, <code>-memory-ttl</code> 7d, <code>-skills-map</code> skills, <code>-graph-ttl-min</code> 0, <code>-route-fanout</code> 1, <code>-embedding-endpoint</code> http://localhost:8090, <code>-embedding-model</code> nomic, <code>-embedding-dims</code> 256, <code>-embedding-max-input-chars</code> 8192, <code>-snapshot-key</code>, <code>-auth-token-file</code>, <code>-allowed-hosts</code>, <code>-allowed-origins</code>. <code>serve</code> takes <code>-repo</code> and listens on 127.0.0.1:8084</td></tr>
+    <tr><td class="k">Voice</td><td><code>--gemini-api-key</code>, <code>--voice-model</code>, <code>--voice-name</code>, <code>--user-daily-audio-token-limit</code>, <code>--max-concurrent-voice</code>, <code>--voice-max-output-tokens</code>, <code>--voice-affective-dialog</code>, <code>--voice-proactive-audio</code></td></tr>
+    <tr><td class="k">Sign-in and MCP</td><td><code>--public-url</code>, <code>--github-client-id</code>, <code>--github-client-secret</code>, <code>--github-org</code>, <code>--github-team</code>, <code>--azure-client-id</code>, <code>--azure-client-secret</code>, <code>--azure-tenant-id</code>, <code>--ui-callback-origins</code>, <code>--mcp-token-secret</code>, <code>--mcp-oauth</code>, <code>--mcp-resource-url</code>, <code>--mcp-token-ttl</code> 15m, <code>--dev</code></td></tr>
+    <tr><td class="k">Retention</td><td><code>--episodic-ttl</code> 168h, <code>--retention-sweep-interval</code> 1h</td></tr>
+    <tr><td class="k">Requests</td><td><code>--max-request-bytes</code> 1 MiB, <code>--trusted-proxy-hops</code> 0</td></tr>
+    <tr><td class="k">Tracing</td><td><code>--otel-endpoint</code>, <code>--otel-project</code></td></tr>
+  </table></div>
+  <h3>Chart</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Value</th><th>Effect</th></tr>
+    <tr><td class="k">replicaCount</td><td>1</td></tr>
+    <tr><td class="k">namespace</td><td>A namespace dedicated to X-Ray: the server may list and watch every Secret in it</td></tr>
+    <tr><td class="k">publicURL</td><td>Passed as <code>--public-url</code></td></tr>
+    <tr><td class="k">args</td><td>The flag list given to the container</td></tr>
+    <tr><td class="k">mcp.*</td><td>Token Secret name, OAuth on or off, resource URL, token lifetime, optional dedicated hostname</td></tr>
+    <tr><td class="k">dev</td><td>Adds <code>--dev</code>: sign-in off, any origin accepted. For a first look through a port-forward only; without it the server refuses to start until a sign-in method and <code>--public-url</code> are set</td></tr>
+    <tr><td class="k">github.secretName, azure.secretName</td><td>The Secret holding the sign-in client id and secret. Empty by default, so a fresh install needs no Secret of its own besides the MCP token</td></tr>
+    <tr><td class="k">imagePullSecrets</td><td>Secrets for pulling the images from a private registry</td></tr>
+    <tr><td class="k">xray-graph chart</td><td>A separate chart for a snapshot server on its own: maps from image volumes or a seeded volume, authentication, an age identity, an HPA, an ingress</td></tr>
+    <tr><td class="k">ingress, httpRoute</td><td>An Ingress, or a Gateway API route, in front of the server</td></tr>
+  </table></div>
+  <p>The chart installs the <code>MemoryCell</code> CRD from its <code>crds</code> directory on first install. Helm does not upgrade CRDs, so apply a changed CRD by hand.</p>
+</section>
+
+<!-- 13 -->
+<section id="s13">
+  <div class="sechead"><span class="ord">13</span><h2>FAQ</h2></div>
+
+  <details class="faq"><summary>Does it need a Kubernetes cluster?</summary>
+  <p>No. Without a kubeconfig the server runs on process memory and warns at start, and items live until the process stops. With a cluster, items persist as cells and survive restarts. A program can also embed the memory store and the code graph as Go packages and need no server at all (<a href="#s5">section 05</a>).</p>
+  </details>
+
+  <details class="faq"><summary>Does it need an embedding model?</summary>
+  <p>No. Without <code>--embedding-endpoint</code> or <code>--gcp-project</code> search is lexical only: phrase, token and trigram scoring. The semantic list and the HNSW index appear when an embedder is configured.</p>
+  </details>
+
+  <details class="faq"><summary>What happens when the pod restarts?</summary>
+  <p>The cache reads every <code>MemoryCell</code> again and the indexes are rebuilt from them. Embeddings are stored in the cells, so no embedding calls are repeated. Sessions and MCP tokens stay valid. Only items written with no cluster client are lost.</p>
+  </details>
+
+  <details class="faq"><summary>Why are cells custom resources?</summary>
+  <p>etcd already persists, replicates and audits them, and a cell is visible to <code>kubectl</code>, RBAC, GitOps and any other controller. The server needs no database of its own.</p>
+  </details>
+
+  <details class="faq"><summary>How do I write memory?</summary>
+  <p>With the MCP <code>upsert_memory</code> tool, through a voice session, or by applying a <code>MemoryCell</code> with <code>kubectl</code> or Helm. The REST memory routes are read-only.</p>
+  </details>
+
+  <details class="faq"><summary>Who consolidates memory?</summary>
+  <p>The agent that uses it. X-Ray stores, indexes and serves items, deletes expired ones, and folds exact restatements of a fact into one cell; it calls no model. An agent that wants a summary reads items with <code>search_memory</code> and writes the result with <code>upsert_memory</code>. <code>consolidate_memory</code> reports and retires near-duplicates, and <code>refute_memory</code> retires a wrong item with what was derived from it.</p>
+  </details>
+
+  <details class="faq"><summary>Can a model overwrite what a person wrote?</summary>
+  <p>No. The server marks a write <code>human</code> only when its credential names a person, and refuses a <code>derived</code> write onto a <code>human</code> cell. A caller cannot claim an origin; the shared MCP secret is always derived.</p>
+  </details>
+
+  <details class="faq"><summary>Can I run more than one replica?</summary>
+  <p>Cells and their change events follow the cluster across replicas, but voice quota counters and search-hit pulses are per pod (<a href="#s11">section 11</a>). Run one replica until those cross replicas.</p>
+  </details>
+
+  <details class="faq"><summary>Can I run only the code graph?</summary>
+  <p>Yes. <code>xray graph serve</code> needs no cluster, no database and no sign-in, and listens on loopback. It needs an embedding endpoint, because search is by meaning. The memory server is a separate process and nothing in the graph depends on it.</p>
+  </details>
+
+  <details class="faq"><summary>Why are there two builds?</summary>
+  <p>Parsing source needs the Tree-sitter grammars, which are C. The static build has no C code and is what a cluster runs; it serves snapshots, searches them and keeps notes. The build with the parser adds the sub-commands that read source: <code>serve</code>, <code>snapshot</code> and <code>dump</code> on a directory.</p>
+  </details>
+
+  <details class="faq"><summary>Where is the web UI?</summary>
+  <p>In the binary. The server serves it at <code>/</code>, so <code>make run</code> or the chart is all it takes, and <code>--ui=false</code> turns it off. MCP, REST and voice do not depend on it. The code graph has a smaller page of its own at <code>/ui</code> on <code>xray graph serve</code>.</p>
+  </details>
+</section>
+
+</main>
+</div>
+<script>
+(function () {
+  var links = document.querySelectorAll('.sidebar a');
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('on'); });
+        var a = map[e.target.id]; if (a) a.classList.add('on');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
+})();
+</script>
+</body>
+</html>

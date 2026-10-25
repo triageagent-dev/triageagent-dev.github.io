@@ -1,0 +1,839 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZyB0cmFuc2Zvcm09InJvdGF0ZSgtOTAgMTAwIDEwMCkiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzhiOGJmMCIgc3Ryb2tlLXdpZHRoPSIxNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtZGFzaGFycmF5PSI0MjIgNTI4Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjMjJkM2VlIiBzdHJva2Utd2lkdGg9IjE2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1kYXNoYXJyYXk9IjI2NCAzNTIiLz48Y2lyY2xlIGN4PSIxMDAiIGN5PSIxMDAiIHI9IjI4IiBmaWxsPSJub25lIiBzdHJva2U9IiNlODc5ZjkiIHN0cm9rZS13aWR0aD0iMTYiIHN0cm9rZS1saW5lY2FwPSJyb3VuZCIgc3Ryb2tlLWRhc2hhcnJheT0iMTIzIDE3NiIvPjwvZz48L3N2Zz4=">
+<title>Triage Core Specification</title>
+<style>
+:root {
+  color-scheme: light;
+  --paper:      #F0EEE6;
+  --surface:    #FFFFFF;
+  --surface-2:  #E4E0D4;
+  --ink:        #191919;
+  --ink-2:      #3D3B36;
+  --muted:      #736F65;
+  --rule:       #D9D5C8;
+  --rule-strong:#B3AE9E;
+  --accent:     #9C4A26;
+  --accent-soft:#EBDBBC;
+  --alt:        #3F6478;
+  --alt-soft:   #D3DEE3;
+  --serif: 'Source Serif 4', Georgia, serif;
+  --sans:  'Instrument Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --mono:  'IBM Plex Mono', ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+html { background: var(--paper); scroll-behavior: smooth; font-size: 17px; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.62 var(--sans); -webkit-font-smoothing: antialiased; }
+a { color: var(--accent); }
+code { font: 400 .8em var(--mono); background: var(--surface-2); padding: .08em .35em; border-radius: 3px; hyphens: none; -webkit-hyphens: none; white-space: nowrap; }
+
+.shell { display: grid; grid-template-columns: 17rem minmax(0,1fr); max-width: 78rem; margin: 0 auto; align-items: start; }
+.sidebar { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
+.sidebar h2 { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 .7rem .6rem; }
+.sidebar h2.group { margin-top: 1.6rem; }
+.sidebar nav { display: flex; flex-direction: column; }
+.sidebar a { display: flex; align-items: baseline; gap: .7rem; padding: .45rem .6rem; border-radius: 6px; text-decoration: none; color: var(--ink); font: 500 .9rem var(--sans); }
+.sidebar a:hover, .sidebar a.on { background: var(--surface); }
+.sidebar a.on .n { color: var(--accent); }
+.sidebar .n { font: 400 .74rem var(--mono); color: var(--muted); width: 1.1rem; flex: none; }
+.sidebar .chev { margin-left: auto; color: var(--rule-strong); align-self: center; flex: none; }
+@media (max-width: 900px) {
+  .shell { grid-template-columns: 1fr; }
+  .sidebar { position: static; max-height: none; overflow: visible; border-right: 0; border-bottom: 1px solid var(--rule); padding: 1.5rem 1.25rem; }
+  .sidebar nav { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); }
+  .sidebar .chev { display: none; }
+}
+
+main { padding: 3.5rem 3.5rem 6rem; min-width: 0; }
+@media (max-width: 900px) { main { padding: 2rem 16px 4rem; } }
+.eyebrow { font: 500 .72rem var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin: 0 0 1.2rem; }
+h1 { font: 700 clamp(2.1rem, 4.4vw, 3rem)/1.12 var(--serif); letter-spacing: -.018em; text-wrap: balance; margin: 0 0 1.2rem; }
+.standfirst strong { font-weight: 500; color: var(--ink); }
+.standfirst { font: 400 1.06rem/1.62 var(--sans); color: var(--ink-2); margin: 0 0 1.4rem; }
+.meta { font: 400 .95rem var(--sans); color: var(--ink-2); margin: 0 0 1rem; }
+
+.roles { display: grid; gap: 10px; margin: 2.2rem 0 0; }
+.role { display: grid; grid-template-columns: 9rem 1fr auto; gap: 1rem; align-items: baseline; padding: .9rem 1.1rem; border: 1px solid var(--rule); border-radius: 8px; }
+.role .tag { font: 500 .7rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+.role .what { font: 400 .92rem/1.5 var(--sans); color: var(--ink-2); }
+.role .what b { color: var(--ink); font-weight: 600; }
+.role .where { font: 400 .72rem var(--mono); color: var(--muted); white-space: nowrap; }
+@media (max-width: 700px) { .role { grid-template-columns: 1fr; gap: .2rem; } .role .where { white-space: normal; } }
+
+section { margin-top: 4.5rem; scroll-margin-top: 1.5rem; }
+.sechead { display: grid; grid-template-columns: 3rem 1fr; align-items: baseline; border-bottom: 1px solid var(--rule-strong); padding-bottom: .6rem; margin-bottom: 1.6rem; }
+.ord { font: 400 .85rem var(--mono); color: var(--accent); }
+.sechead h2 { font: 600 1.65rem/1.25 var(--serif); letter-spacing: -.012em; margin: 0; }
+.owner { grid-column: 2; font: 400 .74rem var(--mono); color: var(--muted); margin-top: .35rem; }
+.faq { border-bottom: 1px solid var(--rule); }
+.faq summary { font: 600 1.02rem/1.4 var(--sans); padding: .9rem 0; cursor: pointer; list-style-position: outside; }
+.faq[open] summary { padding-bottom: .5rem; }
+h3 { font: 600 1.02rem/1.4 var(--sans); margin: 2.2rem 0 .6rem; }
+p { margin: 0 0 1.1rem; }
+ul { margin: 0 0 1.1rem; padding-left: 1.3em; }
+li { margin-bottom: .45rem; }
+p, li, figcaption, .standfirst { text-align: justify; hyphens: auto; -webkit-hyphens: auto; }
+@media (max-width: 640px) { p, li, figcaption, .standfirst { text-align: left; } }
+.src { font: 400 .7rem var(--mono); color: var(--muted); white-space: nowrap; margin-left: .25em; }
+
+figure { margin: 2rem 0 2.2rem; }
+figure svg { width: 100%; height: auto; display: block; }
+figcaption { font: 400 .85rem/1.55 var(--sans); color: var(--muted); margin-top: .8rem; }
+.figscroll { overflow-x: auto; }
+.figscroll svg { min-width: 640px; }
+
+.tablewrap { overflow-x: auto; margin: 1.4rem 0 2rem; }
+table { border-collapse: collapse; width: 100%; font: 400 .85rem/1.5 var(--sans); color: var(--ink-2); }
+th { font: 500 .66rem var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); text-align: left; padding: .5rem .7rem; border-bottom: 1px solid var(--rule-strong); vertical-align: bottom; }
+td { padding: .6rem .7rem; border-bottom: 1px solid var(--rule); vertical-align: top; text-align: left; }
+tr:hover td { background: var(--surface); }
+td code { white-space: normal; }
+td.k { font: 400 .78rem var(--mono); color: var(--ink); }
+.pill { font: 500 .66rem var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: .15em .5em; border-radius: 4px; white-space: nowrap; }
+.pill.hi { background: var(--accent); color: #fff; }
+.pill.md { background: var(--accent-soft); color: var(--accent); }
+.pill.lo { background: var(--alt-soft); color: var(--alt); }
+.pill.ok { background: var(--surface-2); color: var(--ink-2); }
+
+pre { background: #191919; border: 1px solid #191919; border-radius: 8px; padding: 1rem 1.2rem; overflow-x: auto; margin: 1rem 0 1.6rem; }
+pre code { background: none; padding: 0; font: 400 .8rem/1.6 var(--mono); white-space: pre; color: #F0EEE6; }
+pre .token.keyword, pre .token.builtin { color: #E39A72; font-weight: 500; }
+pre .token.property { color: #9EC3D6; }
+pre .token.string { color: #C9D08F; }
+pre .token.number, pre .token.boolean { color: #E39A72; }
+pre .token.class-name { color: #FFFFFF; font-weight: 500; }
+pre .token.punctuation, pre .token.operator { color: #A8A398; }
+pre .token.comment { color: #8C877C; font-style: italic; }
+.sources { font: 400 .8rem/1.6 var(--mono); color: var(--ink-2); columns: 2; column-gap: 2.5rem; padding: 0; list-style: none; }
+.sources li { break-inside: avoid; text-align: left; margin: 0 0 .3rem; }
+@media (max-width: 700px) { .sources { columns: 1; } }
+
+/* svg vocabulary */
+.box   { fill: var(--surface); stroke: var(--rule-strong); stroke-width: 1; }
+.box.hot { stroke: var(--accent); stroke-width: 1.6; }
+.box.cool { stroke: var(--alt); stroke-width: 1.4; }
+.box.ghost { fill: none; stroke: var(--rule-strong); stroke-dasharray: 4 4; }
+.box.warn { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.4; }
+.zone  { fill: none; stroke: var(--rule); stroke-width: 1; }
+.well  { fill: var(--surface-2); stroke: none; }
+.bound { stroke: var(--muted); stroke-width: 1; stroke-dasharray: 4 5; }
+.e     { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+.e.a   { stroke: var(--accent); stroke-width: 1.8; }
+.e.b   { stroke: var(--alt); stroke-width: 1.6; }
+.e.d   { stroke-dasharray: 5 4; }
+.t     { font: 600 13px var(--sans); fill: var(--ink); }
+.ts    { font: 400 11.5px var(--sans); fill: var(--muted); }
+.tl    { font: 400 11.5px var(--sans); fill: var(--ink-2); }
+.m     { font: 500 10.5px var(--mono); letter-spacing: .1em; fill: var(--muted); }
+.mb    { font: 500 10.5px var(--mono); letter-spacing: .1em; fill: var(--alt); }
+.ma    { font: 500 10.5px var(--mono); letter-spacing: .06em; fill: var(--accent); }
+.mi    { font: 400 11.5px var(--mono); fill: var(--ink); }
+.gn    { fill: #D9A441; stroke: var(--paper); stroke-width: 2; }
+.gxn   { fill: var(--rule-strong); stroke: var(--paper); stroke-width: 2; }
+.ge    { stroke: var(--rule-strong); stroke-width: 1.1; }
+.gx    { stroke: var(--rule-strong); stroke-width: 1.1; stroke-dasharray: 3 3; }
+.gd    { stroke: var(--accent); stroke-width: 1.8; stroke-dasharray: 5 4; }
+.gl    { font: 500 12px var(--sans); fill: var(--ink-2); text-anchor: middle; }
+.gl.gm { font: 400 10.5px var(--mono); fill: var(--muted); }
+.c     { text-anchor: middle; }
+.r     { text-anchor: end; }
+</style>
+</head>
+<body>
+<div class="shell">
+
+<aside class="sidebar">
+  <h2>Specification</h2>
+  <nav>
+    <a href="#s1"><span class="n">01</span>Architecture<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s2"><span class="n">02</span>Workspaces and tenants<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s3"><span class="n">03</span>Event intake<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s4"><span class="n">04</span>Issue lifecycle<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s5"><span class="n">05</span>Memory<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s6"><span class="n">06</span>Reasoning loops<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s7"><span class="n">07</span>Models and budgets<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s8"><span class="n">08</span>Agents and joining<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s9"><span class="n">09</span>Authentication and grants<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s10"><span class="n">10</span>Interfaces<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s11"><span class="n">11</span>Messenger and spots<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s12"><span class="n">12</span>Notifications<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s13"><span class="n">13</span>High availability<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+    <a href="#s14"><span class="n">14</span>Configuration<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+  </nav>
+  <h2 class="group">Notes</h2>
+  <nav>
+    <a href="#s15"><span class="n">15</span>FAQ<svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+  </nav>
+</aside>
+
+<main>
+<header>
+  <p class="eyebrow">Specification · core repository · v3.3.185 · bd6e2c3</p>
+  <h1>Triage Core</h1>
+  <p class="standfirst">The <strong>decision layer</strong> of Triage: one controller on <strong>Kubernetes</strong> that receives signals from <strong>agents</strong>, <strong>alert providers</strong> and <strong>people</strong>, decides which of them are <strong>issues</strong>, keeps what it learns as <strong>MemoryCells</strong>, and tells the right people through <strong>channels</strong>, a <strong>messenger</strong>, an <strong>API</strong> and <strong>MCP</strong>. Rules, the service graph and recorded <strong>patterns</strong> decide in the event path; a <strong>decision model</strong> answers typed questions; a <strong>reasoning model</strong> reflects a few times a day and never opens an issue.</p>
+  <div class="roles">
+    <div class="role"><span class="tag">Core</span><span class="what"><b>Decides.</b> Classifies events, opens and resolves issues, keeps memory, runs the reasoning loops and serves every interface.</span><span class="where">this specification</span></div>
+    <div class="role"><span class="tag">Agent</span><span class="what"><b>Collects.</b> Discovers virtual apps, measures them with eBPF, cgroups and logs, and streams the result over one outbound WebSocket.</span><span class="where">separate repository</span></div>
+    <div class="role"><span class="tag">UI bundle</span><span class="what"><b>Shows.</b> A web and terminal interface the core serves from an OCI artifact on the same origin as the API. The core compiles no UI in.</span><span class="where">named by a cell</span></div>
+  </div>
+</header>
+
+  <figure class="figscroll">
+    <svg viewBox="0 -64 880 520" role="img" aria-label="Core architecture: agents, alert webhooks and people enter on the left; the core routes, classifies, opens issues and notifies; models, notification channels and the messenger homeserver sit outside it.">
+      <defs>
+        <marker id="aa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+        <marker id="ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3F6478"/></marker>
+        <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#736F65"/></marker>
+      </defs>
+      <text class="m" x="32" y="24">SOURCES</text>
+      <text class="mb" x="268" y="24">CORE · ONE CONTROLLER</text>
+      <text class="m" x="668" y="24">OUTSIDE THE CORE</text>
+      <rect x="4" y="6" width="232" height="444" rx="12" fill="none" stroke="#736F65" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+      <rect x="244" y="6" width="392" height="444" rx="12" fill="none" stroke="#3F6478" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+      <rect x="648" y="6" width="228" height="444" rx="12" fill="none" stroke="#736F65" stroke-width="1.4" stroke-dasharray="1.5 4" stroke-linecap="round"/>
+
+      <rect class="box" x="16" y="52" width="196" height="64" rx="8"/><text class="t" x="32" y="78">Agents</text><text class="ts" x="32" y="96">WSS, join certificate</text>
+      <rect class="box" x="16" y="132" width="196" height="64" rx="8"/><text class="t" x="32" y="158">Event webhooks</text><text class="ts" x="32" y="176">alert providers, bearer</text>
+      <rect class="box" x="16" y="372" width="196" height="64" rx="8"/><text class="t" x="32" y="398">People and tools</text><text class="ts" x="32" y="416">UI · TUI · MCP · voice</text>
+
+      <rect class="box" x="256" y="52" width="172" height="64" rx="8"/><text class="t" x="272" y="78">Event router</text><text class="ts" x="272" y="96">per tenant, caps, dedup</text>
+      <rect class="box" x="256" y="132" width="172" height="64" rx="8"/><text class="t" x="272" y="158">Classifier, ledger</text><text class="ts" x="272" y="176">allocation, evidence</text>
+      <rect class="box hot" x="256" y="212" width="172" height="64" rx="8"/><text class="t" x="272" y="238">Issue engine</text><text class="ts" x="272" y="256">openers, holds, lifecycle</text>
+      <rect class="box" x="256" y="292" width="172" height="64" rx="8"/><text class="t" x="272" y="318">Interrupt shield</text><text class="ts" x="272" y="336">what a channel hears</text>
+      <rect class="box" x="256" y="372" width="172" height="64" rx="8"/><text class="t" x="272" y="398">HTTP API, MCP</text><text class="ts" x="272" y="416">/v2, WebSockets, voice</text>
+
+      <rect class="box" x="452" y="52" width="172" height="64" rx="8"/><text class="t" x="468" y="78">Tenant registry</text><text class="ts" x="468" y="96">workspaces, keys</text>
+      <rect class="box" x="452" y="132" width="172" height="64" rx="8"/><text class="t" x="468" y="158">Service graph</text><text class="ts" x="468" y="176">declared + observed</text>
+      <rect class="box" x="452" y="212" width="172" height="64" rx="8"/><text class="t" x="468" y="238">Memory</text><text class="ts" x="468" y="256">MemoryCells in Kubernetes</text>
+      <rect class="box" x="452" y="292" width="172" height="64" rx="8"/><text class="t" x="468" y="318">Reasoning loops</text><text class="ts" x="468" y="336">frame, reflect, RSI</text>
+      <rect class="box" x="452" y="372" width="172" height="64" rx="8"/><text class="t" x="468" y="398">Workspace messenger</text><text class="ts" x="468" y="416">rooms, chats, spots</text>
+
+      <rect class="box cool" x="676" y="132" width="188" height="64" rx="8"/><text class="t" x="692" y="158">Decision model</text><text class="ts" x="692" y="176">typed questions, own budget</text>
+      <rect class="box cool" x="676" y="212" width="188" height="64" rx="8"/><text class="t" x="692" y="238">Reasoning model</text><text class="ts" x="692" y="256">Vertex AI, Gemini, gateway</text>
+      <rect class="box" x="676" y="292" width="188" height="64" rx="8"/><text class="t" x="692" y="318">Notification channels</text><text class="ts" x="692" y="336">webhooks, Web Push, FCM</text>
+      <rect class="box" x="676" y="372" width="188" height="64" rx="8"/><text class="t" x="692" y="398">Messenger homeserver</text><text class="ts" x="692" y="416">Matrix, cluster-internal</text>
+
+      <g>
+        <path class="e a" d="M212 84H252" marker-end="url(#aa)"/>
+        <path class="e a" d="M212 164H232V100H252" marker-end="url(#aa)"/>
+        <path class="e a" d="M342 116V130" marker-end="url(#aa)"/>
+        <path class="e a" d="M342 196V210" marker-end="url(#aa)"/>
+        <path class="e a" d="M342 276V290" marker-end="url(#aa)"/>
+        <path class="e a" d="M410 356V364H660V324H672" marker-end="url(#aa)"/>
+        <path class="e" d="M212 404H252" marker-end="url(#am)"/>
+        <path class="e" d="M448 84H432" marker-end="url(#am)"/>
+        <path class="e" d="M448 164H432" marker-end="url(#am)"/>
+        <path class="e" d="M432 244H448" marker-start="url(#am)" marker-end="url(#am)"/>
+        <path class="e" d="M538 278V290" marker-start="url(#am)" marker-end="url(#am)"/>
+        <path class="e" d="M432 404H448" marker-end="url(#am)"/>
+        <path class="e" d="M628 404H672" marker-start="url(#am)" marker-end="url(#am)"/>
+        <path class="e b" d="M410 132V124H650V164H672" marker-end="url(#ab)"/>
+        <path class="e b" d="M628 310H640V244H672" marker-end="url(#ab)"/>
+      </g>
+
+      <line x1="16" y1="-44" x2="40" y2="-44" class="e a"/><text class="tl" x="48" y="-40">Event path to a channel</text>
+      <line x1="228" y1="-44" x2="252" y2="-44" class="e b"/><text class="tl" x="260" y="-40">Model calls</text>
+      <line x1="400" y1="-44" x2="424" y2="-44" class="e"/><text class="tl" x="432" y="-40">Reads, writes, requests</text>
+    </svg>
+    <figcaption>Figure 1. Components and boundaries. The reasoning model is reached by the loops and the author pass; the decision model by the openers, the severity call and the prediction ranking.</figcaption>
+  </figure>
+
+<!-- 01 -->
+<section id="s1">
+  <div class="sechead"><span class="ord">01</span><h2>Architecture</h2></div>
+  <p>The core is one Go binary run as a Kubernetes controller. It reconciles <code>MemoryCell</code> objects, serves the HTTP API with the MCP server on port 8080, runs a second MCP listener on 8083, an events server on 8086 for alert webhooks and the agent WebSocket, an MS Teams connector on 8085, health probes on 8082 and, with several replicas, a gossip mesh on 8088. Nothing is compiled in for the UI; a <code>ui</code> cell names an OCI artifact that the core pulls and serves.</p>
+  <p>All persistent state is a <code>MemoryCell</code> of the <code>xray.ai/v1</code> kind in the core's namespace: events, issues, knowledge, patterns, but also the configuration (policy, runtime document, prompts, notification routing, the tenant registry and each tenant's service graph). The chart ships that one CRD. The state that is only useful while the process runs, such as the event hub, the service ledger, the situation frame and the rate limiters, lives in memory, belongs to one replica and starts empty after a restart.</p>
+  <p>Two kinds of decision run side by side. The <strong>event path</strong> is deterministic code driven by policy, the service graph and recorded patterns, with one decision model for typed questions; it runs on every event. The <strong>reasoning loops</strong> are model passes that run a few times a day per tenant and write what the event path reads next. No model opens an issue.</p>
+  <h3>Runtime</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Property</th><th>Value</th></tr>
+    <tr><td class="k">Form</td><td>One static binary in one container image; Helm chart <code>triage-core</code>; one Deployment, headless</td></tr>
+    <tr><td class="k">Pod security</td><td>Non-root user 65532, read-only root filesystem, all capabilities dropped, no privilege escalation, seccomp <code>RuntimeDefault</code></td></tr>
+    <tr><td class="k">Resources</td><td>Requests 500m CPU and 256 Mi; limits 3 CPU and 512 Mi</td></tr>
+    <tr><td class="k">Kubernetes access</td><td>MemoryCells (cluster-wide read and write), Leases, Events (read), TokenReview (create); in its own namespace Secrets (read), Roles and RoleBindings (read, and write with the tenant registry)</td></tr>
+    <tr><td class="k">Optional sidecars</td><td>A local embedder and a local chat model (llama.cpp), both off; when on, model traffic stays on the pod</td></tr>
+    <tr><td class="k">Optional workload</td><td>A Matrix homeserver StatefulSet for the messenger, off by default, reachable only from the core</td></tr>
+    <tr><td class="k">Metrics</td><td>The Prometheus endpoint is off by default (<code>--metrics-bind-address</code>); metrics and traces leave through the OTLP exporter set in the runtime document</td></tr>
+  </table></div>
+  <h3>Edges of the system</h3>
+  <ul>
+    <li>The core opens connections outward only to model providers, the OAuth and OIDC providers, Firebase, notification webhooks, OCI registries and the remote MCP or A2A agents the runtime document lists. Agents connect to the core; the core never connects into a cluster.</li>
+    <li>Optional pieces fail soft. With no decision model the engine keeps its own severity; with no reasoning model the loops do not run; with no homeserver the messenger routes answer 503.</li>
+  </ul>
+</section>
+
+<!-- 02 -->
+<section id="s2">
+  <div class="sechead"><span class="ord">02</span><h2>Workspaces and tenants</h2></div>
+  <p>A <strong>tenant</strong> is the unit of isolation: its own service graph, events, issues, memory, goals, notification channels, budgets and agents. People see a tenant as a <strong>workspace</strong>. Every event, cell, frame and API row carries a tenant, and every read and write is checked against what the caller may do on that tenant.</p>
+  <p>Tenants come from one of two places. With <code>tenants.registry</code> on, the registry cell is the source and the API creates and edits them. With it off, a tenant exists when a service-graph cell for it is applied. In both cases there is no default tenant and no static tenant flag; write ingress fails closed until a tenant exists.</p>
+  <h3>Registry record</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Field</th><th>Rule</th></tr>
+    <tr><td class="k">id</td><td>Opaque UUIDv7, assigned at creation, never reused</td></tr>
+    <tr><td class="k">name</td><td>Display name, unique inside its account</td></tr>
+    <tr><td class="k">state</td><td><code>active</code>, <code>disabled</code> or <code>purging</code>; a delete is soft and purges after 30 days, and an admin can restore it before then</td></tr>
+    <tr><td class="k">licences</td><td>How many agents may be bound to the workspace; 0 means no limit. Counted over bound agents plus unused, unexpired keys, and checked when a key is minted, when an agent joins and when a binding changes</td></tr>
+    <tr><td class="k">trialEnds</td><td>Recorded for trial workspaces and not enforced</td></tr>
+    <tr><td class="k">account</td><td>Empty for an operator tenant, otherwise up to 128 letters, digits, <code>.</code>, <code>_</code> and <code>-</code>; compared ignoring case; a change is logged with the old value, the new value and the caller</td></tr>
+    <tr><td class="k">spotName</td><td>The name of the workspace's spot (section 11): 2 to 32 characters, starting with a letter or digit, never <code>tria</code>; empty means <code>&lt;workspace name&gt;-spot</code></td></tr>
+  </table></div>
+  <h3>Members and roles</h3>
+  <p>A member holds one of three workspace roles, stored as a Role per role and a RoleBinding per member in the core namespace, labelled with the tenant id and named <code>triage-tenant-&lt;tenant&gt;-…</code>. The subject is <code>&lt;provider&gt;:&lt;id&gt;</code>, at most 200 characters without a space or slash.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Role</th><th>Verbs on the workspace</th><th>Can do</th></tr>
+    <tr><td class="k">owner</td><td><code>get list create update execute ingest voice observe</code></td><td>Given to the person who creates the workspace</td></tr>
+    <tr><td class="k">admin</td><td>the same verbs</td><td>Keys, agents, members, binding requests, notification channels and the spot name need write and execute</td></tr>
+    <tr><td class="k">viewer</td><td><code>get list observe</code></td><td>Read issues, memory, graph and rooms</td></tr>
+  </table></div>
+  <h3>Trial workspaces</h3>
+  <p>A person who is not an instance admin can create a workspace when they hold a GitHub session whose organisations include the requested <code>account</code>. They become its owner. The limits come from flags and never from the request: <code>--tenant-trial-days</code> (14), <code>--tenant-trial-max-per-org</code> (1) and <code>--tenant-trial-licences</code> (3).</p>
+  <h3>Isolation in memory</h3>
+  <p>A cell is visible to every tenant when it carries the <code>shared</code> tag and to one tenant when it carries <code>tenant/&lt;name&gt;</code>. An untagged cell of a tenant-scoped kind resolves to no tenant on a multi-tenant instance and is not served. The rule is applied on the model-facing paths, on the REST surface and on MCP, and a caller who is not an admin cannot write a <code>tenant/</code>, <code>shared</code> or <code>author/</code> tag. Private cells carry <code>scope: private</code> and the hash of one user; only that user sees them, and MCP treats them as absent.</p>
+</section>
+
+<!-- 03 -->
+<section id="s3">
+  <div class="sechead"><span class="ord">03</span><h2>Event intake</h2></div>
+  <p>Every event enters through one router that stamps the tenant, applies the admission limits and collapses repeats. The source string decides how much the pipeline trusts the event: sources that begin with <code>k8s/</code>, <code>app/</code>, <code>flux/</code> or <code>events/</code> are <strong>machine</strong> sources; everything else, including <code>mcp/</code>, <code>msteams/</code> and <code>a2a/</code>, is a <strong>human</strong> source.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Path</th><th>Carries</th><th>Credential</th></tr>
+    <tr><td class="k">Agent WebSocket<br><code>/events/ws</code></td><td>Virtual-app snapshots and deltas, Warning events, RED, USE and log metrics, topology, sensor state, heartbeat (section 8)</td><td>Join certificate, checked in the first frame</td></tr>
+    <tr><td class="k">Alert webhooks<br><code>POST /events/&lt;provider&gt;/</code></td><td>Provider alerts and cloud events; body up to 64 KiB except the streaming GCP decoder</td><td>Bearer: a Kubernetes ServiceAccount token or a key of the api-tokens Secret, with the <code>i</code> bit on the tenant</td></tr>
+    <tr><td class="k">Status ingress<br><code>POST /events/status/</code></td><td>Readiness for services that are not Application objects</td><td>As above</td></tr>
+    <tr><td class="k">MS Teams<br><code>POST /msteams/webhook</code></td><td>Outgoing-webhook messages; body up to 1 MiB</td><td>HMAC-SHA256 of the body under a per-conversation secret</td></tr>
+    <tr><td class="k">MCP</td><td><code>emit_event</code>, <code>comment_on_issue</code>, <code>resolve_issue</code> and the rest of the tool surface; always the human path</td><td>ServiceAccount token or MCP OAuth token</td></tr>
+  </table></div>
+  <p>A webhook names its tenant with <code>X-Tenant</code>, the <code>tenant</code> query parameter or a body field. The value <code>auto</code> resolves the tenant from the tenants' service graphs and fails closed when no graph or more than one graph matches. <code>--events-ingest-authz</code> is <code>enforce</code> by default: a scoped token without the <code>i</code> bit on the resolved tenant gets 403. In <code>log</code> mode the request proceeds and the decision is counted, which is the way to migrate tokens.</p>
+  <h3>Admission</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Limit</th><th>Behaviour</th></tr>
+    <tr><td class="k">Agent event cap</td><td>A daily cap per (cluster, tenant) from policy (<code>agentEventsDaily</code>, default none), the registry default or an admin's per-agent value; a token bucket holds one hour's share. Over the cap the frame is refused and counted</td></tr>
+    <tr><td class="k">Frame rate</td><td>A token bucket per connection (<code>agentFramesPerSecond</code>)</td></tr>
+    <tr><td class="k">Dedup</td><td>Events collapse by (tenant, source, type) fingerprint into a count; the fingerprint table holds up to 10,000 entries. Dedup keeps the count and the service ledger is credited for every repeat</td></tr>
+    <tr><td class="k">Hub ring</td><td>The live window of events is a ring in memory; the durable archive is the event cells, kept 7 days</td></tr>
+  </table></div>
+  <h3>Screening</h3>
+  <p>A regex pre-screen for prompt injection runs on every event. A human-source match is dropped. A machine-source match increments a counter and is logged, and the event is never dropped on the regex. Human events then go to the guardrail model, on by default (<code>models.guardrailEnabled</code>), which labels each <code>INFRA</code>, <code>NOISE</code> or <code>INJECTION</code>; an error or an empty answer drops the event (fail closed), and a semantic cache (similarity 0.88, window 24 h) answers repeats. With the decision model on, its human-guardrail label is applied as well, and <code>NOISE</code> and <code>INJECTION</code> end the event. Machine events never reach a guardrail model.</p>
+  <p>Event text that reaches a prompt is wrapped as untrusted data between per-call random fences with an instruction not to follow it.</p>
+</section>
+
+<!-- 04 -->
+<section id="s4">
+  <div class="sechead"><span class="ord">04</span><h2>Issue lifecycle</h2></div>
+  <p>An <strong>issue</strong> (a <code>concern</code> in the code) is the unit a person acts on: a service, a severity, a summary, the events behind it, a cause and the patterns that bear on it. Its status is <code>new</code>, <code>investigating</code> or <code>resolved</code>. Figure 2 shows the path from an event to an issue.</p>
+
+  <figure class="figscroll">
+    <svg viewBox="0 30 880 310" role="img" aria-label="Issue path: ingress, screening, allocation and the service ledger feed the openers; holds can stop an open; the issue is authored once and announced.">
+      <defs>
+        <marker id="ba" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+        <marker id="bb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3F6478"/></marker>
+        <marker id="bm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#736F65"/></marker>
+      </defs>
+      <rect class="box" x="10" y="52" width="200" height="64" rx="8"/><text class="t" x="24" y="78">Router</text><text class="ts" x="24" y="96">tenant, caps, dedup</text>
+      <rect class="box" x="230" y="52" width="200" height="64" rx="8"/><text class="t" x="244" y="78">Screening</text><text class="ts" x="244" y="96">regex, guardrail (human)</text>
+      <rect class="box" x="450" y="52" width="200" height="64" rx="8"/><text class="t" x="464" y="78">Allocation</text><text class="ts" x="464" y="96">graph names the service</text>
+      <rect class="box" x="670" y="52" width="200" height="64" rx="8"/><text class="t" x="684" y="78">Service ledger</text><text class="ts" x="684" y="96">error families per instance</text>
+
+      <rect class="box hot" x="10" y="172" width="200" height="150" rx="8"/><text class="t" x="24" y="198">Openers</text>
+      <text class="tl" x="24" y="224">level state (O1)</text>
+      <text class="tl" x="24" y="244">2 families in 10 min (O2)</text>
+      <text class="tl" x="24" y="264">15 min persistence (O3)</text>
+      <text class="tl" x="24" y="284">cloud provider critical</text>
+      <text class="tl" x="24" y="304">situation frame, reflection</text>
+
+      <rect class="box warn" x="230" y="172" width="200" height="150" rx="8"/><text class="t" x="244" y="198">Holds</text>
+      <text class="tl" x="244" y="224">human verdict, 1 to 30 days</text>
+      <text class="tl" x="244" y="244">quiet scope</text>
+      <text class="tl" x="244" y="264">flap gate after 5 reopens</text>
+      <text class="tl" x="244" y="284">recorded pattern, judged</text>
+      <text class="ts" x="244" y="308">a held event stays counted</text>
+
+      <rect class="box" x="450" y="172" width="200" height="150" rx="8"/><text class="t" x="464" y="198">Issue</text>
+      <text class="tl" x="464" y="224">new, investigating, resolved</text>
+      <text class="tl" x="464" y="244">info, warning, critical</text>
+      <text class="tl" x="464" y="264">severity from blast band</text>
+      <text class="tl" x="464" y="284">reopens inside 6 h</text>
+      <text class="ts" x="464" y="308">decision model: one step</text>
+
+      <rect class="box" x="670" y="172" width="200" height="150" rx="8"/><text class="t" x="684" y="198">Author pass</text>
+      <text class="tl" x="684" y="224">words once per issue</text>
+      <text class="tl" x="684" y="244">links caused-by, duplicate</text>
+      <text class="tl" x="684" y="264">may not open or re-rate</text>
+      <text class="ts" x="684" y="288">then the interrupt shield</text>
+      <text class="ts" x="684" y="308">decides what a channel hears</text>
+
+      <g>
+        <path class="e a" d="M210 84H226" marker-end="url(#ba)"/>
+        <path class="e a" d="M430 84H446" marker-end="url(#ba)"/>
+        <path class="e a" d="M650 84H666" marker-end="url(#ba)"/>
+        <path class="e a" d="M770 116V144H110V168" marker-end="url(#ba)"/>
+        <path class="e a" d="M210 247H226" marker-end="url(#ba)"/>
+        <path class="e a" d="M430 247H446" marker-end="url(#ba)"/>
+        <path class="e a" d="M650 247H666" marker-end="url(#ba)"/>
+      </g>
+    </svg>
+    <figcaption>Figure 2. From event to announced issue. The decision model is asked one question before an open on a service with a recorded pattern, and holds the open at 0.5 or above.</figcaption>
+  </figure>
+
+  <h3>Allocation and the ledger</h3>
+  <p>The service graph decides which service and instance an event belongs to. It never decides whether the event matters: <strong>noise means unallocated</strong>, an event no graph node takes, and it opens nothing. An allocated event is never dropped for its tier, its dependents or its blast radius. Every error-bearing event is credited to its service instance in the <strong>service ledger</strong> by signal family: <code>level</code>, <code>request</code>, <code>log</code>, <code>resource</code>, <code>pod</code> and <code>provider</code>. A row keeps 60 one-minute and 288 five-minute slots, rows are capped at 2,000 per tenant, and the least recently credited row goes first. The ledger answers the question "why did Triage say nothing" and feeds the situation frame, the tenant ledger endpoint and the MCP tools <code>inspect_service</code> and <code>get_tenant_situation</code>.</p>
+  <h3>Openers</h3>
+  <p>An issue opens on evidence that something happened to a service, never on blast radius. These are the only openers; each is code, and a model takes no part in the decision.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Opener</th><th>Rule</th></tr>
+    <tr><td class="k">O1 level state</td><td>An <code>AppDegraded</code> that the level state has not superseded opens an issue at any blast radius</td></tr>
+    <tr><td class="k">O2 corroboration</td><td>Two or more independent error families credited on one instance within <code>classification.evidence.corroborationWindowSeconds</code> (10 minutes) open an issue; three or more raise its severity one step</td></tr>
+    <tr><td class="k">O3 persistence</td><td>An instance continuously NotReady, or an error family firing without a break, for <code>persistenceDwellSeconds</code> (15 minutes) with no open issue on the service opens one; twice the dwell raises info to warning</td></tr>
+    <tr><td class="k">Cloud critical</td><td>A critical event from a provider that speaks for a cloud (the event names its cloud, or its provider segment is <code>gcp</code>, <code>aws</code> or <code>azure</code>) opens at once. A monitoring webhook such as Alertmanager or Datadog is evidence: it corroborates under O2, is absorbed by an open issue and never opens alone</td></tr>
+    <tr><td class="k">Situation frame</td><td>With <code>situation.autoRaise</code> on, a service the frame lists with a level reason (<code>down</code>, <code>crashloop</code>, <code>pressure</code>, <code>correlated</code>, <code>shared-sink</code>) is raised</td></tr>
+    <tr><td class="k">Reflection raise</td><td>Behind <code>situation.actions</code>; held when the frame would raise the same level fact itself, unless the cause passed the verification pass (section 6)</td></tr>
+  </table></div>
+  <p>Pod-family events (<code>BackOff</code>, <code>Unhealthy</code>, <code>Failed</code>, <code>FailedScheduling</code> and the rest of the pod-failure role) are one instance fact and never open an issue by themselves. A crash loop opens through O1, a second family through O2, and a probe that keeps failing on a Ready workload through O3.</p>
+  <h3>Severity</h3>
+  <p>The band comes from blast radius, the share of the catalog that depends on the service. At or above the tenant's INCIDENT threshold an issue is <code>critical</code>; between the NOISE and INCIDENT thresholds it is <code>warning</code>; below the NOISE threshold, for a leaf, or for a noise-tier node it is <code>info</code>. Evidence raises an info issue to warning and never to critical. A provider-critical event keeps <code>critical</code>. Each channel's minimum severity decides who is paged.</p>
+  <p>With the decision model on, one <code>score</code> question on the ordered scale info, warning, critical is asked per new issue, from evidence only (the change, what was already said in the last 24 hours, the service's place in the graph, its seven-day issues, its situation line and its ledger families in the last 10 minutes). The issue takes the engine's severity moved at most one step toward the answer. A failing or absent model leaves the engine's severity.</p>
+  <h3>Holds</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Hold</th><th>Behaviour</th></tr>
+    <tr><td class="k">Human verdict</td><td>A person resolves with <code>noise</code> (never an issue) or <code>expected</code> (known and accepted) and a window as they word it (<code>7d</code>, <code>36h</code>; default seven days, ceiling thirty). <code>noise</code> holds every machine open of the same source, <code>expected</code> every machine open of the same service in the tenant. A human report is never held</td></tr>
+    <tr><td class="k">Quiet scope</td><td><code>classification.quiet</code> names service tokens (default <code>synthetic</code>, <code>e2e</code>, <code>canary</code>, <code>smoke</code>) and namespaces for which no machine opener creates an issue. The events are allocated, counted and shown in the frame, and an open issue on the service still absorbs them</td></tr>
+    <tr><td class="k">Flap gate</td><td>A recurrence after <code>flapSuppression.minReopens</code> (5) reopens is suppressed unless the instance is NotReady past the bypass duration. Reopens inside the reopen window (6 hours; provider sources use hours in <code>providerReopenWindowHours</code>) reuse the issue</td></tr>
+    <tr><td class="k">Recorded pattern</td><td>Before any machine open on a service that has a recorded pattern, the decision model is asked one question: is this an instance of a known pattern, expected, with nothing new to open? At 0.5 or above the open is held. A service with no pattern makes no call. A schedule written in a pattern is a hint the judge weighs, never a rule</td></tr>
+  </table></div>
+  <h3>Author pass</h3>
+  <p>After every machine open, one model pass rewrites the engine's templated summary into words an on-call engineer reads in five seconds and, with <code>link_concerns</code>, draws caused-by and duplicate-of edges to the tenant's other active issues. It may not create an issue, change its severity or source, or call any other tool. An issue is authored once; the pass runs again only when its severity has changed since the words were written. The write is its own mutation kind and does not move the issue's <code>LastSeen</code>, since words are not evidence.</p>
+  <h3>Resolution</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Path</th><th>Rule</th></tr>
+    <tr><td class="k">Level reconciler</td><td>Resolves an <code>app/</code> issue once the instance has been Ready for the recovery window and its non-level error families have been quiet for the same time</td></tr>
+    <tr><td class="k">Provider notice</td><td>A webhook whose status is <code>resolved</code> is marked recovered whatever its type says; cloud incidents that close are decoded into such a notice. A provider issue with no activity for 72 hours resolves on its own</td></tr>
+    <tr><td class="k">Person</td><td><code>resolve_issue</code> or the API, with verdict <code>fixed</code> (default), <code>noise</code> or <code>expected</code>, a root cause and a fix</td></tr>
+    <tr><td class="k">Recognised pattern</td><td>An open issue with linked patterns is asked about again when a fresh machine event joins it (at most hourly), when a pattern is linked, and once at start. A recognised issue resolves with verdict <code>expected</code>, resolved by <code>pattern</code>, naming the pattern, the judge, its probability and its reason</td></tr>
+  </table></div>
+  <p>A resolve is evidence. The resolved record, its verdict and its root cause are what the judges and the pattern track read next. Patterns link to issues in both directions: <code>matches</code> is written by code at open and reopen from the tenant's active patterns on the service, and <code>explains</code> is written when a person or the reflection pass names the pattern as the cause.</p>
+</section>
+
+<!-- 05 -->
+<section id="s5">
+  <div class="sechead"><span class="ord">05</span><h2>Memory</h2></div>
+  <p>Memory is one substrate. Every cell is an <code>xray.ai/v1</code> <code>MemoryCell</code> with a <code>kind</code>, a <code>subject</code> (the producing instance), tags, an <code>origin</code>, links to other cells and an optional embedding. The core watches the cells in its namespace whose subject matches <code>--memory-subject</code>. Embeddings come from <code>text-embedding-005</code> on Vertex AI, or from a gateway or sidecar (<code>nomic-embed-text</code>, 256 dimensions); an HNSW index serves similarity search.</p>
+  <h3>Kinds</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Group</th><th>Kinds</th><th>Written by</th></tr>
+    <tr><td class="k">Raw input</td><td><code>event</code>, <code>issue_claim</code>, <code>analytics_counter</code>, <code>precursor_pattern</code></td><td>Code only. A model or MCP write of these kinds is rejected</td></tr>
+    <tr><td class="k">Knowledge</td><td><code>stable_fact</code>, <code>operational_pattern</code>, <code>watch_item</code>, <code>hypothesis</code>, <code>mindmap</code>, <code>note</code></td><td>Reflection, knowledge and RSI passes, MCP and chat for people</td></tr>
+    <tr><td class="k">Identity</td><td><code>system_identity</code> prompt cells</td><td>The chart, overridable by flags</td></tr>
+    <tr><td class="k">Configuration</td><td><code>mental_map</code> (a tenant's service graph), <code>system_configuration</code>, <code>policy</code>, <code>policy_rsi</code>, <code>reflex_rule</code>, <code>notify_channels</code>, <code>tenant_notify</code>, <code>tenant_goals</code>, <code>agent_join</code>, <code>tenant_registry</code>, <code>ui</code>, <code>doc_page</code>, <code>landing</code>, <code>about</code>, <code>howto</code></td><td>Operators and the API. Exempt from retention, never minted from the in-memory map, never writable by a model</td></tr>
+  </table></div>
+  <h3>Provenance</h3>
+  <p>Every cell has an origin: <code>observed</code> (code wrote it from facts), <code>derived</code> (a model wrote it), <code>human</code> (an identified user wrote it through MCP, chat or voice) or <code>verified</code> (derived, then passed a check in section 6). A cell without an origin is <code>derived</code>. Prompts receive the origin on every cell with one rule: human outranks derived, and a derived cell is a prior claim, never evidence. Code enforces the rule where a model chooses what to rely on: an id accepted as a pattern or a basis must be observed or human.</p>
+  <h3>Retention</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Data</th><th>Kept</th></tr>
+    <tr><td class="k">Event cells</td><td>7 days</td></tr>
+    <tr><td class="k">Resolved issues</td><td>90 days after resolution; open issues are never deleted; a working-set cap of 2,000 per tenant</td></tr>
+    <tr><td class="k">Analytics counters and precursor patterns</td><td>30 days, rolling</td></tr>
+    <tr><td class="k">Knowledge (facts, patterns)</td><td>90 days; the mind map has a <code>stale_after</code> of 7 days (bounds 1 hour to 30 days)</td></tr>
+    <tr><td class="k">Episodic digests</td><td>180 days</td></tr>
+    <tr><td class="k">Provider issues</td><td>Auto-resolve after 72 hours without activity</td></tr>
+  </table></div>
+  <p>Windows are tenant-overridable in policy. Knowledge writes go through an upsert that merges a near-duplicate in place, never against a <code>shared</code> or a foreign-author cell. Event cells collapse per (tenant, source, type) fingerprint.</p>
+  <h3>How cells are applied</h3>
+  <p>Configuration cells carry their document as base64 bytes under <code>spec.data</code>. The reconciler decodes the document with strict field checking and then a validator. A rejected document keeps the previous good state, so a typo never replaces a working configuration. A cell write is a Get then Create or Update with optimistic concurrency on the resource version, with labels set wholesale and the embedding preserved. A service graph is either inline (gzip of a gob, decoded under a 64 MiB bound with a panic-to-error guard) or a digest-pinned OCI reference; a tag-only reference is refused and a failed pull keeps the loaded graph.</p>
+</section>
+
+<!-- 06 -->
+<section id="s6">
+  <div class="sechead"><span class="ord">06</span><h2>Reasoning loops</h2></div>
+  <p>The loops are the slow half of the core. A deterministic <strong>situation frame</strong> describes each tenant; <strong>reflection</strong> and <strong>knowledge</strong> passes read the frame and memory and write what the event path reads next; <strong>RSI</strong> tunes the knobs and the patterns from the outcomes people confirm. Figure 3 shows the loop.</p>
+
+  <figure class="figscroll">
+    <svg viewBox="0 6 880 280" role="img" aria-label="Reasoning loops: the situation frame feeds reflection, reflection feeds knowledge, knowledge writes memory; resolves with a verdict feed RSI, RSI writes policy knobs and patterns, and the event path reads both.">
+      <defs>
+        <marker id="ca" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#9C4A26"/></marker>
+        <marker id="cb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#3F6478"/></marker>
+        <marker id="cm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#736F65"/></marker>
+      </defs>
+      <text class="m" x="10" y="24">SYSTEM 2 · REASONING MODEL, A FEW TIMES A DAY</text>
+      <rect class="box" x="10" y="52" width="200" height="64" rx="8"/><text class="t" x="24" y="78">Situation frame</text><text class="ts" x="24" y="96">deterministic, per tenant</text>
+      <rect class="box cool" x="230" y="52" width="200" height="64" rx="8"/><text class="t" x="244" y="78">Reflection</text><text class="ts" x="244" y="96">every 3 h, or on a change</text>
+      <rect class="box cool" x="450" y="52" width="200" height="64" rx="8"/><text class="t" x="464" y="78">Knowledge</text><text class="ts" x="464" y="96">every 8 h, facts and patterns</text>
+      <rect class="box" x="670" y="52" width="200" height="64" rx="8"/><text class="t" x="684" y="78">Memory</text><text class="ts" x="684" y="96">origin: derived, verified</text>
+
+      <text class="m" x="10" y="164">RSI · FROM CONFIRMED OUTCOMES</text>
+      <rect class="box" x="10" y="190" width="200" height="64" rx="8"/><text class="t" x="24" y="216">Human verdict</text><text class="ts" x="24" y="234">fixed, noise, expected</text>
+      <rect class="box cool" x="230" y="190" width="200" height="64" rx="8"/><text class="t" x="244" y="216">RSI</text><text class="ts" x="244" y="234">knob track, pattern track</text>
+      <rect class="box" x="450" y="190" width="200" height="64" rx="8"/><text class="t" x="464" y="216">Knobs and patterns</text><text class="ts" x="464" y="234">tenant overlay, pattern cells</text>
+      <rect class="box hot" x="670" y="190" width="200" height="64" rx="8"/><text class="t" x="684" y="216">Event path</text><text class="ts" x="684" y="234">openers, holds, judges</text>
+
+      <g>
+        <path class="e a" d="M210 84H226" marker-end="url(#ca)"/>
+        <path class="e a" d="M430 84H446" marker-end="url(#ca)"/>
+        <path class="e a" d="M650 84H666" marker-end="url(#ca)"/>
+        <path class="e a" d="M210 222H226" marker-end="url(#ca)"/>
+        <path class="e a" d="M430 222H446" marker-end="url(#ca)"/>
+        <path class="e a" d="M650 222H666" marker-end="url(#ca)"/>
+        <path class="e d" d="M770 116V150H330V186" marker-end="url(#cm)"/>
+        <path class="e d" d="M770 254V272H110V258" marker-end="url(#cm)"/>
+      </g>
+      <text class="ts" x="550" y="144" text-anchor="middle">patterns, resolved issues, counters</text>
+      <text class="ts" x="440" y="266" text-anchor="middle">resolves by people and the machine</text>
+    </svg>
+    <figcaption>Figure 3. The loops. Solid: what is written and read. Dashed: evidence returning to the loop.</figcaption>
+  </figure>
+
+  <h3>Situation frame</h3>
+  <p>The frame is built without a model from the graph, the RED and USE snapshots, the signals ring, the event cells, the classifier's matches and the ledger. It has one entry per notable service, each with its facts, how long they have held and a one-word reason, capped at <code>situation.maxServices</code> (12). A service is notable when it is not Ready; when memory has stood above the floor (85 percent of its limit) for the hold (30 minutes); when OOM kills are increasing; when log, request or resource anomalies appear in more than <code>streamWindows</code> (5) windows of the last hour; when the error rate is above its floor (5 percent); when an issue is older than the stale age (12 hours) with no level evidence; when more than one issue is open on a service; or when a catalog node's workload names never matched. It also lists <code>sharedMatches</code>, the graph nodes that the anomaly text of two or more other services matched. The frame is served at <code>GET /v2/tenants/{tenant}/situation</code> and by <code>get_tenant_situation</code>, and it wakes reflection when it changes, at most every <code>wakeEvery</code> (10 minutes) and <code>wakeCooldown</code> (30 minutes).</p>
+  <p>The core describes its own dependencies the way it describes a tenant's. A ledger of self-signals records, for the decision model, the reasoning model and the embedder, the last error with its status, the failures in the last hour and the last success. It appears in every frame, in the RCA brief when the issue's service is the core, and in <code>get_triage_agent_status</code>.</p>
+  <h3>Reflection and knowledge</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Pass</th><th>Cadence</th><th>Reads</th><th>Writes</th></tr>
+    <tr><td class="k">Reflection</td><td><code>loops.reflection.interval</code> 3 h; a new issue wakes a scoped pass at most once per tenant every 10 minutes after the loop's 2-minute debounce</td><td>The frame first, then issues, memory, predictions, the changes waiting to be announced</td><td><code>watch_item</code> cells, mind-map cards for up to 5 services a pass, <code>noticed</code> observations, announcements (one message per story); raise, resolve and merge only when <code>situation.actions</code> enables each</td></tr>
+    <tr><td class="k">Knowledge</td><td><code>loops.knowledge.interval</code> 8 h</td><td>Memory, resolved issues and their verdicts, patterns without a fact</td><td><code>stable_fact</code> and <code>operational_pattern</code> cells; one fact per group of patterns that share a cause, at most <code>patternFactsMaxPerPass</code> (5) groups a pass</td></tr>
+  </table></div>
+  <p>Each loop has a cooldown, one hour by default, that separates two passes on one tenant. Model output is parsed as strict JSON into operations; kinds outside the allowed set are dropped, a mind-map operation must name a service in the pass's hot set, every <code>tenant/</code> and <code>shared</code> tag a model writes is replaced by the sub-pass's tenant, and malformed output yields a summary and no operations.</p>
+  <h3>Verified reasoning</h3>
+  <p>A derived claim is checked before it is trusted. With <code>loops.verify</code> on, a fact's cause is tested against live evidence, with at most 3 checks per cause and 500 a day and a minimum support of 0.6. A fact whose cause cannot be tested is demoted to a <code>hypothesis</code>, which expires; a fact that passes becomes <code>verified</code>. Edges in the observed graph carry a role, <code>request</code>, <code>telemetry</code> or <code>control</code>, taken from the destination port, the protocol and a policy list of telemetry-sink names. A telemetry edge stays in the graph for provenance but is not a dependency: blast radius, the dependency layer, the classifier's "Depends on" line and the RCA call path never see it.</p>
+  <h3>Predictions</h3>
+  <p>A precursor matcher raises candidate services from the sequences that preceded past issues (<code>predictions.window</code> 14 days, <code>precisionWeighting</code> on). Each candidate is ranked by the decision model (how likely an issue is within the hour, from its evidence), and the answer becomes the prediction's confidence. An elevated prediction needs a confidence of 0.5; a notification needs 0.8 and re-arms after the confidence falls below 0.5.</p>
+  <h3>Patterns and RSI</h3>
+  <p>A <strong>pattern</strong> is an <code>operational_pattern</code> cell: a state of one service that people recorded as expected, such as a nightly scale-down, with an optional window. It holds machine opens (section 4), is linked to the issues it explains, and is the base of knowledge: the knowledge pass writes the fact behind it. <strong>RSI</strong> (recursive self-improvement) reads the outcomes the core can measure and proposes changes. It is off by default.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Mode</th><th>Behaviour</th></tr>
+    <tr><td class="k">shadow</td><td>The default. Records what it would change and applies nothing. A person decides every pattern proposal</td></tr>
+    <tr><td class="k">apply</td><td>Applies knob changes under the gates below. A person still decides pattern proposals</td></tr>
+    <tr><td class="k">autonomous</td><td>Applies knob changes and decides its own pattern proposals in the pass that wrote them, inside <code>applyTenants</code>. A new pattern is activated as derived knowledge with medium confidence, a revision writes the new text and window, a retirement expires its target. Earlier waiting proposals are decided too, oldest first</td></tr>
+  </table></div>
+  <p>The gates are a consistency streak (<code>applyAfter</code>, 2 passes), the <code>applyTenants</code> list, one applied change per tenant per day, an evaluator that reverts a change that did not improve its objective by <code>minImprovement</code> (0.2) over the evaluation window (6 hours), and the operator's own settings, which win field by field over the RSI overlay. The loop runs every 30 minutes, and a burst of alerts (<code>wakeAlertsPerHour</code>, 6) wakes it with a 30-minute cooldown. The knobs are registered with their bounds: the flap gate, the alert repeat interval and the like.</p>
+  <p>The pattern track has three parts. <em>New</em>: from one issue a person resolved with a verdict or a root cause, or a flap the machine closed after at least <code>minReopens</code> reopens with nobody's verdict, it drafts a pattern. <em>Revise</em>: when an issue opened on a service after its pattern was recorded and a person resolved it as expected or noise, the reasoning model reads the pattern and the misses and answers with the text or window that would have held them, or with nothing. <em>Retire</em>: a derived pattern that explains nothing is pruned. People see all of it: <code>list_patterns</code> and the memory explorer show the author tag <code>rsi</code>, the status block counts decided and pending proposals, and <code>refute_memory_item</code>, <code>expire_memory_item</code> and <code>approve_pattern</code> remain for a person who disagrees.</p>
+</section>
+
+<!-- 07 -->
+<section id="s7">
+  <div class="sechead"><span class="ord">07</span><h2>Models and budgets</h2></div>
+  <p>The core consumes models and hosts none. Every role is configured in the runtime document, and a role's credential is a Secret reference resolved into memory; there is no API-key flag. Vertex AI uses Workload Identity when <code>googleCloudProject</code> is set on the role's block.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Role</th><th>Default</th><th>Notes</th></tr>
+    <tr><td class="k">Routing, reflection, knowledge, mind map, RSI</td><td><code>gemini-2.5-flash</code></td><td>Per-role overrides in the runtime document; Vertex AI, the Gemini API or an OpenAI-compatible gateway (<code>baseURL</code>)</td></tr>
+    <tr><td class="k">RCA</td><td>the main model</td><td><code>models.rca</code>. <code>build_rca</code> returns a brief built from the graph; the model call is made by the client</td></tr>
+    <tr><td class="k">Guardrail</td><td>on</td><td><code>models.guardrail</code>, <code>models.guardrailEnabled</code>; human sources only</td></tr>
+    <tr><td class="k">Embeddings</td><td><code>text-embedding-005</code></td><td>Or a gateway or the local sidecar</td></tr>
+    <tr><td class="k">Voice</td><td>Gemini Live native audio</td><td>Vertex AI or the Gemini API on a Google AI key</td></tr>
+    <tr><td class="k">Text chat</td><td><code>gemini-3-flash-preview</code></td><td><code>--chat-model</code>, on the voice block's project or key</td></tr>
+    <tr><td class="k">Decision model</td><td>off until a key is named</td><td>A hosted decision service or any server that speaks the same protocol, set in <code>decisions</code> (<code>url</code>, <code>model</code>, <code>apiKeySecretRef</code> or <code>tokenFile</code>)</td></tr>
+  </table></div>
+  <h3>The decision model</h3>
+  <p>The decision model answers typed questions about a JSON state: a probability, a score on an ordered scale or a choice among options. It is the only judge on the event path. A call has a 15-second timeout and a 1 MiB response cap. It is consulted at these points, each with its own switch in <code>decisions</code> (all on by default, tenant-overridable, and all inert when no model is wired):</p>
+  <div class="tablewrap"><table>
+    <tr><th>Switch</th><th>Question</th></tr>
+    <tr><td class="k">severity</td><td>How severe is this new issue (a score; the engine's severity moves at most one step)</td></tr>
+    <tr><td class="k">humanRouting</td><td>Which service is this human report about</td></tr>
+    <tr><td class="k">humanGuardrail</td><td>Is this human message INFRA, NOISE or INJECTION</td></tr>
+    <tr><td class="k">prediction</td><td>How likely is an issue on this service within the hour</td></tr>
+    <tr><td class="k">gate</td><td>Is a new or reopened, non-critical issue worth the on-call channel once it has outlived the blip window; held below 0.5, else on to reflection</td></tr>
+    <tr><td class="k">patterns</td><td>Is this open an instance of a recorded pattern of the service; held at 0.5 or above</td></tr>
+  </table></div>
+  <p>The URL must be https, or http to a loopback host or a <code>.svc</code> name, checked when the document is validated and on every send. A token file is read on every call and must resolve under <code>tokenFileRoots</code> (default one directory); the service-account directory is refused. A 429 with <code>Retry-After</code> up to 10 seconds is waited out once; a longer one makes the client refuse calls until the time is up, and no pause exceeds 60 seconds.</p>
+  <h3>Budgets</h3>
+  <p>Every figure is a sum over today's rows of one usage ring, per tenant and per call kind, so the gate and the status read the same numbers. Failed calls count, since the ring records what the provider billed. One resolver reports spent, cap and the limit that blocked: <code>instance</code>, <code>kind</code> or <code>tenant</code>. The day is UTC.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Budget</th><th>Default</th><th>Notes</th></tr>
+    <tr><td class="k">Instance LLM tokens</td><td>1,000,000 a day</td><td><code>budgets.llmDailyTokens</code>; fail-closed in the chat and request paths; covers routing, guardrail, RCA, reflection, knowledge and RSI</td></tr>
+    <tr><td class="k">Tenant LLM tokens</td><td>100,000 a day</td><td><code>llmTenantDailyTokens</code> per tenant, <code>llmTenantDailyDefaultTokens</code> otherwise; guardrail calls are exempt</td></tr>
+    <tr><td class="k">Kind caps</td><td>agent 400k, reflection 250k, knowledge 250k, rca, guardrail, chat and voice 100k, rsi 50k</td><td><code>llmKindDailyTokens</code>; other kinds 100k</td></tr>
+    <tr><td class="k">Guardrail reserve</td><td>20,000</td><td>Guardrail calls are refused only at the instance limit plus the reserve</td></tr>
+    <tr><td class="k">Decision model</td><td>200,000 per tenant a day</td><td>Separate from the model budget; over it, the caller proceeds without an answer</td></tr>
+    <tr><td class="k">Spot</td><td>1,000,000 per workspace a day</td><td>Paid tokens of the turns a spot reports; not counted in the instance, tenant or kind caps; 0 is no cap</td></tr>
+    <tr><td class="k">Chat</td><td>1,000,000 per user a day</td><td>Plus the chat kind cap; a write-class tool call asks the client to confirm</td></tr>
+    <tr><td class="k">Voice</td><td>100,000 per user a day</td><td><code>--voice-user-daily-token-limit</code>; MCP <code>guardrail_event</code> and <code>decide_event</code> spend counts against it</td></tr>
+    <tr><td class="k">Per-call output</td><td>8,192 tokens</td><td>When <code>maxTokens</code> is unset</td></tr>
+    <tr><td class="k">Circuit breaker</td><td>5 failures, 60 s</td><td><code>llmCircuitBreaker</code> in the runtime document</td></tr>
+  </table></div>
+</section>
+
+<!-- 08 -->
+<section id="s8">
+  <div class="sechead"><span class="ord">08</span><h2>Agents and joining</h2></div>
+  <p>An agent opens a WebSocket to <code>/events/ws</code> and proves who it is in the first frame. The HTTP request is upgraded without a credential and authenticated in-band; the first frame has a 90-second deadline and an 8 MiB read limit, and a same-origin check admits requests that carry no <code>Origin</code>. Authentication is the join certificate and nothing else. A hello without a certificate is refused.</p>
+  <h3>Certificate join</h3>
+  <ul>
+    <li>Joining is enabled when the agent CA is configured (<code>clusterAgents.join.caSecret</code>). The CA is Ed25519; a previous CA can be set for rotation and cross-signs the current one.</li>
+    <li>The core sends a <code>challenge</code> nonce first. The agent's <code>join</code>, <code>renew</code> or <code>hello</code> frame signs it, and the agent verifies the core's CA signature over the same nonce.</li>
+    <li>A CSR carries the cluster name and the tenant list. It is issued only when an approved agent with the same fingerprint and tenant list exists. Certificates last 24 hours (<code>--agent-cert-validity</code>), a certificate issued before the latest approval is refused, and revoking an agent closes its live sessions.</li>
+    <li>A request that is not yet approved waits in a pending list (100 entries, 5 per source, 5 per cluster, 24-hour TTL). An admin approves, denies or revokes through <code>/v2/agents</code> and can set an agent's own daily event cap.</li>
+    <li>Join attempts are throttled per presented identity (6 a minute) and per source (60 a minute). The source is the peer address, or the Nth <code>X-Forwarded-For</code> entry from the right when <code>trustedProxyHops</code> is N.</li>
+  </ul>
+  <h3>One-time keys</h3>
+  <p>A workspace manager mints a key (<code>tak_&lt;id&gt;_&lt;secret&gt;</code>, 256 bits of secret, only its SHA-256 stored) that lasts seven days and is spent by the first successful join. Kinds: <code>cluster</code> (several tenants), <code>host</code> (one tenant, a Linux host) and <code>otlp</code> (one tenant, no Kubernetes watch). The join frame carries the key, a CSR and an Ed25519 proof over the nonce; the CSR's cluster name and tenant list must equal the key's, the certificate is issued at once, and the core assigns the cluster name (the label plus an eight-character suffix). The API returns the install command: a Helm line with <code>core.host</code>, <code>core.caFingerprint</code>, <code>core.clusterName</code>, <code>core.tenants</code> and <code>core.agentKey</code>, or for a host the <code>install.sh</code> line.</p>
+  <h3>Bindings</h3>
+  <p>A key-joined agent holds one binding per tenant, each with an optional namespace list (<code>*</code> or empty means all). The receiver filters snapshot, delta, event, log, RED, USE and topology frames to the binding's namespaces and drops frames for tenants outside the bindings. Heartbeat and sensor-state frames are not tenant-filtered, but each OTLP source entry in a sensor-state frame carries a tenant stamp that is checked against the bindings. Bindings change through <code>POST /v2/agents/{cluster}/bindings</code>: replace the namespaces of one, add a tenant the caller manages, or file a request that the other tenant's managers answer (7-day TTL, 1,000 requests globally). An agent with no binding left is revoked, and deleting a tenant ends its bindings and unused keys at once.</p>
+  <h3>Frames</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Direction</th><th>Kinds</th></tr>
+    <tr><td class="k">Agent to core</td><td><code>hello</code>, <code>join</code>, <code>renew</code>, <code>snapshot</code>, <code>snapshot_end</code>, <code>app_delta</code>, <code>log_metrics</code>, <code>red_metrics</code>, <code>use_metrics</code>, <code>red_summary</code>, <code>use_summary</code>, <code>topology_snapshot</code>, <code>sensor_state</code>, <code>heartbeat</code></td></tr>
+    <tr><td class="k">Core to agent</td><td><code>challenge</code>, <code>join_result</code>, <code>pong</code>, <code>resync</code>, <code>limits</code></td></tr>
+    <tr><td class="k">Bounds</td><td>100 services per metrics or summary frame; 200 nodes and 500 edges per topology frame; samples truncated to 256 characters; percentages clamped to 0 to 100; labels checked against Kubernetes label rules</td></tr>
+  </table></div>
+  <p>Every frame carries a tenant. The hello's tenant, an id or a label unique among the certificate's tenants, and every frame's stamp are validated against the certificate's tenant set. A second connection for the same cluster is refused while the first is live.</p>
+</section>
+
+<!-- 09 -->
+<section id="s9">
+  <div class="sechead"><span class="ord">09</span><h2>Authentication and grants</h2></div>
+  <p>The HTTP API, the WebSockets and the MCP server accept two credentials: an SSO session, and a Kubernetes ServiceAccount token verified by TokenReview with audience <code>triage-core</code>. Static bearer tokens are not accepted there; the keys of the api-tokens Secret authenticate the events server only. With no SSO provider and no ServiceAccount, every gated request gets 401. <code>sso.authDisabled</code> (<code>--auth-disabled</code>) is the only way to run open, for a lab.</p>
+  <h3>Credentials</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Credential</th><th>Details</th></tr>
+    <tr><td class="k">GitHub sign-in</td><td>Organisation required, team optional. The session identity is encrypted with AES-256-GCM; the cookie <code>triage_session</code> is host-only, HttpOnly, Secure and SameSite Lax; state travels in a signed cookie valid for 600 seconds. The session records the admitted organisations for <code>/v2/auth/me</code></td></tr>
+    <tr><td class="k">OIDC sign-in</td><td>Authorization code with PKCE S256 and a nonce, ID token verified for issuer, audience, signature and expiry. The subject is <code>&lt;prefix&gt;:&lt;lower-cased sub&gt;</code>; no groups, no organisations</td></tr>
+    <tr><td class="k">ServiceAccount token</td><td>TokenReview, audience <code>triage-core</code>, only from the core's own namespace; results are cached no longer than the token lives; expiry is tracked and warned before it lapses</td></tr>
+    <tr><td class="k">Device token</td><td>A seven-day token a signed-in user mints (10 per account), scope empty or <code>watch</code> (read and voice only); exchanged for a 24-hour session and a replacement</td></tr>
+    <tr><td class="k">MCP OAuth token</td><td>An EdDSA JWT from the core's own OAuth 2.1 server (below), audience <code>&lt;public-url&gt;/mcp</code>, 15 minutes, no refresh</td></tr>
+  </table></div>
+  <h3>Grants</h3>
+  <p>Authorization is a map from tenant to a set of six capability bits. Bits never imply one another, and the wildcard tenant <code>*</code> is the instance.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Bit</th><th>Capability</th></tr>
+    <tr><td class="k"><code>r</code></td><td>Read</td></tr>
+    <tr><td class="k"><code>w</code></td><td>Write</td></tr>
+    <tr><td class="k"><code>x</code></td><td>Execute: run a loop, call a tool with effects</td></tr>
+    <tr><td class="k"><code>i</code></td><td>Ingest events</td></tr>
+    <tr><td class="k"><code>v</code></td><td>Voice and chat</td></tr>
+    <tr><td class="k"><code>o</code></td><td>Observe: the tenant name list only</td></tr>
+  </table></div>
+  <div class="tablewrap"><table>
+    <tr><th>Named role</th><th>Bits</th></tr>
+    <tr><td class="k">reader</td><td><code>r</code></td></tr>
+    <tr><td class="k">ingester</td><td><code>i</code></td></tr>
+    <tr><td class="k">operator</td><td><code>rwx</code></td></tr>
+    <tr><td class="k">assistant</td><td><code>rxv</code></td></tr>
+    <tr><td class="k">observer</td><td><code>o</code></td></tr>
+    <tr><td class="k">admin</td><td><code>rwxivo</code></td></tr>
+  </table></div>
+  <p>Grants come from Kubernetes RBAC: Roles and RoleBindings in the core namespace, with rules on the resource <code>tenants</code> of the group <code>triageagent.dev</code> and the tenant names (or <code>*</code>) in <code>resourceNames</code>. Verbs map to bits: <code>get</code> and <code>list</code> to <code>r</code>, <code>create</code> and <code>update</code> to <code>w</code>, <code>execute</code> to <code>x</code>, <code>ingest</code> to <code>i</code>, <code>voice</code> to <code>v</code>, <code>observe</code> to <code>o</code>, and <code>*</code> to all. Subjects are <code>User</code> <code>github:&lt;login&gt;</code>, <code>Group</code> <code>group:&lt;name&gt;</code> and a ServiceAccount in the core namespace. The chart ships the six named Roles on every tenant. Grants are resolved per request for a session, so a change applies at once. Older grant sources (admin-user lists and team-grant maps in the api-tokens Secret) still exist; configuring any of them arms enforcement, and an unarmed instance gives every session the admin grant while RBAC-resolved callers stay scoped.</p>
+  <h3>Enforcement</h3>
+  <ul>
+    <li>REST and WebSockets resolve grants once per request (captured at upgrade for sockets). A <code>?tenant=</code> route answers 403 for a name the caller cannot read, whether or not it exists; an unknown name is listed back only to a caller who could read some tenant of that name.</li>
+    <li>MCP filters every list, get and search by what the caller may read, hides write-scoped tools from a read-only caller and rejects them if called.</li>
+    <li>Voice and chat need <code>v</code> on the bound tenant. The pprof handlers need the admin grant. The tenant name list needs <code>o</code>.</li>
+    <li>Workspace management (keys, agents, members, binding requests, notification channels) needs write and execute on the tenant; <code>account</code>, licences, trial dates and restore need admin.</li>
+  </ul>
+  <h3>MCP OAuth server</h3>
+  <p>When <code>--public-url</code> is set and an SSO provider exists, the core is its own OAuth 2.1 authorization server for MCP clients, co-located on port 8080: protected-resource and authorization-server metadata, dynamic client registration restricted to loopback and custom-scheme redirects, PKCE S256 required, a resource indicator that must match, single-use authorization codes that last two minutes, and an EdDSA token whose signing key derives from the configured client secrets so replicas agree. Tokens carry a scope, <code>triageagent:mcp.read</code> or <code>triageagent:mcp.write</code>, and either a grants string or an RBAC subject whose grants are read from the cache on every request. A shorter lifetime for write tokens can be set. Authorization codes live in one pod, so several replicas need session affinity for this flow.</p>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <div class="sechead"><span class="ord">10</span><h2>Interfaces</h2></div>
+  <p>Every service is a <code>ClusterIP</code> by default. A Gateway API route can expose one hostname that carries the MCP path, the events paths and the API; an nginx Ingress and a GCP backend policy are optional. The messenger homeserver has no route at all.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Port</th><th>Surface</th><th>Credential</th></tr>
+    <tr><td class="k">8080</td><td>HTTP API <code>/v2/*</code>, <code>/mcp</code>, the MCP OAuth endpoints, <code>/login</code>, <code>/docs</code>, <code>/debug/*</code>, WebSockets, the UI bundle on every other path</td><td>SSO session or ServiceAccount token; the pprof handlers also need the admin grant</td></tr>
+    <tr><td class="k">8083</td><td>MCP server over Streamable HTTP</td><td>ServiceAccount token or MCP OAuth token; always enforced</td></tr>
+    <tr><td class="k">8086</td><td>Events: <code>POST /events/&lt;provider&gt;/</code>, <code>POST /events/status/</code>, <code>GET /events/ws</code></td><td>Bearer with the <code>i</code> bit; join certificate on the WebSocket</td></tr>
+    <tr><td class="k">8085</td><td>MS Teams connector <code>POST /msteams/webhook</code></td><td>HMAC per conversation</td></tr>
+    <tr><td class="k">8082</td><td><code>/healthz</code>, <code>/readyz</code></td><td>None</td></tr>
+    <tr><td class="k">8088</td><td>Replica gossip <code>/gossip/ws</code>, only with several replicas</td><td>Mutual TLS from the chart's gossip CA</td></tr>
+    <tr><td class="k">6167</td><td>Matrix homeserver pod, only with the messenger</td><td>Application-service token; a NetworkPolicy admits only the release's pods</td></tr>
+  </table></div>
+  <h3>HTTP API</h3>
+  <p>The API is versioned under <code>/v2</code> and described by an OpenAPI 3.1 document the core serves live at <code>/v2/openapi.json</code> and <code>/v2/openapi.yaml</code>, with Swagger UI at <code>/docs</code>. The groups:</p>
+  <div class="tablewrap"><table>
+    <tr><th>Group</th><th>Covers</th></tr>
+    <tr><td class="k">Auth</td><td>GitHub and OIDC login and callback, logout, session reset, device tokens, <code>/v2/auth/me</code> (username, grants, roles, tenant labels, organisations) and <code>/v2/auth/providers</code></td></tr>
+    <tr><td class="k">Agent data</td><td>Issues and their detail and fractal graph, services, applications, analytics, memory, the status and memory WebSockets</td></tr>
+    <tr><td class="k">Tenants</td><td>The registry, restore, keys, bound agents, binding requests, members, notification channels, the situation frame and the ledger</td></tr>
+    <tr><td class="k">Agents (admin)</td><td><code>/v2/agents</code>: list, pending, approve, deny, revoke, limits; present when the agent CA is configured</td></tr>
+    <tr><td class="k">Sessions</td><td><code>/v2/agent/voice/session</code> and <code>/v2/agent/chat</code> WebSockets (below)</td></tr>
+    <tr><td class="k">Push</td><td><code>/v2/push/subscribe</code>, <code>/v2/push/unsubscribe</code> and <code>/v2/push/device</code></td></tr>
+    <tr><td class="k">Messenger</td><td><code>/v2/messenger/*</code> (section 11)</td></tr>
+  </table></div>
+  <p>The status WebSocket also sends <code>{"changed":[…]}</code> frames that name what changed, from the set <code>apps</code>, <code>graph</code>, <code>analytics</code>, <code>events</code>, <code>memory</code>, <code>tenants</code>, <code>goals</code> and <code>ledger</code>. A frame carries names only, at most one per topic per gap of 1 to 30 seconds, and a client refetches what it shows.</p>
+  <h3>MCP</h3>
+  <p>The MCP server defines 55 tools; six of them exist only when the messenger is wired. Tools split by who may call them:</p>
+  <div class="tablewrap"><table>
+    <tr><th>Class</th><th>Tools</th><th>Gate</th></tr>
+    <tr><td class="k">Read</td><td>Issues, services, memory, situation, goals, analytics, status, patterns, instructions</td><td>Read grant; every list, get and search is filtered by what the caller may read; private and foreign items answer as absent</td></tr>
+    <tr><td class="k">Write (15)</td><td><code>emit_event</code>, <code>upsert_memory_item</code>, <code>supersede_memory_item</code>, <code>expire_memory_item</code>, <code>refute_memory_item</code>, <code>build_memory</code>, <code>build_knowledge</code>, <code>resolve_issue</code>, <code>comment_on_issue</code>, <code>update_issue_severity</code>, <code>link_issues</code>, <code>test_push</code>, <code>test_notify</code>, <code>set_tenant_goals</code>, <code>say_in_workspace</code></td><td>Hidden from a read-only token's tool list and rejected by the scope check</td></tr>
+    <tr><td class="k">Model-calling (4)</td><td><code>guardrail_event</code>, <code>decide_event</code>, <code>recognize_pattern</code>, <code>verify_hypothesis</code></td><td>Per-caller limit of 1 a second with a burst of 10, plus the daily quota</td></tr>
+    <tr><td class="k">Instance</td><td><code>run_rsi</code>, <code>consolidate_memory</code>, <code>approve_pattern</code>, <code>forget_issue</code></td><td><code>x</code> on <code>*</code>, or write on the issue's tenant for <code>forget_issue</code></td></tr>
+  </table></div>
+  <p>List-shaped results are compressed to 500 characters a row (<code>--headroom-limit</code>, 0 disables). <code>analyze_issue</code> uses the client's own model through MCP sampling and costs the core no tokens.</p>
+  <h3>Voice and chat</h3>
+  <p>Voice is a Gemini Live WebSocket; chat is a text WebSocket on the same tool set. Both answer 503 while disabled or without a credential, both need the <code>v</code> bit on the bound tenant before the upgrade, and both check the origin. A write-class tool call asks the client to confirm, except <code>save_session_note</code> and <code>ask_spot</code>. Quotas are in section 7.</p>
+  <h3>UI bundle</h3>
+  <p>A <code>ui</code> cell holds a digest-pinned OCI reference (<code>uiRef</code>) and optionally the name of a pull Secret. The core pulls the artifact, takes every regular file of every layer (64 MiB and 5,000 files at most, names normalised) and serves it on port 8080 for every path that is not an API or infrastructure path. A failed pull keeps the bundle being served. The home document carries an enforcing Content-Security-Policy naming its inline script hash, and a kill-switch service worker is served at <code>/ui/sw.js</code>.</p>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <div class="sechead"><span class="ord">11</span><h2>Messenger and spots</h2></div>
+  <p>Each workspace has a chat built on a Matrix homeserver that only the core can reach. The core is the only Matrix client: people use <code>/v2/messenger</code>, and the homeserver has no public route. The routes answer 503 while no homeserver is configured.</p>
+  <h3>Rooms</h3>
+  <div class="tablewrap"><table>
+    <tr><th>Room</th><th>Members</th><th>Notes</th></tr>
+    <tr><td class="k">Team room</td><td>The workspace's members and its spot and Tria</td><td>Alias <code>ws-&lt;tenant&gt;</code></td></tr>
+    <tr><td class="k">Agent room</td><td>The spot and Tria</td><td>Alias <code>ws-&lt;tenant&gt;.agents</code>; not listed to clients</td></tr>
+    <tr><td class="k">Direct chat</td><td>Two people</td><td>Every new direct chat is end-to-end encrypted; there is no key recovery and devices verify by emoji comparison</td></tr>
+    <tr><td class="k">Private chat</td><td>One person and Tria, per workspace</td><td>Also reachable as text chat and voice; turns land in the same room</td></tr>
+  </table></div>
+  <p>Every room route checks the read grant on the room's workspace per call. The write grant gates deleting other people's messages and pinning. A message the core posts for a person into a workspace room carries their level on the workspace in the event key <code>app.triage.grant</code> (<code>read</code>, <code>write</code> or <code>admin</code>); a forward carries the forwarder's level. Removing a member kicks their Matrix user from the workspace room and from their private chat, and clears their push registrations if they are in no other workspace room. Text is 1 to 4,000 characters and an upload up to 2 MiB.</p>
+  <p>An <code>@tria</code> mention in a room is answered as the mentioner, with their read and voice grants. The 40 earlier messages become turns, confirm-class tools and <code>ask_spot</code> are not offered, and the answer carries the asker's level. It gets 16 tool calls, 8,192 output tokens a call, a 4-minute window and a 30-second posting deadline, and counts against the per-user chat quota and the global chat budget. With <code>messenger.multimodal</code> on in the runtime document, the images and files of a room are shown to the model when it answers.</p>
+  <h3>Spots</h3>
+  <p>A <strong>spot</strong> is a per-workspace agent that lives outside the core, acts through MCP tools and speaks in the workspace's rooms under its <code>spotName</code>. It holds no Matrix credential. The core gives it a trigger stream, a budget and a status line.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Piece</th><th>Behaviour</th></tr>
+    <tr><td class="k">Identity</td><td>One Matrix user per workspace, <code>spot.&lt;tenant&gt;</code>, member of the team and agent rooms. A name change through <code>PATCH /v2/tenants/{id}</code> updates the display name and the room member name at once</td></tr>
+    <tr><td class="k">Tools</td><td><code>say_in_workspace</code> (write; the caller identity must start <code>sa:</code>; team or agent room; 1 to 2,000 characters; hop 0 to 3), <code>read_workspace_room</code> (up to 50 messages, each with the sender's level), <code>read_workspace_file</code> (images, text, JSON and YAML up to 5 MiB, text cut at 64 KiB, labelled as attachment content), <code>set_workspace_typing</code>, <code>set_spot_status</code> (one line of 140 characters) and <code>get_spot_identity</code></td></tr>
+    <tr><td class="k">Post caps</td><td>Per workspace and room per hour: team 12, agents 60. A message equal, after whitespace and case folding, to one of the last 5 in the room is refused. Counters live in each replica's memory</td></tr>
+    <tr><td class="k">Tria to spot</td><td><code>ask_spot</code> posts to the agent room as Tria with hop 1; <code>read_spot_room</code> reads it. Both run without a confirm in private chat and voice</td></tr>
+    <tr><td class="k">Trigger stream</td><td><code>GET /v2/messenger/spot/ws?tenant=</code>, for a ServiceAccount with write on the workspace; a person's session is refused. Downstream frames: <code>hello</code>, <code>issues</code> (any state change, at most one a second), <code>rooms</code> (a message from someone whose level is write or admin, or from Tria other than her answers to a reader), <code>name</code>, <code>budget</code>. Upstream: <code>turn</code> (model, input, cached, output, duration, failed) and <code>stats</code>, 8 KiB a frame. The stream closes when the ServiceAccount loses its write grant</td></tr>
+    <tr><td class="k">Budget</td><td>Paid tokens of reported turns count against <code>spotDailyDefaultTokens</code> (1,000,000 a day) per workspace. When it is spent, <code>say_in_workspace</code> and <code>set_spot_status</code> refuse. A turn report with an empty model, cached above input, a count over 50 million or a duration over a day is dropped</td></tr>
+    <tr><td class="k">State shown</td><td>Liveness (up for 90 seconds), the status line (6 hours), the stats snapshot (10 minutes), returned to readers in the room list</td></tr>
+  </table></div>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <div class="sechead"><span class="ord">12</span><h2>Notifications</h2></div>
+  <p>One component, the <strong>interrupt shield</strong>, decides everything a channel hears. The engine only offers a candidate: a new issue, a resolved issue, a prediction crossing or an observation. The shield sets a new issue's severity with the decision model (section 4), queues the change for its tenant, and lets reflection write the message in its next pass. A new issue wakes a scoped reflection pass at most once per tenant every 10 minutes; changes that arrive meanwhile ride in the same pass, and recoveries, risk crossings and observations never wake one.</p>
+  <ul>
+    <li>A new issue that is critical once its severity is set is sent at once, verbatim.</li>
+    <li>A repeat gate suppresses the same (kind, tenant, service) inside <code>alerts.repeatInterval</code> (1 hour, bounds 0 to 24 hours). Critical is never suppressed. RSI tunes this knob.</li>
+    <li>With the decision model's <code>gate</code> switch on, a non-critical issue that outlives the blip window reaches reflection only above 0.5.</li>
+  </ul>
+  <h3>Channels</h3>
+  <div class="tablewrap"><table>
+    <tr><th></th><th>Operator channels</th><th>Workspace channels</th></tr>
+    <tr><td class="k">Routing</td><td>The <code>notify_channels</code> cell: per channel a type, a secret key, event kinds, a minimum severity and a tenant list (empty means all)</td><td>A <code>tenant_notify</code> cell per workspace; the tenant list is the workspace's own id, taken from the cell and never from input</td></tr>
+    <tr><td class="k">Types</td><td>Teams, Discord, Slack, Opsgenie, generic webhook</td><td>Discord, Slack, Teams, Opsgenie; the generic webhook is operator-only. Each type is bound to its provider hosts</td></tr>
+    <tr><td class="k">URL storage</td><td>One dedicated Secret, one key per channel</td><td>One Secret keyed <code>&lt;tenant id&gt;.&lt;channel&gt;</code>; the API returns only <code>urlConfigured</code>, never the URL</td></tr>
+    <tr><td class="k">Limits</td><td>Per-channel token bucket, 20 a minute with a burst of 5</td><td>At most 5 channels a workspace; name 1 to 40 of <code>[a-z0-9-]</code>; <code>maxPerMinute</code> 1 to 30</td></tr>
+    <tr><td class="k">Events</td><td colspan="2"><code>issue_new</code>, <code>issue_resolved</code>, <code>prediction</code>, <code>observation</code>; <code>minSeverity</code> is <code>info</code>, <code>warning</code> (default) or <code>critical</code></td></tr>
+  </table></div>
+  <p>A URL must be https, name a host (no IP literal, no <code>localhost</code>), carry no user information and resolve to no blocked address range where DNS answers; the check runs at load and, for workspace channels, at write. Delivery uses one shared client with a 10-second timeout and no redirects, one drain worker and a 256-deep queue, and only the leader announces. URLs are never logged or shown; status surfaces list keys only. The test endpoint sends one fixed message, one a minute per channel, and returns the provider's error text up to 512 bytes. <code>--issue-url-template</code> substitutes <code>{id}</code> and <code>{tenant}</code> into the link a message carries.</p>
+  <h3>Push</h3>
+  <p>Web Push uses VAPID keys read from a Secret at start (a per-pod pair is generated and gossiped when none is set). A subscription's endpoint is validated at subscribe, at gossip apply and at restore with the same rules as a webhook URL plus a dial-time check. Android registrations are Firebase tokens stored as <code>fcm:&lt;token&gt;</code>, sent to Firebase with a service account or Workload Identity. The server overwrites any grants a client supplies with the caller's own, and delivery is filtered by them.</p>
+  <h3>Observations</h3>
+  <p>When memory notices something before anything is down, such as a service that has held 95 percent of its memory limit for six hours, the reflection write emits an observation. It goes through the same router and the same channel floors, leader-gated, with a minimum interval between them.</p>
+</section>
+
+<!-- 13 -->
+<section id="s13">
+  <div class="sechead"><span class="ord">13</span><h2>High availability</h2></div>
+  <p>The Deployment can run several replicas. With <code>controller.leaderElection</code> on, one replica holds a Lease and does the work that must happen once; with several replicas (or <code>gossip.enabled</code>) the chart renders the gossip mesh, and every replica serves the API, MCP and the intake.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Concern</th><th>Behaviour</th></tr>
+    <tr><td class="k">Issue writes</td><td>One mutation path: an issue change from any replica (a resolve, a link, an author write) travels to the leader as an <code>issue_mutation</code> frame and is acknowledged</td></tr>
+    <tr><td class="k">Leader-only</td><td>The level reconciler, the issue sweeps, announcements and the observation sink</td></tr>
+    <tr><td class="k">Gossip</td><td>Mutual TLS, TLS 1.3, certificate from the chart's own CA (kept across upgrades; delete the Secret and upgrade to rotate). 20 frame kinds: signals, hub snapshots, application, RED and observed-edge status, agent sessions, replica counters, issue mutations, memory hits and changes, prediction ranks, user tokens, tenant stats, user sessions, the VAPID key and push subscriptions. Frames are capped at 8 MiB with a 90-second idle deadline</td></tr>
+    <tr><td class="k">Replica-local</td><td>The service ledger, the situation frame, rate limiters, spot post caps and MCP authorization codes. A request that depends on them sees one replica's share; the MCP OAuth flow needs session affinity</td></tr>
+    <tr><td class="k">Restart</td><td>Cells are the durable state. The hub, the ledger and the frame start empty and refill from live frames; an agent reconnects with its certificate and resends its snapshot (<code>resync</code>). The counters in the status are instance-wide totals</td></tr>
+    <tr><td class="k">Disruption</td><td>An optional PodDisruptionBudget (<code>podDisruptionBudget.enabled</code>, off by default)</td></tr>
+  </table></div>
+</section>
+
+<!-- 14 -->
+<section id="s14">
+  <div class="sechead"><span class="ord">14</span><h2>Configuration</h2></div>
+  <p>The core has few flags and no configuration file. Behaviour is set in cells that are applied while the core runs, and the Helm chart renders them from values.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Layer</th><th>Holds</th><th>Applied</th></tr>
+    <tr><td class="k">Flags</td><td>Listen addresses, leader election, gossip, the agent CA and certificate lifetime, trusted proxy hops, the public URL, trial limits, ingest authorization mode</td><td>At start</td></tr>
+    <tr><td class="k">Runtime document <code>triage.runtime/v1</code></td><td>Models and their credential references, the decision model, SSO providers, Web Push and Firebase, the messenger, OTLP tracing, remote MCP servers and A2A agents, the LLM circuit breaker. Secrets are named, never inlined; values are resolved into memory and never written to a cell</td><td>Live, where safe to change</td></tr>
+    <tr><td class="k">Policy document <code>triage.policy/v1</code></td><td>Parameters at the decision points the code defines (below), with per-tenant overlays</td><td>Live; atomic swap</td></tr>
+    <tr><td class="k">RSI overlay</td><td>The knob values RSI wrote; laid under the operator's document field by field</td><td>Live</td></tr>
+    <tr><td class="k">Other cells</td><td>Prompts, reflex rules, notification routing, tenant goals, the registry, the join state, doc pages, the UI reference</td><td>Live</td></tr>
+  </table></div>
+  <h3>Policy</h3>
+  <p>Mechanism stays in code and policy is parameters. There is no rules engine and no expression language. The schema cannot express turning off the safety invariants: the guardrail fails closed, cross-tenant access is denied by default, issue state follows the graph one way, cell writes follow the write topology, and every model call has an output cap. A preset typo cannot become a security incident. Sections:</p>
+  <div class="tablewrap"><table>
+    <tr><th>Section</th><th>Sets</th><th>Tenant overlay</th></tr>
+    <tr><td class="k"><code>classification</code></td><td>Thresholds, caps by event type, reopen windows, flap gate, evidence windows, quiet scopes, ignored types, observed-edge retention, the event vocabulary</td><td>Partly: quiet scopes, ignored types, evidence windows and the flap gate; the event vocabulary is instance-only</td></tr>
+    <tr><td class="k"><code>concerns</code></td><td>Recovery hysteresis, fade after idle, reconcile interval, resolved issues listed</td><td>Yes</td></tr>
+    <tr><td class="k"><code>loops</code>, <code>predictions</code>, <code>situation</code></td><td>Intervals, cooldowns, mind-map size, verification limits, prediction thresholds, frame thresholds and actions</td><td>Yes</td></tr>
+    <tr><td class="k"><code>observations</code>, <code>alerts</code></td><td>What the colleague voice says unprompted, the repeat gate</td><td>Yes</td></tr>
+    <tr><td class="k"><code>decisions</code></td><td>The six switches and the daily decision budget</td><td>Yes</td></tr>
+    <tr><td class="k"><code>retention</code></td><td>Windows in section 5</td><td>Yes</td></tr>
+    <tr><td class="k"><code>budgets</code>, <code>models</code>, <code>rsi</code></td><td>Token budgets by instance, tenant, kind and spot; model names; the RSI mode and gates</td><td>Instance only; a tenant cannot turn the loop on for itself</td></tr>
+  </table></div>
+  <pre><code class="language-yaml">apiVersion: triage.policy/v1
+name: example
+version: 1
+classification:
+  flapSuppression:
+    minReopens: 5
+  quiet:
+    serviceTokens: [synthetic, e2e, canary, smoke]
+budgets:
+  llmDailyTokens: 1000000
+  llmTenantDailyDefaultTokens: 100000
+rsi:
+  mode: shadow
+tenants:
+  tenant-a:
+    classification:
+      quiet:
+        namespaces: [sandbox]</code></pre>
+  <p>Five presets ship with the repository: <code>balanced</code> (the compiled defaults as a document), <code>cost-saver</code>, <code>high-recall</code>, <code>quiet</code> and <code>system2-delegate</code>. Offline validators for the policy document, the runtime document, notification routing and a service catalog run the same checks as the reconciler. A document that fails validation, or fails to decode with strict field names, is rejected and the previous good one stays in force.</p>
+  <h3>Chart</h3>
+  <p>The chart <code>triage-core</code> groups its values as: the controller (replicas, leader election, probe and metrics addresses), the HTTP API and MCP listeners, the events server, the MS Teams connector, <code>auth</code> and <code>access</code> (grant sources), <code>sso</code>, <code>runtimeConfig</code>, <code>prompts</code>, <code>embedding</code> and <code>chatModel</code> sidecars, <code>messenger</code>, <code>voice</code>, <code>tenants</code> (the registry, trials, members), <code>clusterAgents.join</code> (the agent CA), <code>gossip</code>, the exposure objects (<code>httpRoute</code>, <code>externalIngress</code>, health and backend policies) and pod settings. With nothing set the chart generates an api-tokens Secret with one admin key that works on the events server only.</p>
+</section>
+
+<!-- 15 -->
+<section id="s15">
+  <div class="sechead"><span class="ord">15</span><h2>FAQ</h2></div>
+
+  <details class="faq"><summary>Why does a service nobody depends on still get an issue?</summary>
+  <p>Blast radius sets severity; the evidence decides whether anything happened. A leaf service that goes degraded opens an <code>info</code> issue through the level state, and corroboration can raise it to <code>warning</code>, never to <code>critical</code>. Whether anyone is paged is a property of each channel's minimum severity, which defaults to <code>warning</code>. A leaf that should stay silent belongs in a quiet scope or under a recorded pattern.</p>
+  </details>
+
+  <details class="faq"><summary>Why does a lone <code>BackOff</code> or <code>Unhealthy</code> event open nothing?</summary>
+  <p>A pod-family event is one fact about an instance. It is counted and shown in the frame, and an open issue on the service absorbs it. A crash loop reaches the level state and opens through O1 within a minute, a second error family opens through O2, and a probe that keeps failing on a Ready workload opens through O3 after the dwell. A flapping probe on a workload that stays Ready opens nothing.</p>
+  </details>
+
+  <details class="faq"><summary>What happens when the decision model or the reasoning model is down?</summary>
+  <p>The event path goes on. Without the decision model the engine keeps its own severity, the machine open is not judged against patterns, a human message passes on the regex alone, and predictions use the matcher's score. Without the reasoning model the loops do not run: no new reflection, knowledge or RSI output, while everything already written stays in force. Each dependency's failure count and last success appear in the situation frame, and a burst of decision-model failures raises one event on the core's own service, at most every ten minutes, when that service is in a tenant graph. The guardrail model is the exception: on an error it drops the human event.</p>
+  </details>
+
+  <details class="faq"><summary>How do I tell the core that a state is known and fine?</summary>
+  <p>Three ways, from the narrowest. Resolve the issue with the verdict <code>expected</code> (or <code>noise</code>) and a window, which holds machine opens on that service (or source) for up to 30 days. Record a pattern, in one sentence through <code>link_pattern</code>, chat or voice, with an optional schedule; the opener asks the decision model whether a new open is an instance of it. Or set a quiet scope in policy for services that should never open. A human report is never held by any of them.</p>
+  </details>
+
+  <details class="faq"><summary>How does a new cluster or host reach a workspace?</summary>
+  <p>A workspace manager mints a one-time key in the workspace and runs the install command the API returns: a Helm line for a cluster, an <code>install.sh</code> line for a host. The agent sends the key with a CSR and an Ed25519 proof, and the core issues a 24-hour certificate at once and renews it. Without a key, the agent prints its fingerprint and an instance admin approves it. A key is spent by the first successful join and lasts seven days, and the workspace's licence count limits how many agents it can bind.</p>
+  </details>
+
+  <details class="faq"><summary>What leaves the cluster toward a model provider?</summary>
+  <p>Event text, service-graph facts, recent issue lines and the memory a prompt needs, in the roles of section 7. Human messages are screened first, and event and graph text inside a prompt is fenced as untrusted data. A tenant that must not send its text to the decision model turns its own <code>decisions</code> switches off. Embeddings can stay on the pod with the local sidecar, and with the local chat sidecar every model role can too. Token use is bounded by the budgets of section 7 and visible in the status.</p>
+  </details>
+
+  <details class="faq"><summary>What is lost on a restart or a failover?</summary>
+  <p>Nothing durable. Issues, memory, configuration and the registry are cells. The event hub, the service ledger, the situation frame and the rate limiters are in memory and refill from the agents, which reconnect and resend their snapshots. Corroboration and persistence start from what has arrived since, so a service can take a few minutes to reopen on a fresh pod.</p>
+  </details>
+</section>
+
+</main>
+</div>
+<script>
+(function () {
+  var links = document.querySelectorAll('.sidebar a');
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (a) { a.classList.remove('on'); });
+        var a = map[e.target.id]; if (a) a.classList.add('on');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+  document.querySelectorAll('main section[id]').forEach(function (s) { io.observe(s); });
+})();
+</script>
+</body>
+</html>
