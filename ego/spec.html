@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="/zoom.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ego Specification</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj48ZyB0cmFuc2Zvcm09InJvdGF0ZSgtOTAgMTAwIDEwMCkiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjEwMCIgcj0iODQiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzljNGEyNiIgc3Ryb2tlLXdpZHRoPSIxNiIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIiBzdHJva2UtZGFzaGFycmF5PSI0MjIgNTI4Ii8+PGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSI1NiIgZmlsbD0ibm9uZSIgc3Ryb2tlPSIjM2Y2NDc4IiBzdHJva2Utd2lkdGg9IjE2IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1kYXNoYXJyYXk9IjI2NCAzNTIiLz48L2c+PC9zdmc+">
@@ -31,7 +32,7 @@ a { color: var(--accent); }
 code { font: 400 .8em var(--mono); background: var(--surface-2); padding: .08em .35em; border-radius: 3px; hyphens: none; -webkit-hyphens: none; white-space: nowrap; }
 
 .shell { display: grid; grid-template-columns: 17rem minmax(0,1fr); max-width: 78rem; margin: 0 auto; align-items: start; }
-.sidebar { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
+.sidebar { position: sticky; top: 0; max-height: calc(100vh / var(--z,1)); overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
 .sidebar h2 { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 .7rem .6rem; }
 .sidebar h2.group { margin-top: 1.6rem; }
 .sidebar nav { display: flex; flex-direction: column; }

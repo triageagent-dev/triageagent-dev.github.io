@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src="/zoom.js"></script>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23F0EEE6'/%3E%3Cpath d='M18 18L46 46M46 18L18 46' stroke='%239C4A26' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 <title>X-Ray Specification</title>
@@ -31,7 +32,7 @@ a { color: var(--accent); }
 code { font: 400 .8em var(--mono); background: var(--surface-2); padding: .08em .35em; border-radius: 3px; hyphens: none; -webkit-hyphens: none; white-space: nowrap; }
 
 .shell { display: grid; grid-template-columns: 17rem minmax(0,1fr); max-width: 78rem; margin: 0 auto; align-items: start; }
-.sidebar { position: sticky; top: 0; max-height: 100vh; overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
+.sidebar { position: sticky; top: 0; max-height: calc(100vh / var(--z,1)); overflow-y: auto; border-right: 1px solid var(--rule); padding: 2.5rem 1.4rem 3rem 1.75rem; }
 .sidebar h2 { font: 500 .68rem var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); margin: 0 0 .7rem .6rem; }
 .sidebar h2.group { margin-top: 1.6rem; }
 .sidebar nav { display: flex; flex-direction: column; }
