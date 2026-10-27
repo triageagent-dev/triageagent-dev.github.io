@@ -21,6 +21,7 @@ Live at **<https://triageagent.dev>**
 | `ego/spec.html` | The public ego specification, copied from `../ego/docs/spec.html` (without its web-font link); copy it again when the spec changes |
 | `spot/spec.html` | The public spot specification, copied from the spot repository (`docs/spec.html`, without its web-font link); copy it again when the spec changes |
 | `zoom.js` | Scales every page up on screens 2200px wide or more (CSS zoom, set from the window size, `--z` for the `vh` rules); below that nothing changes |
+| `connectors.png` | The connectors strip (infra events, monitoring, cloud, messengers, MCP IDE) at the top of the agent section's diagram |
 | `triage/spec.html` | The public core specification, copied from `../core/docs/spec.html` (without its web-font link and the Prism scripts, so no page loads a third-party resource); copy it again when the spec changes |
 | `xray/spec.html` | The public xray specification, copied from `../x-ray/docs/spec.html` (same removals as the core spec); copy it again when the spec changes |
 | `404.html` | Served by GitHub Pages for unknown paths |
