@@ -138,6 +138,16 @@ main{width:auto;min-width:0}
 .graph{display:none}
 }
 
+.video{border-top:1px solid #1c2230;padding:5rem 2rem}
+.video .wrap{max-width:900px;margin:0 auto}
+.video h2{margin:0 0 1.75rem;font-size:2rem;font-weight:600;letter-spacing:-.02em;color:#f0f3f8}
+.vframe{position:relative;aspect-ratio:16/9;border-radius:.75rem;overflow:hidden;background:#0b0e14;border:1px solid #1c2230}
+.vframe button{position:absolute;inset:0;width:100%;height:100%;display:flex;align-items:center;justify-content:center;border:0;background:radial-gradient(ellipse at 50% 50%,#141a26,#0b0e14 70%);cursor:pointer;padding:0}
+.vframe button span{width:5rem;height:5rem;border-radius:50%;background:#4fd8c4;display:flex;align-items:center;justify-content:center;transition:background .15s}
+.vframe button:hover span,.vframe button:focus-visible span{background:#6ee6d4}
+.vframe button svg{width:2rem;height:2rem;margin-left:.3rem;fill:#062622}
+.vframe iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+@media (max-width:860px){.video{padding:3.5rem 1.25rem}}
 .prod{border-top:1px solid #1c2230;padding:5rem 2rem}
 .prod .wrap{max-width:1100px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:4rem}
 .prod h2{margin:0 0 .35rem;font-size:2rem;font-weight:600;letter-spacing:-.02em;color:#f0f3f8}
@@ -324,6 +334,12 @@ a.btn.spot-spec-m{display:none}
 <div style="width:120.000cqw;height:16.364cqw;margin-top:12.727cqw;border-radius:50%;background:radial-gradient(ellipse at 50% 50%,rgba(0,0,0,.6),rgba(0,0,0,0) 70%);filter:blur(5.455cqw)"></div>
 </div></div><figcaption><b>Goals Tracker</b><span>coming soon</span></figcaption></figure>
 </div>
+</div>
+</section>
+<section id="video" class="video">
+<div class="wrap">
+<h2>Watch Triage in action</h2>
+<div class="vframe" data-yt="qqZQt0OJbvg"><button type="button" aria-label="Play the video"><span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l13-7.5z"/></svg></span></button></div>
 </div>
 </section>
 <section id="triage" class="prod">
@@ -542,6 +558,18 @@ a.btn.spot-spec-m{display:none}
 </nav>
 <nav><a href="/privacy.html">Privacy</a><a href="/terms.html">Terms</a><a href="/subprocessors.html">Subprocessors</a></nav>
 </footer>
+<script>
+// The video loads from YouTube only after the play button is pressed.
+(function(){
+var b=document.querySelector(".vframe[data-yt] button");if(!b)return;
+b.addEventListener("click",function(){
+var box=b.parentNode,f=document.createElement("iframe");
+f.src="https://www.youtube-nocookie.com/embed/"+box.getAttribute("data-yt")+"?autoplay=1&rel=0";
+f.title="Triage in action";f.allow="autoplay; encrypted-media; picture-in-picture; fullscreen";f.allowFullscreen=true;
+box.replaceChild(f,b);
+});
+})();
+</script>
 <script>
 // The demo apps load when their section comes near the viewport, so the hero paints first.
 (function(){
