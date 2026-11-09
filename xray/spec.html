@@ -195,7 +195,7 @@ pre .token.comment { color: #8C877C; font-style: italic; }
       <rect class="box" x="242" y="52" width="214" height="164" rx="8"/><text class="t" x="258" y="78">HTTP server</text>
       <text class="tl" x="258" y="102">REST /v1 and server-sent events</text>
       <text class="tl" x="258" y="122">/v1/voice WebSocket</text>
-      <text class="tl" x="258" y="142">GitHub and Entra sign-in</text>
+      <text class="tl" x="258" y="142">GitHub, Entra, Google sign-in</text>
       <text class="tl" x="258" y="162">OAuth server for MCP clients</text>
       <text class="tl" x="258" y="182">live hit and change events</text>
       <rect class="box" x="242" y="252" width="214" height="64" rx="8"/><text class="t" x="258" y="278">MCP server</text><text class="ts" x="258" y="296">memory tools and graph tools</text>
@@ -257,15 +257,15 @@ pre .token.comment { color: #8C877C; font-style: italic; }
   <h3>Out of scope</h3>
   <ul>
     <li>Model-driven background work. The server makes no model call except to embed text and to hold a voice session. Consolidation, summarising and generalising belong to the agent, which writes the result back with <code>upsert_memory</code>.</li>
-    <li>Anything beyond the API and the web UI it serves: sign-in providers other than GitHub and Microsoft Entra, and tenant switching (<a href="#s8">section 08</a>).</li>
+    <li>Anything beyond the API and the web UI it serves: sign-in providers other than GitHub, Microsoft Entra and Google, and tenant switching (<a href="#s8">section 08</a>).</li>
   </ul>
 </section>
 
 <!-- 02 -->
 <section id="s2">
   <div class="sechead"><span class="ord">02</span><h2>Memory model</h2></div>
-  <p>A memory item is a <code>MemoryCell</code> in the group <code>xray.ai</code>, version <code>v1</code>, short name <code>mcell</code>. Its <code>spec</code> carries the item.</p>
-<pre><code class="language-yaml">apiVersion: xray.ai/v1
+  <p>A memory item is a <code>MemoryCell</code> in the group <code>xray.triageagent.dev</code>, version <code>v1</code>, short name <code>mcell</code>. Its <code>spec</code> carries the item.</p>
+<pre><code class="language-yaml">apiVersion: xray.triageagent.dev/v1
 kind: MemoryCell
 metadata:
   name: checkout-retries-3f2a9c1e
@@ -293,7 +293,7 @@ spec:
     <tr><td class="k">confidence, status</td><td><code>high</code>, <code>medium</code> or <code>low</code>; and a status, <code>active</code> on creation</td></tr>
     <tr><td class="k">tags</td><td>Free labels. A tag selects a UI category when a deployment defines one</td></tr>
     <tr><td class="k">eventDate</td><td>When the item happened, RFC 3339 or a bare date</td></tr>
-    <tr><td class="k">staleAfter</td><td>Deadline after which the retention sweep deletes the item (<a href="#s10">section 10</a>)</td></tr>
+    <tr><td class="k">staleAfter</td><td>Deadline at which the server deletes the item (<a href="#s10">section 10</a>)</td></tr>
     <tr><td class="k">origin</td><td>Who wrote it: <code>human</code>, <code>observed</code>, <code>verified</code> or <code>derived</code> (<a href="#provenance">below</a>)</td></tr>
     <tr><td class="k">supersedes, evidenceRefs</td><td>Ids of the items this one absorbed, and the ids of the cells or events it was drawn from</td></tr>
     <tr><td class="k">links</td><td>Typed edges to other cells: <code>toId</code>, <code>relation</code>, <code>weight</code>, <code>evidenceRefs</code></td></tr>
@@ -319,7 +319,7 @@ spec:
   </table></div>
   <p>The first ten rows are the kinds <code>upsert_memory</code> lists. The last three are written by the server and the chart.</p>
   <h3>Scope</h3>
-  <p>Privacy is a <code>scope</code>, separate from <code>kind</code>. A <code>private</code> item is isolated to its <code>subject</code>: reading, fetching or deleting it needs the caller to present that subject, and its live events go only to the owner. A <code>public</code> item is shared knowledge, visible on the graph and in search. One predicate, private when <code>scope</code> is <code>private</code> or the kind is <code>system_configuration</code>, guards every read path. Callers that set a scope are trusted for it: the subject is a tenant key, not an authenticated identity. Voice writes are always private, with the subject set to a hash of the signed-in user.</p>
+  <p>Privacy is a <code>scope</code>, separate from <code>kind</code>. A <code>private</code> item belongs to the owner named by the <code>subject</code> it was written with: reading, fetching or deleting it needs the caller to present that owner, and its live events go only to the owner. The owner is stored as a <code>user:&lt;owner&gt;</code> tag; the cell&#39;s own <code>subject</code> names the instance that holds it. A <code>public</code> item is shared knowledge, visible on the graph and in search. One predicate, private when <code>scope</code> is <code>private</code> or the kind is <code>system_configuration</code>, guards every read path. Callers that set a scope are trusted for it: the owner is a key the caller presents, not an authenticated identity. Voice writes are always private, with the subject set to a hash of the signed-in user.</p>
   <h3 id="provenance">Provenance</h3>
   <p>Every cell carries an <code>origin</code>. A write is <code>human</code> when its credential names a person: an MCP token issued through sign-in, or a voice session of a signed-in user. It is <code>derived</code> when it does not: the shared MCP secret names nobody. The caller cannot choose; the server sets it. <code>observed</code> (written by code from facts) and <code>verified</code> (derived, then checked) are for cells that code writes or a cluster admin applies. A cell stored without an origin reads as derived.</p>
   <p>A derived write cannot replace a human cell; the upsert returns an error. A person can replace a derived one. <code>upsert_memory</code> takes <code>evidence_refs</code>, the ids a cell was drawn from, and <code>refute_memory</code> follows them: it retires a cell that is wrong (status <code>stale</code>), records the reason and evidence under <code>data.refuted</code>, and retires every active derived cell that cites it by evidence ref or link, one hop. Human, observed and verified cells are never retired by the cascade.</p>
@@ -346,12 +346,13 @@ spec:
     <tr><td class="k">Maps</td><td>A gob snapshot, mounted or carried in a cell</td><td>Reloaded from the snapshot</td></tr>
   </table></div>
   <h3>Gob snapshots</h3>
-  <p>A map is a pre-built graph saved as <code>&lt;name&gt;.graph.gob.gz</code> with its HNSW index. Loading a map embeds nothing in the pod. A snapshot reaches the server by one of two routes:</p>
+  <p>A map is a pre-built graph saved as <code>&lt;name&gt;.graph.gob.gz</code> with its HNSW index. Loading a map embeds nothing in the pod. A snapshot reaches the server by one of three routes:</p>
   <ul>
-    <li><strong>A file.</strong> A snapshot in the directory named by <code>--mental-maps-dir</code>. The server walks it and loads every snapshot it finds, and watches it for new files. The <code>xray-graph</code> chart mounts snapshot images there as image volumes; the memory chart mounts none.</li>
+    <li><strong>A file.</strong> A snapshot in the directory named by <code>--mental-maps-dir</code>. The server walks it and loads every snapshot it finds, and watches it for new files.</li>
     <li><strong>Carried in a cell.</strong> A cell holds the gob in <code>data.graph</code>. The cell syncer decodes it and registers the map, and skips the work when the bytes are unchanged.</li>
+    <li><strong>Pulled from a registry.</strong> A cell holds a digest-pinned OCI reference in <code>data.graphRef</code> (plain text, <code>name@sha256:...</code>), for a map too large for a cell (about 480 nodes). The server pulls the image, takes its one <code>*.graph.gob.gz</code> file and registers the map, once per reference, and retries every 30 seconds while the registry is unreachable. A tag is refused. <code>--registry-pull-secret</code> names a <code>dockerconfigjson</code> Secret for a private registry. The same key the Triage core reads.</li>
   </ul>
-  <p>Snapshots must match the server's embedding fingerprint: the model, <code>--embedding-dims</code> and <code>--embedding-max-input-chars</code>.</p>
+  <p>Snapshots must match the server's embedding fingerprint: the model, <code>--embedding-dims</code>, <code>--embedding-max-input-chars</code> and <code>--embedding-max-input-tokens</code>.</p>
 </section>
 
 <!-- 04 -->
@@ -383,7 +384,7 @@ spec:
   <p>A candidate is admitted when it matches enough of the query: every token of a one- or two-token query, all but one of three or more. A token matches as a substring or within one edit of a word (none for tokens of one or two characters), so a misheard word still finds the item. An item's id is part of what it matches, and a query that is exactly an id returns that item first.</p>
   <p>The score is a bonus for the whole query in the title, a graded match per token (title above content, exact above fuzzy), a small trigram overlap, and a penalty for each token missed. Tokens are weighted by how distinctive they are among the candidates, as a smoothed inverse document frequency: a word nearly every item contains counts for little, matched or missed, and a word few contain dominates both. For a query of three or more tokens an item that fails the coverage rule is still admitted when the tokens it did match carry 35% of the query's weight, so "what is wrong with the bigquery export" finds the item that names BigQuery.</p>
   <h3>Semantic rank</h3>
-  <p>The query is embedded and compared to the HNSW index by cosine similarity. The default model is <code>gemini-embedding-001</code> at 128 dimensions, from Vertex AI (<code>--gcp-project</code>) or any OpenAI-compatible endpoint (<code>--embedding-endpoint</code>). Input is cut to 8000 characters unless <code>--embedding-max-input-chars</code> says otherwise. <code>--semantic-score-gap</code> drops results more than a given cosine gap below the top hit.</p>
+  <p>The query is embedded and compared to the HNSW index by cosine similarity. The default model is <code>gemini-embedding-001</code> at 128 dimensions, from Vertex AI (<code>--gcp-project</code>) or any OpenAI-compatible endpoint (<code>--embedding-endpoint</code>). Input is cut to 8000 bytes unless <code>--embedding-max-input-chars</code> says otherwise. That is a bound, not a fit: bytes per token vary with the text, and a dense input under it can still exceed the model's window. <code>--embedding-max-input-tokens</code> is the window (0, the default, means unknown; nomic-embed-text-v2-moe reads 512): an input over it is cut, when it is sent, to the longest prefix that fits, counted by the endpoint's own tokenizer (llama.cpp <code>POST /tokenize</code>), because llama.cpp refuses an over-window input instead of truncating it. Text with fewer bytes than the window is never counted. When the endpoint cannot count (an OpenAI-compatible gateway with no <code>/tokenize</code>, or a failing tokenizer), the byte-capped text is sent with a warning and the server's answer decides; a 404 or 405 from <code>/tokenize</code> turns counting off for the life of the process. Vertex AI truncates on its side and ignores the flag. <code>--semantic-score-gap</code> drops results more than a given cosine gap below the top hit.</p>
   <p>A cell is embedded as its kind, scope, subject, title and content joined by spaces, cut to 1800 bytes on a character boundary (the batch limit of a local embedder is 2048 tokens, and a longer input is rejected outright). The store knows its embedding dimension and refuses a vector or a query of another length. If a search's whole top window is rejected on lookup, because every hit is a cell deleted or retired on another replica and still indexed here, the search ranks every cell exactly instead, so the cells that qualify are not starved. The embedding and index phases of each semantic search are reported separately as <code>xray.memory.search.phase.duration</code>.</p>
   <h3>Fusion</h3>
   <p>The two lists are combined by reciprocal rank, <code>1/(60+rank)</code> summed over the lists an item appears in. Ranks are used because cosine similarity and lexical scores are on different scales. An item in one list contributes one term. By default every query fuses both lists. <code>--search-lexical-shortcircuit</code> restores the older behaviour of skipping the embedding call when a keyword hit already covers the query.</p>
@@ -453,6 +454,15 @@ spec:
   </table></div>
   <p>A refusal, such as an unknown kind or a missing item, is a <code>ToolError</code> in all three, and <code>IsNotFound</code> tests for the missing item. The embedded store applies the same rules the server does at its boundary: a kind from the vocabulary, high confidence on a stable fact, a subject on a private item. The credential decides how a write is classed. Over MCP an OAuth token that names a person records <code>human</code> and the shared secret <code>derived</code>; in process, the program chooses with <code>WithOrigin</code>.</p>
   <p>To make X-Ray the memory of an agent, it is used in three places: a search before the agent answers, memory tools while it answers, and a write afterwards that cites the items it drew on, so that refuting one retires the rest. A separate adapter module implements the Google ADK memory service on either an embedded store or a client, so X-Ray plugs into the ADK runner and its <code>load_memory</code> and <code>preload_memory</code> tools. Each user's conversations are stored as private notes under the pair of app and user, and shared memory is added to every search.</p>
+  <p>The engine that the server's store and the <code>memory</code> package both run on is public too, for a program that wraps it in its own host. The host brings its own lock, visibility rule, retention function and kind vocabulary; the packages read no global state and use no Kubernetes client.</p>
+  <div class="tablewrap"><table>
+    <tr><th>Package</th><th>Holds</th></tr>
+    <tr><td class="k">memstore</td><td><code>Item</code>, <code>Store</code> and <code>Searcher</code>; tags; private ownership, which is a <code>user:&lt;hash&gt;</code> tag with the cell's <code>subject</code> naming the instance that holds the item; event time; near-duplicate detection; the kind vocabulary; <code>Lexicon</code>, the vocabulary index on its own</td></tr>
+    <tr><td class="k">memstore/index</td><td>The HNSW cell index, the embedder and the query cache</td></tr>
+    <tr><td class="k">memstore/hub</td><td>The live event hub. A <code>Transport</code> carries events between replicas; without one the hub is local</td></tr>
+    <tr><td class="k">memstore/cellsync</td><td>The decisions made when a cell is reconciled into a store: keep it, delete it at its deadline, forget it, embed it or leave it out of the vector index. Also the conversion of a private cell written with the owner in <code>subject</code> to the owner tag</td></tr>
+    <tr><td class="k">memstore/memtest</td><td>Fixtures for a host's tests</td></tr>
+  </table></div>
   <h3>REST</h3>
   <p>The memory routes are read-only. Writes arrive by MCP, by voice, or as objects applied with <code>kubectl</code>.</p>
   <div class="tablewrap"><table>
@@ -479,11 +489,12 @@ spec:
 <!-- 06 -->
 <section id="s6">
   <div class="sechead"><span class="ord">06</span><h2>Access</h2></div>
-  <p>Every route under <code>/v1</code> needs a session except the sign-in routes, <code>/v1/version</code>, <code>/v1/categories</code>, <code>/healthz</code>, <code>/manifest.json</code> and <code>/sw.js</code>. <code>--dev</code> turns authentication off and is for local use only.</p>
+  <p>Every route under <code>/v1</code> needs a session except the sign-in routes, <code>/v1/version</code>, <code>/v1/categories</code>, <code>/healthz</code>, <code>/manifest.json</code> and <code>/sw.js</code>. <code>--dev</code> turns authentication off and is for local use only; every request without a session is then the built-in user <code>dev</code>, so voice, personal notes and the UI share one identity.</p>
   <div class="tablewrap"><table>
     <tr><th>Path</th><th>How</th></tr>
     <tr><td class="k">GitHub sign-in</td><td><code>--github-client-id</code>, <code>--github-client-secret</code>; <code>--github-org</code> restricts access to an organisation and <code>--github-team</code> to a team</td></tr>
     <tr><td class="k">Microsoft Entra sign-in</td><td><code>--azure-client-id</code>, <code>--azure-client-secret</code>, <code>--azure-tenant-id</code></td></tr>
+    <tr><td class="k">Google sign-in</td><td><code>--google-client-id</code>, <code>--google-client-secret</code>, <code>--google-domain</code> (Workspace domain, matched on the ID token <code>hd</code> claim)</td></tr>
     <tr><td class="k">Session</td><td>A 24-hour <code>xray_session</code> cookie. The same token is accepted as <code>Authorization: Bearer</code>, and on a WebSocket upgrade as a subprotocol, because a browser cannot set headers on that handshake</td></tr>
     <tr><td class="k">Session to another origin</td><td>A login may hand its token to a UI on a different host through <code>?ui=&lt;origin&gt;</code>, only for origins in <code>--ui-callback-origins</code>. Empty by default</td></tr>
     <tr><td class="k">MCP, shared secret</td><td>A Secret named by <code>--mcp-token-secret</code>, key <code>token</code>. Full scope</td></tr>
@@ -501,7 +512,7 @@ spec:
   <div class="tablewrap"><table>
     <tr><th>Setting</th><th>Meaning</th></tr>
     <tr><td class="k">systemPrompt, greeting</td><td>What the model is told and how it opens</td></tr>
-    <tr><td class="k">voiceName, voiceModel</td><td>Override the <code>--voice-name</code> (default <code>Kore</code>) and <code>--voice-model</code> (default <code>google/gemini-live-2.5-flash-native-audio</code>) flags</td></tr>
+    <tr><td class="k">voiceName, voiceModel</td><td>Override the <code>--voice-name</code> (default <code>Kore</code>) and <code>--voice-model</code> (default <code>gemini-3.8-live</code>) flags</td></tr>
     <tr><td class="k">enabledTools</td><td>The allowlist of tools the model may call</td></tr>
     <tr><td class="k">writeAllowedUsers</td><td>Users whose sessions may write memory</td></tr>
     <tr><td class="k">maxUserDailyAudioTokens</td><td>Per-user audio token cap per UTC day; overrides the flag when non-zero</td></tr>
@@ -511,8 +522,8 @@ spec:
   <p>The voice tools are <code>search_memory</code>, <code>list_memory</code>, <code>get_memory</code>, <code>fetch_memory</code>, <code>recent_memory</code>, <code>upsert_memory</code>, <code>save_memory</code>, <code>delete_memory</code> and <code>end_session</code>. Voice writes are private to the user. When a map is loaded the graph tools are available to the model too.</p>
   <h3>Limits</h3>
   <ul>
-    <li><code>--user-daily-audio-token-limit</code>: audio tokens, in and out, a user may spend per UTC day. 0 is unlimited. The remaining amount is pushed to the browser after each turn.</li>
-    <li><code>--max-concurrent-voice</code>: simultaneous sessions across all users.</li>
+    <li><code>--user-daily-audio-token-limit</code>: audio tokens, in and out, a user may spend per UTC day. Default 500000; 0 is unlimited. At the cap the model is asked to save and say goodbye, and the server closes the session if it has not ended within 45 seconds. The remaining amount is pushed to the browser after each turn.</li>
+    <li><code>--max-concurrent-voice</code>: simultaneous sessions across all users. Default 20; 0 is unlimited. A slot is reserved before the session starts, so parallel starts cannot pass the check together.</li>
     <li><code>--voice-max-output-tokens</code>: output cap per turn, 8192 by default, so a runaway turn fails fast.</li>
   </ul>
   <p>Voice needs Gemini credentials: <code>--gcp-project</code> for Vertex AI, or <code>--gemini-api-key</code> for the Google AI API. Without either, the voice route is off.</p>
@@ -542,7 +553,7 @@ spec:
   <div class="sechead"><span class="ord">09</span><h2>Code graph</h2></div>
   <p><code>xray graph</code> builds derived memory: a graph of source code, documentation and Kubernetes manifests, embedded for search and saved as a snapshot. Nothing in it is authored, so it can be thrown away and rebuilt. It answers the structural questions that text search cannot: who calls this symbol, what a change reaches, where a decision was written down. It needs no cluster and no database, and it sends nothing off the host except text to the embedding endpoint you point it at.</p>
   <h3>Two builds</h3>
-  <p>Only the Tree-sitter parser needs a C toolchain, so the build tag marks the boundary. The static build is the one deployed to a cluster. Asked to parse, it exits with a message pointing at the CGO build. The container image with the parser is published as a tag of the same repository, <code>&lt;version&gt;-parser</code>.</p>
+  <p>Only the Tree-sitter parser needs a C toolchain, so the build tag marks the boundary. The static build is the one deployed to a cluster. Asked to parse, it exits with a message pointing at the CGO build.</p>
   <div class="tablewrap"><table>
     <tr><th>Sub-command</th><th>Does</th><th>Build</th></tr>
     <tr><td class="k">serve</td><td>Parse repositories on start, hold the graph in memory, re-index on edit, serve MCP with a small UI</td><td>CGO</td></tr>
@@ -558,7 +569,7 @@ spec:
   </table></div>
   <h3>What it indexes</h3>
   <ul>
-    <li><strong>Code.</strong> Go with resolved call, import and inherit edges; TypeScript, TSX, JavaScript, Python, Java, Rust, Ruby, C, C++, PHP and C# through a generic tags extractor that stores symbol bodies and call edges.</li>
+    <li><strong>Code.</strong> Go with resolved call, import and inherit edges; TypeScript, TSX, JavaScript, Python, Java, Rust, Ruby, C, C++, PHP, C# and Kotlin through a generic tags extractor that stores symbol bodies and call edges.</li>
     <li><strong>Documentation.</strong> Markdown: a node per file and a node per second-level heading.</li>
     <li><strong>Manifests.</strong> YAML, Helm templates included: a node per document, with reference edges to images, Secrets and ConfigMaps. It reads files and never contacts a cluster.</li>
     <li><strong>Infrastructure.</strong> Compose files, Dockerfiles, application config and SQL DDL, which feed the service catalogue that <code>services</code> derives.</li>
@@ -656,7 +667,7 @@ spec:
   </table></div>
   <p>The memory server's own access rules (<a href="#s6">section 06</a>) apply when it serves maps.</p>
   <h3>In a cluster</h3>
-  <p>Two ways to run maps. The memory server takes them as cells that carry a graph, or as files in <code>--mental-maps-dir</code>. The separate <code>xray-graph</code> chart runs <code>serve-snapshots</code> as its own deployment, with maps from image volumes (Kubernetes 1.33 or later) or a volume seeded from a maps image, bearer-token authentication, an age identity, an HPA and an ingress. A maps image is a scratch image holding the snapshots under <code>/maps</code>; the build target never pushes it.</p>
+  <p>Two ways to run maps. The memory server takes them as cells that carry a graph or point at one in a registry (<code>data.graphRef</code>), or as files in <code>--mental-maps-dir</code>; it needs that flag, even for an empty directory, to turn the map registry on. There is one chart. A maps image is a scratch image holding the snapshots under <code>/maps</code>; the build target never pushes it.</p>
 </section>
 
 <!-- 10 -->
@@ -665,7 +676,7 @@ spec:
   <p>Memory decays by deadline. The only background work in the server is the deletion of expired items, and it makes no model call.</p>
   <ul>
     <li><strong>Default deadlines.</strong> A newly created <code>event</code> gets 30 days, a <code>recent_change</code> or <code>note</code> 90 days, a <code>hypothesis</code> one day and an <code>unknown</code> seven, unless the caller sets <code>staleAfter</code>. Other kinds never expire by default. The defaults are fixed in code. Restating a hypothesis or unknown (the write merges into the existing cell) renews its deadline.</li>
-    <li><strong>Retention sweep.</strong> Every <code>--retention-sweep-interval</code> (one hour; 0 disables) the server hard-deletes items past <code>staleAfter</code>. Durable and configuration kinds are skipped.</li>
+    <li><strong>Deletion at the deadline.</strong> An item past <code>staleAfter</code> is hard-deleted when its cell is next decided, which is when the deadline falls: the controller requeues the cell for that moment. Every <code>--retention-sweep-interval</code> (one hour; 0 disables) a sweep deletes any item the requeue missed, such as one whose cell was never reconciled. Durable and configuration kinds are skipped, and a refuted or superseded item is kept as an audit trail until its own deadline.</li>
     <li><strong>Episodic memory.</strong> Older than <code>--episodic-ttl</code> (7 days) it is dropped from <code>recent_memory</code> at read time, and a reaper deletes the cell.</li>
   </ul>
   <p>A delete of a cell that another replica already removed counts as done, so the sweep is safe on several replicas.</p>
@@ -686,7 +697,7 @@ spec:
     <tr><td class="k">Items written without a cluster client</td><td>Per pod</td></tr>
     <tr><td class="k">Voice sessions</td><td>Bound to the connection, so to one pod</td></tr>
     <tr><td class="k">Voice quota counters</td><td>Held per pod and mirrored to the configuration cell's status, so several replicas do not add up</td></tr>
-    <tr><td class="k">Retention sweep</td><td>Runs on every replica; deletes are idempotent</td></tr>
+    <tr><td class="k">Retention</td><td>Runs on every replica; deletes are idempotent</td></tr>
   </table></div>
   <p>There is no leader election, because the server has no work that must run once. Search-hit events have publish hooks (<code>SetHitPublishHook</code>) and an apply call for remote events, but no transport is wired to them, so those pulses stay on the pod that served the search.</p>
 </section>
@@ -698,15 +709,15 @@ spec:
   <div class="tablewrap"><table>
     <tr><th>Group</th><th>Flags</th></tr>
     <tr><td class="k">Listeners</td><td><code>--http-address</code> :8080, <code>--mcp-address</code> :8083, <code>--metrics-address</code> :9090, <code>--namespace</code> xray, <code>--log-level</code> info</td></tr>
-    <tr><td class="k">Embeddings</td><td><code>--embedding-endpoint</code>, <code>--embedding-model</code> gemini-embedding-001, <code>--embedding-dims</code> 128, <code>--embedding-max-input-chars</code>, <code>--gcp-project</code>, <code>--gcp-location</code> europe-west4, <code>--semantic-score-gap</code></td></tr>
+    <tr><td class="k">Embeddings</td><td><code>--embedding-endpoint</code>, <code>--embedding-model</code> gemini-embedding-001, <code>--embedding-dims</code> 128, <code>--embedding-max-input-chars</code>, <code>--embedding-max-input-tokens</code> 0, <code>--gcp-project</code>, <code>--gcp-location</code> europe-west4, <code>--semantic-score-gap</code></td></tr>
     <tr><td class="k">Search</td><td><code>--search-lexical-shortcircuit</code>, <code>--search-recall-shaping</code> true, <code>--memory-write-dedup</code> true, <code>--headroom-content-limit</code>, <code>--mcp-search-memory-max-limit</code>, <code>--mcp-list-memory-max-limit</code>, <code>--mcp-recent-memory-max-limit</code></td></tr>
-    <tr><td class="k">Maps</td><td><code>--mental-maps-dir</code>, <code>--mental-maps-snapshot-key</code>, <code>--mental-maps-route-fanout</code> 1, <code>--mental-maps-ttl-min</code> 0</td></tr>
-    <tr><td class="k">Graph server</td><td><code>xray graph serve-snapshots</code>: <code>-snapshot-dir</code>, <code>-addr</code> 127.0.0.1:8085, <code>-writable</code>, <code>-memory-map</code> session, <code>-memory-ttl</code> 7d, <code>-skills-map</code> skills, <code>-graph-ttl-min</code> 0, <code>-route-fanout</code> 1, <code>-embedding-endpoint</code> http://localhost:8090, <code>-embedding-model</code> nomic, <code>-embedding-dims</code> 256, <code>-embedding-max-input-chars</code> 8192, <code>-snapshot-key</code>, <code>-auth-token-file</code>, <code>-allowed-hosts</code>, <code>-allowed-origins</code>. <code>serve</code> takes <code>-repo</code> and listens on 127.0.0.1:8084</td></tr>
-    <tr><td class="k">Voice</td><td><code>--gemini-api-key</code>, <code>--voice-model</code>, <code>--voice-name</code>, <code>--user-daily-audio-token-limit</code>, <code>--max-concurrent-voice</code>, <code>--voice-max-output-tokens</code>, <code>--voice-affective-dialog</code>, <code>--voice-proactive-audio</code></td></tr>
-    <tr><td class="k">Sign-in and MCP</td><td><code>--public-url</code>, <code>--github-client-id</code>, <code>--github-client-secret</code>, <code>--github-org</code>, <code>--github-team</code>, <code>--azure-client-id</code>, <code>--azure-client-secret</code>, <code>--azure-tenant-id</code>, <code>--ui-callback-origins</code>, <code>--mcp-token-secret</code>, <code>--mcp-oauth</code>, <code>--mcp-resource-url</code>, <code>--mcp-token-ttl</code> 15m, <code>--dev</code></td></tr>
+    <tr><td class="k">Maps</td><td><code>--mental-maps-dir</code>, <code>--mental-maps-snapshot-key</code>, <code>--registry-pull-secret</code>, <code>--mental-maps-route-fanout</code> 1, <code>--mental-maps-ttl-min</code> 0</td></tr>
+    <tr><td class="k">Graph server</td><td><code>xray graph serve-snapshots</code>: <code>-snapshot-dir</code>, <code>-addr</code> 127.0.0.1:8085, <code>-writable</code>, <code>-memory-map</code> session, <code>-memory-ttl</code> 7d, <code>-skills-map</code> skills, <code>-graph-ttl-min</code> 0, <code>-route-fanout</code> 1, <code>-embedding-endpoint</code> http://localhost:8090, <code>-embedding-model</code> nomic, <code>-embedding-dims</code> 256, <code>-embedding-max-input-chars</code> 8192, <code>-embedding-max-input-tokens</code> 0, <code>-snapshot-key</code>, <code>-auth-token-file</code>, <code>-allowed-hosts</code>, <code>-allowed-origins</code>. <code>serve</code> takes <code>-repo</code> and listens on 127.0.0.1:8084</td></tr>
+    <tr><td class="k">Voice</td><td><code>--gemini-api-key</code>, <code>--voice-model</code>, <code>--voice-location</code>, <code>--voice-name</code>, <code>--user-daily-audio-token-limit</code>, <code>--max-concurrent-voice</code>, <code>--voice-max-output-tokens</code>, <code>--voice-affective-dialog</code>, <code>--voice-proactive-audio</code></td></tr>
+    <tr><td class="k">Sign-in and MCP</td><td><code>--public-url</code>, <code>--github-client-id</code>, <code>--github-client-secret</code>, <code>--github-org</code>, <code>--github-team</code>, <code>--azure-client-id</code>, <code>--azure-client-secret</code>, <code>--azure-tenant-id</code>, <code>--google-client-id</code>, <code>--google-client-secret</code>, <code>--google-domain</code>, <code>--ui-callback-origins</code>, <code>--mcp-token-secret</code>, <code>--mcp-oauth</code>, <code>--mcp-resource-url</code>, <code>--mcp-token-ttl</code> 15m, <code>--dev</code></td></tr>
     <tr><td class="k">Retention</td><td><code>--episodic-ttl</code> 168h, <code>--retention-sweep-interval</code> 1h</td></tr>
     <tr><td class="k">Requests</td><td><code>--max-request-bytes</code> 1 MiB, <code>--trusted-proxy-hops</code> 0</td></tr>
-    <tr><td class="k">Tracing</td><td><code>--otel-endpoint</code>, <code>--otel-project</code></td></tr>
+    <tr><td class="k">Tracing</td><td><code>--otel-endpoint</code>, <code>--otel-project</code>, <code>--otel-token-secret</code></td></tr>
   </table></div>
   <h3>Chart</h3>
   <div class="tablewrap"><table>
@@ -717,9 +728,8 @@ spec:
     <tr><td class="k">args</td><td>The flag list given to the container</td></tr>
     <tr><td class="k">mcp.*</td><td>Token Secret name, OAuth on or off, resource URL, token lifetime, optional dedicated hostname</td></tr>
     <tr><td class="k">dev</td><td>Adds <code>--dev</code>: sign-in off, any origin accepted. For a first look through a port-forward only; without it the server refuses to start until a sign-in method and <code>--public-url</code> are set</td></tr>
-    <tr><td class="k">github.secretName, azure.secretName</td><td>The Secret holding the sign-in client id and secret. Empty by default, so a fresh install needs no Secret of its own besides the MCP token</td></tr>
+    <tr><td class="k">github.secretName, azure.secretName, google.secretName</td><td>The Secret holding the sign-in client id and secret. Empty by default, so a fresh install needs no Secret of its own besides the MCP token</td></tr>
     <tr><td class="k">imagePullSecrets</td><td>Secrets for pulling the images from a private registry</td></tr>
-    <tr><td class="k">xray-graph chart</td><td>A separate chart for a snapshot server on its own: maps from image volumes or a seeded volume, authentication, an age identity, an HPA, an ingress</td></tr>
     <tr><td class="k">ingress, httpRoute</td><td>An Ingress, or a Gateway API route, in front of the server</td></tr>
   </table></div>
   <p>The chart installs the <code>MemoryCell</code> CRD from its <code>crds</code> directory on first install. Helm does not upgrade CRDs, so apply a changed CRD by hand.</p>
